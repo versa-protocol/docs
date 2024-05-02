@@ -4,9 +4,9 @@ title: "Receipt Object"
 
 # Receipt Object
 
-Itemized receipts are the core data model of Versa. Receipts contain both the "header" information — the merchant, total amount, and date of the transaction — as well as the line-item details. For example, a receipt from a coffee shop would include the line items '2 x drip coffees,' '1 x donut,' and so on.
+Itemized receipts are the core data model of Versa. Receipts contain both the "header" information — the merchant, total amount, and date of the transaction — as well as the line-item details.
 
-Going a layer deeper, receipts are composed of six distinct sections:
+Receipts are composed of six distinct sections:
 
 1. **Header Info**: E.g. merchant name, merchant logo, transaction date.
 2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is frquently null. It also can include more than one type-specific object.
@@ -23,7 +23,7 @@ Here's a sample receipt header:
 
 ```json
     "id": "1MzFN1K8F4fqH0lBmFq8CjbU",
-    "currency": USD,
+    "currency": "USD",
     "amount": 6332,
     "subtotal": 5928,
     "date_time": 1713295619,
