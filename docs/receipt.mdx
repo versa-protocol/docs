@@ -1,0 +1,79 @@
+---
+title: "Receipt Object"
+---
+
+# Receipt Object
+
+Itemized receipts are the core data model of Versa. Receipts contain both the "header" information — the merchant, total amount, and date of the transaction — as well as the line-item details. For example, a receipt from a coffee shop would include the line items '2 x drip coffees,' '1 x donut,' and so on.
+
+Going a layer deeper, receipts are composed of six distinct sections:
+
+1. **Header Info**: E.g. merchant name, merchant logo, transaction date.
+2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is frquently null. It also can include more than one type-specific object.
+3. **Line Items**: The description, quantity, unit cost, and total for line item.
+4. **Roll-up Block**: The subtotal, taxes, fees, tip, and grand total of the receipt.
+5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: 'Contact Support,' 'Buy Again,' 'manage subscription.'
+6. **Payment Details**: Payment status and metadata associated with the receipt.
+
+Below we describe each of these six sections.
+
+## Header Info
+
+Here's a sample receipt header:
+
+```json
+    "id": "1MzFN1K8F4fqH0lBmFq8CjbU",
+    "currency": USD,
+    "amount": 6332,
+    "subtotal": 5928,
+    "date_time": 1713295619,
+    "merchant": {
+      "id": "merchant_1MzFN1K8F4fqH0lBmFq8CjbU",
+      "name": "Platform Co",
+      "brand_color": "#f0c14b",
+      "logo": "https://cdn.widget.co/image_url.png",
+      "mcc": 234,
+      "website": ""
+    },
+    "third_party": {
+      "first_party_relation": "point_of_sale",
+      "make_primary": true,
+      "merchant": {
+        "id": "merchant_ac48cef2-0d7f-4159-865e-e92b152262bc",
+        "name": "Widget Co.",
+        "brand_color": "#EF4D48",
+        "logo": "/temp_demo_assets/clover/logo-Ramirez.png",
+        "website": "",
+        "mcc": 234
+      }
+    }
+```
+
+| Field         | Description                                                                                                                                                                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`          | Unique identifier for the receipt. _(string)_                                                                                                                                                                                                                |
+| `currency`    | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`. _(string)_                                                                                                                                                        |
+| `amount`      | The receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](/definitions#currencies). _(integer)_                                                                                                                   |
+| `subtotal`    | The receipt subtotal (before taxes, fees, and tip). Also in the [smallest currency unit](/definitions#currencies). _(integer)_                                                                                                                               |
+| `date_time`   | Time at which the object was created. Measured in seconds since the Unix epoch. _(integer)_                                                                                                                                                                  |
+| `merchant`    | The [merchant](#merchant-object) facilitating the transaction. _(object)_                                                                                                                                                                                    |
+| `third_party` | A [third party](#third-party-object) involved in the transaction, when applicable. For example, if you purchased Chinese take-out through DoorDash, DoorDash would be the merchant, and the Chinese take-out restaurant would be the third party. _(object)_ |
+
+### Merchant Object
+
+| Field         | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `id`          | Unique identifier for the merchant. _(string)_                                                        |
+| `name`        | Merchant name. _(string)_                                                                             |
+| `brand_color` | A hex color. _(string)_                                                                               |
+| `logo`        | A valid url to a square aspect-ratio logo representing the merchant. Recommmend size 400x400. _(url)_ |
+| `mcc`         | A valid MCC. _(integer)_                                                                              |
+| `website`     | A valid url to the merchant's primary website. _(url)_                                                |
+
+### Third Party Object
+
+| Field                  | Description                                                                                                                                                                                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `first_party_relation` | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform point_of_sale` _(string)_                                                                                                                                                                  |
+| `make_primary`         | Determines whether the merchatn or third party gets top billing on the receipt. E.g. for an Instacart transaction, perhaps 'Instacart' should be primary vs. where the goods came from, but for a Square receipt, perhaps the restaurant should be primary. _(boolean)_ |
+| `merchant`             | A [merchant](#merchant-object) object representing the third party. _(string)_                                                                                                                                                                                          |
