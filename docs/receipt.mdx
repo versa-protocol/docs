@@ -4,15 +4,15 @@ title: "Receipt Object"
 
 # Receipt Object
 
-Itemized receipts are the core data model of Versa. Receipts contain both the "header" information — the merchant, total amount, and date of the transaction — as well as the line-item details.
+Itemized receipts are the core data model of Versa. Receipts contain both the "header" information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as line item details — the quanitity, description, and cost of each item purchased.
 
 Receipts are composed of six distinct sections:
 
-1. **Header Info**: E.g. merchant name, merchant logo, transaction date.
+1. **Header Info**: The top-level fields, e.g. merchant name, merchant logo, purchase date.
 2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is frquently null. It also can include more than one type-specific object.
-3. **Line Items**: The description, quantity, unit cost, and total for line item.
-4. **Roll-up Block**: The subtotal, taxes, fees, tip, and grand total of the receipt.
-5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: 'Contact Support,' 'Buy Again,' 'manage subscription.'
+3. **Line Items**: The description, quantity, unit cost, and total for each line item.
+4. **Roll-up Block**: The subtotal, taxes, fees, tip, combined discounts, and grand total of the receipt.
+5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: 'Contact Support,' 'Buy Again,' 'Manage Subscription.'
 6. **Payment Details**: Payment status and metadata associated with the receipt.
 
 Below we describe each of these six sections.
