@@ -8,12 +8,12 @@ Itemized receipts are the core data model of Versa. They include both “header�
 
 Versa receipts are composed of six sections:
 
-1. [Header](#header): Top-level fields, e.g. merchant name, merchant logo, purchase date.
-2. [Type Block](#type-block): Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is otherwise absent.
-3. [Line Items](#line-items): Description, quantity, unit cost, and total for each line item.
-4. [Roll-up](#roll-up): Subtotal, taxes, fees, tip, discounts, and grand total of the receipt.
-5. [Actions](#actions): Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
-6. [Payment](#payemnt): Payment status and metadata associated with the receipt.
+1. **Header**: Top-level fields, e.g. merchant name, merchant logo, purchase date.
+2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is otherwise absent.
+3. **Line Items**: Description, quantity, unit cost, and total for each line item.
+4. **Roll-up**: Subtotal, taxes, fees, tip, discounts, and grand total of the receipt.
+5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
+6. **Payment**: Payment status and metadata associated with the receipt.
 
 Below we cover each of these six sections in detail.
 
@@ -69,7 +69,7 @@ Here’s an example receipt header:
 | `id`          | string          | Unique identifier for the merchant.                                |
 | `name`        | string          | Merchant name.                                                     |
 | `brand_color` | nullable string | Hex color.                                                         |
-| `logo`        | nullable strng  | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
+| `logo`        | nullable string | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
 | `website`     | nullable string | Merchant’s primary website url.                                    |
 
 ### Third Party Object
