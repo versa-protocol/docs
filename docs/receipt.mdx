@@ -51,36 +51,36 @@ Here’s an example receipt header:
 }
 ```
 
-| Field         | Type             | Description                                                                                                    |
-| ------------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
-| `id`          | string           | Unique identifier for the receipt.                                                                             |
-| `currency`    | string           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                     |
-| `amount`      | integer          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currencies). |
-| `subtotal`    | integer          | Receipt subtotal (before taxes, fees, and tip).                                                                |
-| `date_time`   | integer          | Time at which the object was created. Measured in seconds since the Unix epoch.                                |
-| `merchant`    | object           | The [merchant](#merchant-object) facilitating the transaction.                                                 |
-| `mcc`         | nullable integer | Merchant Category Code. This value should match the value on the card network.                                 |
-| `third_party` | nullable object  | [Third party](#third-party-object) involved in the transaction, where applicable.                              |
+| Field         | Type               | Description                                                                                                         |
+| ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `id`          | `string`           | Unique identifier for the receipt.                                                                                  |
+| `currency`    | `string`           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
+| `amount`      | `integer`          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
+| `subtotal`    | `integer`          | Receipt subtotal (before taxes, fees, and tip).                                                                     |
+| `date_time`   | `integer`          | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
+| `merchant`    | `object`           | The [merchant](#merchant-object) facilitating the transaction.                                                      |
+| `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
+| `third_party` | `nullable object`  | [Third party](#third-party-object) involved in the transaction, where applicable.                                   |
 
 ### Merchant Object
 
-| Field         | Type            | Description                                                        |
-| ------------- | --------------- | ------------------------------------------------------------------ |
-| `id`          | string          | Unique identifier for the merchant.                                |
-| `name`        | string          | Merchant name.                                                     |
-| `brand_color` | nullable string | Hex color.                                                         |
-| `logo`        | nullable string | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
-| `website`     | nullable string | Merchant’s primary website url.                                    |
+| Field         | Type              | Description                                                        |
+| ------------- | ----------------- | ------------------------------------------------------------------ |
+| `id`          | `string`          | Unique identifier for the merchant.                                |
+| `name`        | `string`          | Merchant name.                                                     |
+| `brand_color` | `nullable string` | Hex color.                                                         |
+| `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
+| `website`     | `nullable string` | Merchant’s primary website url.                                    |
 
 ### Third Party Object
 
 The third party object is used when the merchant is a platform. For example, if a coffee shop uses Square to process sales, the merchant would be Square and the third party would be the coffee shop. The `make_primary` flag specifies whether the merchant or third party should get top billing on the receipt.
 
-| Field                  | Type    | Description                                                                                    |
-| ---------------------- | ------- | ---------------------------------------------------------------------------------------------- |
-| `first_party_relation` | string  | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`. |
-| `make_primary`         | boolean | Determines whether the merchant or third party gets top billing on the receipt.                |
-| `merchant`             | string  | A [merchant](#merchant-object) object representing the third party.                            |
+| Field                  | Type      | Description                                                                                    |
+| ---------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `first_party_relation` | `string`  | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`. |
+| `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                |
+| `merchant`             | `string`  | A [merchant](#merchant-object) object representing the third party.                            |
 
 ## Type Block
 
@@ -127,26 +127,26 @@ Line items describe the goods and services that make up the purchase. The sum of
 }
 ```
 
-| Field           | Type             | Description                                                                                                    |
-| --------------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
-| `description`   | string           | Description of the good / service.                                                                             |
-| `total`         | integer          | Total for the line item (typically `quantity` x `unit_cost` + `tax`).                                          |
-| `quantity`      | nullable float   | Quantity of items.                                                                                             |
-| `unit_cost`     | nullable integer | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
-| `unit`          | nullable string  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
-| `tax`           | nullable integer | Tax for the line item (defaults to 0).                                                                         |
-| `metadata`      | nullable array   | Array of key/value [metadata pairs](#line-item-metadata).                                                      |
-| `product_image` | nullable string  | Product image url, square aspect ratio.                                                                        |
-| `group`         | nullable string  | Optional grouping of line items.                                                                               |
+| Field           | Type               | Description                                                                                                    |
+| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `description`   | `string`           | Description of the good / service.                                                                             |
+| `total`         | `integer`          | Total for the line item (typically `quantity` x `unit_cost` + `tax`).                                          |
+| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
+| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
+| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
+| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
+| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#line-item-metadata).                                                      |
+| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
+| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
 
 ### Line Item Metadata
 
 Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
 
-| Field   | Type   | Description                                    |
-| ------- | ------ | ---------------------------------------------- |
-| `key`   | string | The type of metadata, e.g. 'SKU', 'Size', etc. |
-| `value` | string | The corresponding value.                       |
+| Field   | Type     | Description                                    |
+| ------- | -------- | ---------------------------------------------- |
+| `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
+| `value` | `string` | The corresponding value.                       |
 
 ## Roll-up
 
@@ -174,11 +174,11 @@ Provide useful next actions in the Actions section. An action is typically a dee
 }
 ```
 
-| Field         | Type            | Description                                                                                 |
-| ------------- | --------------- | ------------------------------------------------------------------------------------------- |
-| `description` | string          | Label that appears on the button.                                                           |
-| `url`         | string          | Action deep link.                                                                           |
-| `icon`        | nullable string | For certain action types, a supporting icon. Currently, the only supported icon is `rebuy`. |
+| Field         | Type              | Description                                                                                 |
+| ------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `description` | `string`          | Label that appears on the button.                                                           |
+| `url`         | `string`          | Action deep link.                                                                           |
+| `icon`        | `nullable string` | For certain action types, a supporting icon. Currently, the only supported icon is `rebuy`. |
 
 ## Payment
 
@@ -186,7 +186,7 @@ The payment details will be described in a future update.
 
 ## Definitions & Formatting
 
-### Currencies
+### Currency Values
 
 All API requests expect amounts to be provided in a currency’s smallest unit. For example, to represent 10 USD, provide an amount value of 1000 (that is, 1000 cents). For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to represent ¥500, provide an amount value of 500.
 
