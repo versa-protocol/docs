@@ -8,16 +8,16 @@ Itemized receipts are the core data model of Versa. They include both “header�
 
 Versa receipts are composed of six sections:
 
-1. **Header**: Top-level fields, e.g. merchant name, merchant logo, purchase date.
-2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is otherwise absent.
-3. **Line Items**: Description, quantity, unit cost, and total for each line item.
-4. **Roll-up**: Subtotal, taxes, fees, tip, discounts, and grand total of the receipt.
-5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: 'Contact Support,' 'Buy Again,' 'Manage Subscription.'
-6. **Payment**: Payment status and metadata associated with the receipt.
+1. [Header](#header): Top-level fields, e.g. merchant name, merchant logo, purchase date.
+2. [Type Block](#type-block): Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, origin and destination information for a ticketed flight. Note: this section is only present for special receipt types, and is otherwise absent.
+3. [Line Items](#line-items): Description, quantity, unit cost, and total for each line item.
+4. [Roll-up](#roll-up): Subtotal, taxes, fees, tip, discounts, and grand total of the receipt.
+5. [Actions](#actions): Merchant-defined links, pivoting off the purchase. For example: 'Contact Support,' 'Buy Again,' 'Manage Subscription.'
+6. [Payment](#payemnt): Payment status and metadata associated with the receipt.
 
 Below we cover each of these six sections in detail.
 
-## 1. Header Info
+## Header
 
 Here’s a sample receipt header:
 
@@ -51,40 +51,42 @@ Here’s a sample receipt header:
 }
 ```
 
-| Field         | Type | Description                                                                                                                                                                                                                                                           |
-| ------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`          | string | Unique identifier for the receipt.                                                                                                                                                                                                                         |
-| `currency`    | string | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                                                                                                                                                                 |
-| `amount`      | integer | The receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currencies).                                                                                                                          |
-| `subtotal`    | integer | The receipt subtotal (before taxes, fees, and tip). Also in the smallest currency unit.                                                                                                                                                                 |
-| `date_time`   | integer | Time at which the object was created. Measured in seconds since the Unix epoch.                                                                                                                                                                      |
-| `mcc`         | nullable integer | A valid MCC. This value should match the value on the card network.                                                                                                                                                                             |
-| `merchant`    | object | The [merchant](#merchant-object) facilitating the transaction.                                                                                                                                                                                          |
-| `third_party` | nullable object | A [third party](#third-party-object) involved in the transaction, where applicable. For example, if you purchased take-out through DoorDash, DoorDash would be the merchant (the one sending the receipt), and the take-out restaurant would be the third party. |
+| Field         | Type             | Description                                                                                                    |
+| ------------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| `id`          | string           | Unique identifier for the receipt.                                                                             |
+| `currency`    | string           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                     |
+| `amount`      | integer          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currencies). |
+| `subtotal`    | integer          | Receipt subtotal (before taxes, fees, and tip).                                                                |
+| `date_time`   | integer          | Time at which the object was created. Measured in seconds since the Unix epoch.                                |
+| `merchant`    | object           | The [merchant](#merchant-object) facilitating the transaction.                                                 |
+| `mcc`         | nullable integer | Merchant Category Code. This value should match the value on the card network.                                 |
+| `third_party` | nullable object  | [Third party](#third-party-object) involved in the transaction, where applicable.                              |
 
 ### Merchant Object
 
-| Field         | Type | Description                                                                                                    |
-| ------------- | ----- | --------------------------------------------------------------------------------------------------------- |
-| `id`          | string | Unique identifier for the merchant.                                                                |
-| `name`        | string | Merchant name.                                                                                     |
-| `brand_color` | nullable string | A hex color.                                                                             |
-| `logo`        | nullable strng | A valid url to a square aspect-ratio logo representing the merchant. Recommmend size 400x400.  |
-| `website`     | nullable url | A valid url pointer to the merchant’s primary website.                                   |
+| Field         | Type            | Description                                                        |
+| ------------- | --------------- | ------------------------------------------------------------------ |
+| `id`          | string          | Unique identifier for the merchant.                                |
+| `name`        | string          | Merchant name.                                                     |
+| `brand_color` | nullable string | Hex color.                                                         |
+| `logo`        | nullable strng  | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
+| `website`     | nullable string | Merchant’s primary website url.                                    |
 
 ### Third Party Object
 
-| Field                  | Type | Description                                                                                                                                                                                                                                               |
-| ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first_party_relation` | string | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`.                                                                                                                                              |
-| `make_primary`         | boolean | Determines whether the merchant or third party gets top billing on the receipt. E.g. for an Instacart transaction, perhaps 'Instacart' should be primary, whereas for a white-labeled Square receipt, maybe the restaurant should be primary.  |
-| `merchant`             | string | A [merchant](#merchant-object) object representing the third party.                                                                                                                                                                           |
+The third party object is used when the merchant is a platform. For example, if a coffee shop uses Square to process sales, the merchant would be Square and the third party would be the coffee shop. The `make_primary` flag specifies whether the merchant or third party should get top billing on the receipt.
 
-## 2. Type Blocks
+| Field                  | Type    | Description                                                                                    |
+| ---------------------- | ------- | ---------------------------------------------------------------------------------------------- |
+| `first_party_relation` | string  | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`. |
+| `make_primary`         | boolean | Determines whether the merchant or third party gets top billing on the receipt.                |
+| `merchant`             | string  | A [merchant](#merchant-object) object representing the third party.                            |
 
-The Type Blocks section consist of a series of templates specific to different categories of goods and services.
+## Type Block
 
-Versa covers the following type blocks: `shipment`, `flight`, `route`, `location`, `subscription`, `car_rental`, `lodging`.
+The Type Blocks section consists of a series of templates specific to different receipt types.
+
+Versa covers the following types: `shipment`, `flight`, `route`, `location`, `subscription`, `car_rental`, `lodging`.
 
 A receipt may have zero, one, or multipe type blocks. For instance, a delivery from Home Depot would have a `shipment` type block and a `location` type block.
 
@@ -96,94 +98,91 @@ Line items describe the goods and services that make up the purchase. The sum of
 
 `line_items` is an array of `line_item` objects:
 
-```jsx
+```json
 {
   ...
   "line_items" : [
     {
-      quantity: 10,
-      description:
-        "Blue Cheese Crumbles",
-      unit_cost: 178,
-      tax: 100,
-      total: 1780,
-      metadata: [{ key: "SKU", value: "524959" }],
-      product_image: "",
-      group: "Dairy"
+      "quantity" : 10,
+      "description" : "Blue Cheese Crumbles",
+      "unit_cost" : 178,
+      "tax" : 100,
+      "total" : 1780,
+      "metadata" : [{ key: "SKU", value: "524959" }],
+      "product_image" : "",
+      "group" : "Dairy"
     },
     {
-      quantity: 3,
-      description:
-        "Vinegar Sherry Wine Spain",
-      unit_cost: 267,
-      tax: 100,
-      total: 801,
-      metadata: [{ key: "SKU", value: "941157" }],
-      product_image: "",
-      group: "Canned & Dry"
+      "quantity" : 3,
+      "description" : "Vinegar Sherry Wine Spain",
+      "unit_cost" : 267,
+      "tax" : 100,
+      "total" : 801,
+      "metadata" : [{ key: "SKU", value: "941157" }],
+      "product_image" : "",
+      "group" : "Canned & Dry"
     }
   ]
   ...
 }
 ```
 
-| Field           | Description                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------- |
-| `description`   | Description of the good / service. _(string)_                                                                 |
-| `quantity`      | The quantity of items. _(nullable float)_                                                                     |
-| `unit_cost`     | The cost of the good / service in the [smallest currency unit](/definitions#currencies). _(nullable integer)_ |
-| `unit`          | An optional field describing the unit type, typically for weight or volume -based values. _(nullable string)_ |
-| `tax`           | The tax for the line item (defaults to 0). _(nullable integer)_                                               |
-| `total`         | The total for the line item (typically `quantity` x `unit_cost` + `tax`). _(integer)_                         |
-| `metadata`      | An array of key/value [metadata pairs](#line-item-metadata). _(nullable array)_                               |
-| `product_image` | A valid url pointing to a product image. _(nullable url)_                                                     |
-| `group`         | An optional grouping of line items. _(nullable string)_                                                       |
+| Field           | Type             | Description                                                                                                    |
+| --------------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| `description`   | string           | Description of the good / service.                                                                             |
+| `total`         | integer          | Total for the line item (typically `quantity` x `unit_cost` + `tax`).                                          |
+| `quantity`      | nullable float   | Quantity of items.                                                                                             |
+| `unit_cost`     | nullable integer | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
+| `unit`          | nullable string  | Optional field describing the unit type, typically for weight or volume -based values, e.g. `kg` or `gallons`. |
+| `tax`           | nullable integer | Tax for the line item (defaults to 0).                                                                         |
+| `metadata`      | nullable array   | Array of key/value [metadata pairs](#line-item-metadata).                                                      |
+| `product_image` | nullable string  | Product image url, square aspect ratio.                                                                        |
+| `group`         | nullable string  | Optional grouping of line items.                                                                               |
 
 ### Line Item Metadata
 
-Line item metadata consists of key / value pairs. This can be used to track things like SKU, Size, UNSPSC Code, etc.
+Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
 
-| Field   | Description                                               |
-| ------- | --------------------------------------------------------- |
-| `key`   | The type of metadata, e.g. `SKU`, `Size`, etc. _(string)_ |
-| `value` | The corresponding value. _(string)_                       |
+| Field   | Type   | Description                                    |
+| ------- | ------ | ---------------------------------------------- |
+| `key`   | string | The type of metadata, e.g. `SKU`, `Size`, etc. |
+| `value` | string | The corresponding value.                       |
 
-## Roll-up Block
+## Roll-up
 
-The roll-up block includes taxes, fees, tip, and discounts, culminating in the grand total. The specific schema will be described in a future update.
+The Roll-up block includes taxes, fees, tip, and discounts, culminating in the grand total. The specific schema will be described in a future update.
 
 ## Actions
 
-Provide useful next actions in the Actions section. An action is typically a deep URL, linking to a useful part of ther merchant’s website. Currently, you are limited to three total actions or fewer.
+Provide useful next actions in the Actions section. An action is typically a deep link to a useful part of ther merchant’s website. Three actions maximum.
 
-```JSX
+```JSON
 {
   ...
-  actions: [
-    { description: "Emergency Roadside Assistance", url: "/" },
-    { description: "Rebook", url: "/", icon: "rebuy" },
+  "actions" : [
+    { "description" : "Emergency Roadside Assistance", "url" : "/" },
+    { "description" : "Rebook", "url" : "/", "icon" : "rebuy" },
   ],
   ...
 }
 ```
 
-| Field         | Description                                                                                                     |
-| ------------- | --------------------------------------------------------------------------------------------------------------- |
-| `description` | The label that appears on the button. _(string)_                                                                |
-| `url`         | The deep link. _(url)_                                                                                          |
-| `icon`        | For certain action types, a reinforcing icon. Currently, the only supported icon is `rebuy` _(nullable string)_ |
+| Field         | Type            | Description                                                                                  |
+| ------------- | --------------- | -------------------------------------------------------------------------------------------- |
+| `description` | string          | Label that appears on the button.                                                            |
+| `url`         | string          | Action deep link.                                                                            |
+| `icon`        | nullable string | For certain action types, a reinforcing icon. Currently, the only supported icon is `rebuy`. |
 
-## Payment Details
+## Payment
 
 The payment details will be described in a future update.
 
-
-
-## Definitions
+## Definitions & Formatting
 
 ### Currencies
 
-All API requests expect amounts to be provided in a currency's smallest unit. For example, to charge 10 USD, provide an amount value of 1000 (that is, 1000 cents).
+All API requests expect amounts to be provided in a currency's smallest unit. For example, to represent 10 USD, provide an amount value of 1000 (that is, 1000 cents). For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to represent ¥500, provide an amount value of 500.
 
-For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to charge ¥500, provide an amount value of 500.
+### Images
 
+Images must be hosted at public URLs. The images are likely to be indexed by the receiver. For best results, no image dimension should be less than 400px, or greater than 2,000px.
