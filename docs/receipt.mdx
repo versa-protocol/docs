@@ -9,15 +9,15 @@ Itemized receipts are the core data model of Versa. They include both “header�
 Versa receipts are composed of six sections:
 
 1. **Header**: Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. **Type Block**: Type-specific objects describing the purchased goods and services. E.g. check-in and check-out information for a hotel stay, route and ticket information for a flight. Note: this section is only present for special receipt types, and is otherwise null.
+2. **Type Block**: Type-specific objects describing the purchased goods and services. E.g. check-in and check-out information for a hotel stay, route and ticket information for a flight. Note: this section is only present for special receipt types, and is otherwise empty.
 3. **Line Items**: Description, quantity, unit cost, and total for each line item.
-4. **Roll-up**: Taxes, fees, tip, discounts of the receipt.
+4. **Roll-up**: Taxes, fees, tip, discounts.
 5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 6. **Payment**: Payment status of the receipt.
 
 ## Wrapper
 
-A Versa receipt is wrapped in an object that includes the sender reference and schema version. The `sender_id` will be expanded into a full sender profile by the receiver when they decrypt the object; this ensures that the receiver has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
+A Versa receipt is wrapped in an object that includes the sender reference and schema version. The `sender_id` will be expanded into a full sender profile by the receiver when they decrypt the object via the Registry; this ensures that the receiver has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
 
 ```json
 {
@@ -32,16 +32,18 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
 }
 ```
 
+The two wrapper fields `sender_id` and `schema_version` are used in the decryption and validation process.
+
 | Field            | Type      | Description                                                       |
 | ---------------- | --------- | ----------------------------------------------------------------- |
 | `sender_id`      | `string`  | Unique merchant identifier for the sender.                        |
 | `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
 
-After the two wrapper fields `sender_id` and `schema_version`, the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
+The rest of the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
 
 ## Header
 
-The receipt header is the 1,000 foot view of the transaction, describing the total amount of the purchase, the date, etc. An example receipt header:
+The receipt header is the 10,000 foot view of the transaction, describing the total amount of the purchase, the date, etc. An example receipt header:
 
 ```json
 "header": {
@@ -77,7 +79,7 @@ The receipt header is the 1,000 foot view of the transaction, describing the tot
 
 ### Third Party Object
 
-The optional third party object is used when the sending merchant is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+Use the optional third party object when the sender is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
 
 | Field                  | Type      | Description                                                                                         |
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
@@ -87,7 +89,7 @@ The optional third party object is used when the sending merchant is a platform.
 
 ### Merchant Object
 
-The merchant object is used to describe both a sending merchant and a third party merchant. However in the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, within the header `third_party` object.
+The merchant object is used to describe both a sending merchant and a third party merchant. However, in the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, within the header `third_party` object.
 
 ```JSON
 "merchant": {
@@ -115,7 +117,8 @@ Versa covers the following types: `shipment`, `flight`, `route`, `location`, `su
 
 A receipt may have zero, one, or multipe type blocks. For instance, a delivery from Home Depot would have a `shipment` type block and a `location` type block.
 
-Note: We will specificy the schema for each type block in a future update.
+> [!NOTE]
+> We will specificy the schema for each type block in a future update.
 
 ## Line Items
 
@@ -173,7 +176,8 @@ Line item metadata consists of key/value pairs. This can be used to track things
 
 The Roll-up block includes taxes, fees, tip, and discounts, culminating in the grand total.
 
-Note: The specific schema will be described in a future update.
+> [!NOTE]
+> The specific schema will be described in a future update.
 
 ## Actions
 
@@ -201,7 +205,8 @@ Merchants have the option to provide useful next actions in the Actions section.
 
 ## Payment
 
-Note: The payment details will be described in a future update.
+> [!NOTE]
+> The payment details will be described in a future update.
 
 ## Definitions & Formatting
 
