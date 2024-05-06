@@ -29,10 +29,10 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
 }
 ```
 
-| Field         | Type               | Description                                                                                                         |
-| ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-`sender_id` | `string` | Unique merchant identifier for the sender.  |
-`schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
+| Field            | Type      | Description                                                       |
+| ---------------- | --------- | ----------------------------------------------------------------- |
+| `sender_id`      | `string`  | Unique merchant identifier for the sender.                        |
+| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
 
 After these two wrapper fields, `sender_id` and `schema_version`, the receipt is composed of the six objects outlined above. Below we cover each of these six sections in detail.
 
@@ -64,7 +64,7 @@ An example receipt header:
 
 | Field         | Type               | Description                                                                                                         |
 | ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `receipt_id`          | `string`           | Unique identifier for the receipt.                                                                                  |
+| `receipt_id`  | `string`           | Unique identifier for the receipt.                                                                                  |
 | `currency`    | `string`           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
 | `amount`      | `integer`          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `subtotal`    | `integer`          | Receipt subtotal (before taxes, fees, and tip).                                                                     |
@@ -74,7 +74,7 @@ An example receipt header:
 
 ### Merchant Object
 
-The merchant object is applied both as a child of the `third_party` object, and as the expanded `sender_id` via the Versa registry. 
+The merchant object is applied both as a child of the `third_party` object, and as the expanded `sender_id` via the Versa registry.
 
 ```JSON
 "merchant": {

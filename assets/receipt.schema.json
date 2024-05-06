@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "Receipt",
+  "description": "A Versa itemized receipt",
+  "type": "object",
+  "properties": {
+    "currency": {
+      "description": "ISO 4217 currency code",
+      "type": "string",
+      "enum": ["usd", "eur", "jpy", "gbp", "aud", "cad", "chf", "cnh"],
+      "$comment": "Starting with a short list of supported currencies"
+    },
+    "amount": {
+      "description": "Receipt total amount",
+      "type": "integer"
+    },
+    "third_party": {
+      "description": "The third party object is used when the merchant is a platform",
+      "type": "object",
+      "properties": {
+        "first_party_relation": {
+          "type": "string",
+          "enum": [
+            "bnpl",
+            "delivery_service",
+            "marketplace",
+            "payment_processor",
+            "platform",
+            "point_of_sale"
+          ]
+        },
+        "make_primary": {
+          "description": "Determines whether the merchant or third party gets top billing on the receipt",
+          "type": "boolean"
+        },
+        "merchant": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "brand_color": {
+              "description": "Hex color",
+              "type": "string",
+              "pattern": "^#?([a-f0-9]{6}|[a-f0-9]{3})$"
+            },
+            "logo": {
+              "type": "string"
+            },
+            "website": {
+              "type": "string"
+            }
+          },
+          "required": ["id", "name"]
+        }
+      },
+      "required": ["first_party_relation", "make_primary", "merchant"]
+    }
+  },
+  "required": ["currency", "amount"]
+}
