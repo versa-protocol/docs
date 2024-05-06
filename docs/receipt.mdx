@@ -15,6 +15,8 @@ Versa receipts are composed of six sections:
 5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 6. **Payment**: Payment status associated with the receipt.
 
+## Wrapper
+
 A Versa receipt is wrapped in an object that includes the sender reference and schema version. The sender profile will be expanded by the receiver when they decrypt the object; this ensures that the receiver has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
 
 ```json
@@ -22,7 +24,7 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
   "sender_id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
   "schema_version": 1,
   "header": { ... },
-  "type_blocks": { ... },
+  "type_block": { ... },
   "roll_up": { ... },
   "actions": { ... },
   "payment": { ... }
@@ -34,7 +36,7 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
 | `sender_id`      | `string`  | Unique merchant identifier for the sender.                        |
 | `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
 
-After these two wrapper fields, `sender_id` and `schema_version`, the receipt is composed of the six objects outlined above. Below we cover each of these six sections in detail.
+After these two wrapper fields, `sender_id` and `schema_version`, the receipt is composed of the six objects outlined above: `header`, `type_block`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
 
 ## Header
 
@@ -72,9 +74,19 @@ An example receipt header:
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party-object) involved in the transaction, where applicable.                                   |
 
+### Third Party Object
+
+The third party object is used when the sending merchant is a platform. For example, if a coffee shop uses Square to process sales, the sending merchant would be Square and the third party merchant would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+
+| Field                  | Type      | Description                                                                                    |
+| ---------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `first_party_relation` | `string`  | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`. |
+| `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                |
+| `merchant`             | `string`  | A [merchant](#merchant-object) object representing the third party.                            |
+
 ### Merchant Object
 
-The merchant object is applied both as a child of the `third_party` object, and as the expanded `sender_id` via the Versa registry.
+The merchant object is used to describe both a sending merchant and a third party merchant. However in the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, within the header third_party object.
 
 ```JSON
 "merchant": {
@@ -93,16 +105,6 @@ The merchant object is applied both as a child of the `third_party` object, and 
 | `brand_color` | `nullable string` | Hex color.                                                         |
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
 | `website`     | `nullable string` | Merchant’s primary website url.                                    |
-
-### Third Party Object
-
-The third party object is used when the merchant is a platform. For example, if a coffee shop uses Square to process sales, the merchant would be Square and the third party would be the coffee shop. The `make_primary` flag specifies whether the merchant or third party should get top billing on the receipt.
-
-| Field                  | Type      | Description                                                                                    |
-| ---------------------- | --------- | ---------------------------------------------------------------------------------------------- |
-| `first_party_relation` | `string`  | One of `bnpl` `delivery_service` `marketplace` `payment_processor` `platform` `point_of_sale`. |
-| `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                |
-| `merchant`             | `string`  | A [merchant](#merchant-object) object representing the third party.                            |
 
 ## Type Block
 
