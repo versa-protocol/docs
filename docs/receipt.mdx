@@ -9,7 +9,7 @@ Itemized receipts are the core data model of Versa. They include both “header�
 Versa receipts are composed of six sections:
 
 1. **Header**: Top-level fields, e.g. receipt total, purchase date.
-2. **Type Block**: Type-specific objects describing the purchased goods and service. E.g. check-in and check-out information for a hotel stay, route and ticket information for a flight. Note: this section is only present for special receipt types, and is otherwise null.
+2. **Type Block**: Type-specific objects describing the purchased goods and services. E.g. check-in and check-out information for a hotel stay, route and ticket information for a flight. Note: this section is only present for special receipt types, and is otherwise null.
 3. **Line Items**: Description, quantity, unit cost, and total for each line item.
 4. **Roll-up**: Subtotal, taxes, fees, tip, discounts, and grand total of the receipt.
 5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
@@ -25,6 +25,7 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
   "schema_version": 1,
   "header": { ... },
   "type_block": { ... },
+  "line_items": { ... },
   "roll_up": { ... },
   "actions": { ... },
   "payment": { ... }
@@ -36,11 +37,11 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
 | `sender_id`      | `string`  | Unique merchant identifier for the sender.                        |
 | `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
 
-After these two wrapper fields, `sender_id` and `schema_version`, the receipt is composed of the six objects outlined above: `header`, `type_block`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
+After the two wrapper fields `sender_id` and `schema_version`, the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
 
 ## Header
 
-An example receipt header:
+The receipt header is the 1,000 foot view of the transaction, describing the total amount of the purchase, the date, etc. An example receipt header:
 
 ```json
 "header": {
@@ -76,7 +77,7 @@ An example receipt header:
 
 ### Third Party Object
 
-The third party object is used when the sending merchant is a platform. For example, if a coffee shop uses Square to process sales, the sending merchant would be Square and the third party merchant would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+The third party object is used when the sending merchant is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
 
 | Field                  | Type      | Description                                                                                    |
 | ---------------------- | --------- | ---------------------------------------------------------------------------------------------- |
@@ -108,13 +109,13 @@ The merchant object is used to describe both a sending merchant and a third part
 
 ## Type Block
 
-The Type Blocks section consists of a series of templates specific to different receipt types.
+The Type Block section consists of a series of templates specific to different receipt types.
 
 Versa covers the following types: `shipment`, `flight`, `route`, `location`, `subscription`, `car_rental`, `lodging`.
 
 A receipt may have zero, one, or multipe type blocks. For instance, a delivery from Home Depot would have a `shipment` type block and a `location` type block.
 
-We will specificy the schema for each type block in a future update.
+Note: We will specificy the schema for each type block in a future update.
 
 ## Line Items
 
@@ -123,32 +124,28 @@ Line items describe the goods and services that make up the purchase. The sum of
 `line_items` is an array of `line_item` objects:
 
 ```json
-{
-  ...
-  "line_items": [
-    {
-      "quantity": 10,
-      "description": "Blue Cheese Crumbles",
-      "unit_cost": 178,
-      "tax": 100,
-      "total": 1780,
-      "metadata": [{ "key": "SKU", "value": "524959" }],
-      "product_image": "",
-      "group": "Dairy"
-    },
-    {
-      "quantity": 3,
-      "description": "Vinegar Sherry Wine Spain",
-      "unit_cost": 267,
-      "tax": 100,
-      "total": 801,
-      "metadata": [{ "key": "SKU", "value": "941157" }],
-      "product_image": "",
-      "group": "Canned & Dry"
-    }
-  ]
-  ...
-}
+"line_items": [
+  {
+    "quantity": 10,
+    "description": "Blue Cheese Crumbles",
+    "unit_cost": 178,
+    "tax": 100,
+    "total": 1780,
+    "metadata": [{ "key": "SKU", "value": "524959" }],
+    "product_image": "",
+    "group": "Dairy"
+  },
+  {
+    "quantity": 3,
+    "description": "Vinegar Sherry Wine Spain",
+    "unit_cost": 267,
+    "tax": 100,
+    "total": 801,
+    "metadata": [{ "key": "SKU", "value": "941157" }],
+    "product_image": "",
+    "group": "Canned & Dry"
+  }
+]
 ```
 
 | Field           | Type               | Description                                                                                                    |
@@ -174,11 +171,13 @@ Line item metadata consists of key/value pairs. This can be used to track things
 
 ## Roll-up
 
-The Roll-up block includes taxes, fees, tip, and discounts, culminating in the grand total. The specific schema will be described in a future update.
+The Roll-up block includes taxes, fees, tip, and discounts, culminating in the grand total.
+
+Note: The specific schema will be described in a future update.
 
 ## Actions
 
-Provide useful next actions in the Actions section. An action is typically a deep link to a useful part of ther merchant’s website. Three actions maximum.
+Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a part of ther merchant’s website. For example 'Buy Again' would deep link to a pre-filled shopping cart. Limit of three per receipt.
 
 ```JSON
 {
@@ -206,7 +205,7 @@ Provide useful next actions in the Actions section. An action is typically a dee
 
 ## Payment
 
-The payment details will be described in a future update.
+Note: The payment details will be described in a future update.
 
 ## Definitions & Formatting
 
