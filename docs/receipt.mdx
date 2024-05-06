@@ -15,27 +15,39 @@ Versa receipts are composed of six sections:
 5. **Actions**: Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 6. **Payment**: Payment status associated with the receipt.
 
-Below we cover each of these six sections in detail.
+A Versa receipt is wrapped in an object that includes the sender reference and schema version. The sender profile will be expanded by the receiver when they decrypt the object; this ensures that the receiver has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
+
+```json
+{
+  "sender_id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
+  "schema_version": 1,
+  "header": { ... },
+  "type_blocks": { ... },
+  "roll_up": { ... },
+  "actions": { ... },
+  "payment": { ... }
+}
+```
+
+| Field         | Type               | Description                                                                                                         |
+| ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+`sender_id` | `string` | Unique merchant identifier for the sender.  |
+`schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
+
+After these two wrapper fields, `sender_id` and `schema_version`, the receipt is composed of the six objects outlined above. Below we cover each of these six sections in detail.
 
 ## Header
 
 An example receipt header:
 
 ```json
-{
-  "id": "7b928a1d-eb2b-406f-bed3-74ba7dacbe98",
+"header": {
+  "receipt_id": "7b928a1d-eb2b-406f-bed3-74ba7dacbe98",
   "currency": "USD",
   "amount": 6332,
   "subtotal": 5928,
   "date_time": 1713295619,
   "mcc": 234,
-  "merchant": {
-    "id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
-    "name": "Platform Co.",
-    "brand_color": "f0C14B",
-    "logo": "https://static.platform.co/image_url.png",
-    "website": "platform.co"
-  },
   "third_party": {
     "first_party_relation": "point_of_sale",
     "make_primary": true,
@@ -47,22 +59,32 @@ An example receipt header:
       "website": ""
     }
   }
-  ...
 }
 ```
 
 | Field         | Type               | Description                                                                                                         |
 | ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `id`          | `string`           | Unique identifier for the receipt.                                                                                  |
+| `receipt_id`          | `string`           | Unique identifier for the receipt.                                                                                  |
 | `currency`    | `string`           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
 | `amount`      | `integer`          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `subtotal`    | `integer`          | Receipt subtotal (before taxes, fees, and tip).                                                                     |
 | `date_time`   | `integer`          | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
-| `merchant`    | `object`           | The [merchant](#merchant-object) facilitating the transaction.                                                      |
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party-object) involved in the transaction, where applicable.                                   |
 
 ### Merchant Object
+
+The merchant object is applied both as a child of the `third_party` object, and as the expanded `sender_id` via the Versa registry. 
+
+```JSON
+"merchant": {
+  "id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
+  "name": "Platform Co.",
+  "brand_color": "f0C14B",
+  "logo": "https://static.platform.co/image_url.png",
+  "website": "platform.co"
+}
+```
 
 | Field         | Type              | Description                                                        |
 | ------------- | ----------------- | ------------------------------------------------------------------ |
