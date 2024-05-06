@@ -17,7 +17,9 @@ Versa receipts are composed of six sections:
 
 ## Wrapper
 
-A Versa receipt is wrapped in an object that includes the sender reference and schema version. The `sender_id` will be expanded into a full sender profile by the receiver when they decrypt the object via the Registry; this ensures that the receiver has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
+A Versa receipt is wrapped in an object that includes the sender reference and schema version.
+
+When the receiver decrypts the receipt object via the Versa Registry, the Versa Registry will expand the `sender_id` into a full sender profile. This ensures that the receiver always has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
 
 ```json
 {
@@ -32,7 +34,7 @@ A Versa receipt is wrapped in an object that includes the sender reference and s
 }
 ```
 
-The two wrapper fields — `sender_id` and `schema_version` — are used in the decryption and validation process:
+The two wrapper fields — `sender_id` and `schema_version` — are used by the receiver to decrypt and validate the receipt.
 
 | Field            | Type      | Description                                                       |
 | ---------------- | --------- | ----------------------------------------------------------------- |
@@ -79,7 +81,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 
 ### Third Party Object
 
-Use the optional third party object when the sender is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+Use the optional third party object in cases where the sender is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
 
 | Field                  | Type      | Description                                                                                         |
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
@@ -89,7 +91,10 @@ Use the optional third party object when the sender is a platform. For example, 
 
 ### Merchant Object
 
-The merchant object is used to describe both a sending merchant and a third party merchant. However, in the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, within the header `third_party` object.
+A merchant profile.
+
+> [!TIP]
+> The merchant object is used to describe both a sending merchant and a third party merchant. However, in the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, via the header `third_party` object.
 
 ```JSON
 "merchant": {
