@@ -180,21 +180,17 @@ Note: The specific schema will be described in a future update.
 Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a part of ther merchant’s website. For example 'Buy Again' would deep link to a pre-filled shopping cart. Limit of three per receipt.
 
 ```JSON
-{
-  ...
-  "actions": [
-    {
-      "description": "Emergency Roadside Assistance",
-      "url": "https://yourco.com/support/be1e1b57-8fe9-4729-8b7d-f9a4690bb2cd",
-    },
-    {
-      "description": "Rebook",
-      "url": "https://yourco.com/buy/ad058b82-d0dd-4534-a915-d448df098167",
-      "icon": "rebuy"
-    }
-  ],
-  ...
-}
+"actions": [
+  {
+    "description": "Emergency Roadside Assistance",
+    "url": "https://yourco.com/support/be1e1b57-8fe9-4729-8b7d-f9a4690bb2cd",
+  },
+  {
+    "description": "Rebook",
+    "url": "https://yourco.com/buy/ad058b82-d0dd-4534-a915-d448df098167",
+    "icon": "rebuy"
+  }
+]
 ```
 
 | Field         | Type              | Description                                                                                 |
