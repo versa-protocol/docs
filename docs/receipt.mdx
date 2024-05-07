@@ -36,10 +36,10 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 
 The two wrapper fields — `sender_id` and `schema_version` — are used by the receiver to decrypt and validate the receipt.
 
-| Field            | Type      | Description                                                       |
-| ---------------- | --------- | ----------------------------------------------------------------- |
-| `sender_id`      | `string`  | Unique merchant identifier for the sender.                        |
-| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt. |
+| Field            | Type      | Description                                                                                                                     |
+| ---------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `sender_id`      | `string`  | Unique merchant identifier for the sender. The receiver will expand this id into a full [merchant](merchant-primitive) profile. |
+| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                                               |
 
 The rest of the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
 
@@ -91,9 +91,7 @@ Use the optional third party object in cases where the sender is a platform. For
 
 ## Type Block
 
-The Type Block section consists of a series of templates specific to different receipt types.
-
-Versa covers the following types: `car_rental`, `flight`, `location`, `lodging`, `transit_route`, `subscription`, `shipment`.
+The Type Block section consists of a series of templates specific to different receipt types. Versa covers the following types: `car_rental`, `flight`, `location`, `lodging`, `transit_route`, `subscription`, `shipment`.
 
 > [!TIP]
 > A receipt may have zero, one, or multipe type blocks. For instance, a delivery from Home Depot would have a `shipment` type block and a `location` type block.
@@ -112,9 +110,9 @@ Versa covers the following types: `car_rental`, `flight`, `location`, `lodging`,
 
 Brick-and-mortar location for in-person purchases.
 
-| Field      | Type     | Description       |
-| ---------- | -------- | ----------------- |
-| `location` | `object` | A [place](#place) |
+| Field      | Type     | Description                       |
+| ---------- | -------- | --------------------------------- |
+| `location` | `object` | A [place](#place-primitve) object |
 
 ### Lodging
 
@@ -252,6 +250,8 @@ A merchant profile.
 | `website`     | `nullable string` | Merchant’s primary website url.                                    |
 
 ### Place Primitive
+
+Describes a brick-and-mortar location.
 
 | Field     | Type              | Description                                      |
 | --------- | ----------------- | ------------------------------------------------ |
