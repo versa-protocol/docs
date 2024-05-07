@@ -99,7 +99,7 @@ Use the optional third party object in cases where the sender is a platform. For
 The Type Block section consists of a series of templates specific to different receipt types. Versa covers the following types: [`car_rental`](#car-rental), [`flight`](#flight), [`location`](#location), [`lodging`](#lodging), [`transit_route`](#transit-route), [`subscription`](#subscription), [`shipment`](#shipment).
 
 > [!TIP]
-> A receipt may have zero, one, or multipe types. For instance, a delivery from a Home Depot location could have a `shipment` object and a `location` object. However, some objects are mutually exclusive. For example, you wouldn't have a `location` and a `lodging` object on the same receipt, because the `lodging` object contains a place.
+> A receipt may have zero, one, or multiple types. For instance, a delivery from a Home Depot location could have a `shipment` object and a `location` object. However, some objects are mutually exclusive. For example, you wouldn't have a `location` and a `lodging` object on the same receipt, because the `lodging` object contains a place.
 
 <details>
 <summary>Car Rental Object</summary>
@@ -290,7 +290,7 @@ Foundational objects used in a variety of locations within the receipt schema.
 A merchant profile.
 
 > [!TIP]
-> The merchant object is used to describe both a sending merchant and a third party merchant. In the former case, the merchant object is expanded implicity via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, via the header `third_party` object.
+> The merchant object is used to describe both a sending merchant and a third party merchant. In the former case, the merchant object is expanded implicitly via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, via the header `third_party` object.
 
 ```JSON
 "merchant": {
