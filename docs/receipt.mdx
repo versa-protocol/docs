@@ -119,11 +119,34 @@ The Type Block section consists of a series of templates specific to different r
 
 ### Car Rental
 
-> [!NOTE]
-> The specific schema will be described in a future update.
+```JSON
+"car_rental": {
+  "rental_time": 1713196492,
+  "return_time": 1713415500,
+  "rental_location": { ... },
+  "return_location": { ... },
+  "vehicle_desscription": "Polestar 2",
+  "driver_name": "Henry Ford",
+  "odometer_reading_in": 100,
+  "odometer_reading_out": 210
+}
+```
+
+| Field                  | Type               | Description                                                                        |
+| ---------------------- | ------------------ | ---------------------------------------------------------------------------------- |
+| `rental_time`          | `integer`          | Rental time. Measured in seconds since the Unix epoch.                             |
+| `return_time`          | `integer`          | Return time. Measured in seconds since the Unix epoch.                             |
+| `rental_location`      | `object`           | A [place](#place) describing the rental location.                                  |
+| `return_location`      | `object`           | A [place](#place) describing the return location.                                  |
+| `vehicle_desscription` | `string`           | Make, model, and year of vehicle.                                                  |
+| `acriss_car_code`      | `nullable string`  | Four-letter Association of Car Rental Industry Systems Standard (ACRISS) car code. |
+| `driver_name`          | `nullable string`  |                                                                                    |
+| `odometer_reading_in`  | `nullable integer` |                                                                                    |
+| `odometer_reading_out` | `nullable integer` |                                                                                    |
 
 </article>
 </details>
+
 <details>
 <summary>Flight Object</summary>
 <article>
@@ -135,6 +158,7 @@ The Type Block section consists of a series of templates specific to different r
 
 </article>
 </details>
+
 <details>
 <summary>Location Object</summary>
 <article>
@@ -149,6 +173,7 @@ Brick-and-mortar location for in-person purchases.
 
 </article>
 </details>
+
 <details>
 <summary>Lodging Object</summary>
 <article>
@@ -160,6 +185,7 @@ Brick-and-mortar location for in-person purchases.
 
 </article>
 </details>
+
 <details>
 <summary>Transit Route Object</summary>
 <article>
@@ -169,7 +195,7 @@ Brick-and-mortar location for in-person purchases.
 A route, typically used by rideshare / taxi services.
 
 ```JSON
-"route": {
+"transit_route": {
   "departure_address": {
     "street_address": "273 Sesame St",
     "city": "Brooklyn",
@@ -204,6 +230,7 @@ A route, typically used by rideshare / taxi services.
 
 </article>
 </details>
+
 <details>
 <summary>Subscription Object</summary>
 <article>
@@ -215,6 +242,7 @@ A route, typically used by rideshare / taxi services.
 
 </article>
 </details>
+
 <details>
 <summary>Shipment Object</summary>
 <article>
@@ -357,6 +385,7 @@ A merchant profile.
 
 </article>
 </details>
+
 <details>
 <summary>Place Primitive</summary>
 <article>
@@ -365,31 +394,32 @@ A merchant profile.
 
 Describes a brick-and-mortar location.
 
-| Field             | Type              | Description                                                                                                                    |
-| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------ | --- |
-| `address`         | `nullable object` | An [address](#address) object.                                                                                                 |
-| `name`            | `nullable string` | Place name.                                                                                                                    |
-| `phone`           | `nullable string` |                                                                                                                                |
-| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                               |     |
-| `google_place_id` | `nullable string` | Optional mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id) |
+| Field             | Type              | Description                                                                                                                     |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `name`            | `nullable string` | Place name.                                                                                                                     |
+| `address`         | `nullable object` | An [address](#address) object.                                                                                                  |
+| `phone`           | `nullable string` |                                                                                                                                 |
+| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                                |
+| `google_place_id` | `nullable string` | Optional mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id). |
 
 </article>
 </details>
+
 <details>
 <summary>Address Primitive</summary>
 <article>
 
 ### Address
 
-| Field            | Type              | Description                        |
-| ---------------- | ----------------- | ---------------------------------- |
-| `street_address` | `nullable string` |                                    |
-| `city`           | `nullable string` |                                    |
-| `region`         | `nullable string` | Two letter region code             |
-| `country`        | `string`          | Three letter ISO 3166 country code |
-| `postal_code`    | `nullable string` |                                    |
-| `lat`            | `nullable int`    |                                    |
-| `lon`            | `nullable int`    |
+| Field            | Type              | Description                         |
+| ---------------- | ----------------- | ----------------------------------- |
+| `street_address` | `nullable string` |                                     |
+| `city`           | `nullable string` |                                     |
+| `region`         | `nullable string` | Two letter region code.             |
+| `country`        | `string`          | Three letter ISO 3166 country code. |
+| `postal_code`    | `nullable string` |                                     |
+| `lat`            | `nullable int`    |                                     |
+| `lon`            | `nullable int`    |                                     |
 
 </article>
 </details>
