@@ -34,10 +34,10 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 }
 ```
 
-| Field            | Type      | Description                                                                                                               |
-| ---------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `sender_id`      | `string`  | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant-primitive) profile. |
-| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                                         |
+| Field            | Type      | Description                                                                                                     |
+| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `sender_id`      | `string`  | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
+| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                               |
 
 The rest of the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
 
@@ -88,7 +88,7 @@ Use the optional third party object in cases where the sender is a platform. For
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
 | `first_party_relation` | `string`  | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
-| `merchant`             | `string`  | A [merchant](#merchant-primitive) object representing the third party.                              |
+| `merchant`             | `string`  | A [merchant](#merchant) object representing the third party.                                        |
 
 </details>
 
@@ -124,9 +124,9 @@ The Type Block section consists of a series of templates specific to different r
 
 Brick-and-mortar location for in-person purchases.
 
-| Field      | Type     | Description                         |
-| ---------- | -------- | ----------------------------------- |
-| `location` | `object` | A [place](#place-primitive) object. |
+| Field      | Type     | Description               |
+| ---------- | -------- | ------------------------- |
+| `location` | `object` | A [place](#place) object. |
 
 </details>
 <details>
@@ -206,14 +206,14 @@ Line items describe the goods and services that make up the purchase. The sum of
 | `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
 | `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
 | `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
-| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#line-item-metadata).                                                      |
+| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
 | `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
 | `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
 
 <details>
-<summary>Line Item Metadata Object</summary>
+<summary>Metadata Object</summary>
 
-### Line Item Metadata
+### Metadata
 
 Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
 
@@ -262,10 +262,12 @@ Merchants have the option to provide useful next actions in the Actions section.
 
 ## Primitives
 
+Foundational objects used in a variety of locations within the receipt schema.
+
 <details>
 <summary>Merchant Primitive</summary>
 
-### Merchant Primitive
+### Merchant
 
 A merchant profile.
 
@@ -294,13 +296,13 @@ A merchant profile.
 <details>
 <summary>Place Primitive</summary>
 
-### Place Primitive
+### Place
 
 Describes a brick-and-mortar location.
 
 | Field     | Type              | Description                                      |
 | --------- | ----------------- | ------------------------------------------------ |
-| `address` | `nullable object` | An [address](#address-primitive) object.         |
+| `address` | `nullable object` | An [address](#address) object.                   |
 | `name`    | `nullable string` | Place name.                                      |
 | `phone`   | `nullable string` |                                                  |
 | `url`     | `nullable string` | URL for specific place, e.g. chain.com/store-id. |
@@ -311,7 +313,7 @@ Describes a brick-and-mortar location.
 <details>
 <summary>Address Primitive</summary>
 
-### Address Primitive
+### Address
 
 | Field            | Type              | Description                        |
 | ---------------- | ----------------- | ---------------------------------- |
