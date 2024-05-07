@@ -77,6 +77,9 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party) involved in the transaction, where applicable.                                          |
 
+<details>
+<summary>Third Party Object</summary>
+
 ### Third Party
 
 Use the optional third party object in cases where the sender is a platform. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
@@ -86,6 +89,8 @@ Use the optional third party object in cases where the sender is a platform. For
 | `first_party_relation` | `string`  | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
 | `merchant`             | `string`  | A [merchant](#merchant-primitive) object representing the third party.                              |
+
+</details>
 
 ## Type Block
 
@@ -103,7 +108,6 @@ The Type Block section consists of a series of templates specific to different r
 > The specific schema will be described in a future update.
 
 </details>
-
 <details>
 <summary>Flight Object</summary>
 
@@ -113,7 +117,6 @@ The Type Block section consists of a series of templates specific to different r
 > The specific schema will be described in a future update.
 
 </details>
-
 <details>
 <summary>Location Object</summary>
 
@@ -126,7 +129,6 @@ Brick-and-mortar location for in-person purchases.
 | `location` | `object` | A [place](#place-primitive) object. |
 
 </details>
-
 <details>
 <summary>Lodging Object</summary>
 
@@ -136,7 +138,6 @@ Brick-and-mortar location for in-person purchases.
 > The specific schema will be described in a future update.
 
 </details>
-
 <details>
 <summary>Transit Route Object</summary>
 
@@ -146,7 +147,6 @@ Brick-and-mortar location for in-person purchases.
 > The specific schema will be described in a future update.
 
 </details>
-
 <details>
 <summary>Subscription Object</summary>
 
@@ -210,6 +210,9 @@ Line items describe the goods and services that make up the purchase. The sum of
 | `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
 | `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
 
+<details>
+<summary>Line Item Metadata Object</summary>
+
 ### Line Item Metadata
 
 Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
@@ -218,6 +221,8 @@ Line item metadata consists of key/value pairs. This can be used to track things
 | ------- | -------- | ---------------------------------------------- |
 | `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
 | `value` | `string` | The corresponding value.                       |
+
+</details>
 
 ## Roll-up
 
@@ -257,6 +262,9 @@ Merchants have the option to provide useful next actions in the Actions section.
 
 ## Primitives
 
+<details>
+<summary>Merchant Primitive</summary>
+
 ### Merchant Primitive
 
 A merchant profile.
@@ -282,6 +290,10 @@ A merchant profile.
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
 | `website`     | `nullable string` | Merchant’s primary website url.                                    |
 
+</details>
+<details>
+<summary>Place Primitive</summary>
+
 ### Place Primitive
 
 Describes a brick-and-mortar location.
@@ -295,6 +307,10 @@ Describes a brick-and-mortar location.
 | `lat`     | `nullable int`    |                                                  |
 | `lon`     | `nullable int`    |                                                  |
 
+</details>
+<details>
+<summary>Address Primitive</summary>
+
 ### Address Primitive
 
 | Field            | Type              | Description                        |
@@ -304,6 +320,8 @@ Describes a brick-and-mortar location.
 | `region`         | `nullable string` | Two letter region code             |
 | `country`        | `string`          | Three letter ISO 3166 country code |
 | `postal_code`    | `nullable string` |                                    |
+
+</details>
 
 ## Definitions & Formatting
 
