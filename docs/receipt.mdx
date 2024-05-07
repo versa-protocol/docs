@@ -79,6 +79,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 
 <details>
 <summary>Third Party Object</summary>
+<article>
 
 ### Third Party
 
@@ -90,6 +91,7 @@ Use the optional third party object in cases where the sender is a platform. For
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
 | `merchant`             | `string`  | A [merchant](#merchant) object representing the third party.                                        |
 
+</article>
 </details>
 
 ## Type Block
@@ -101,6 +103,7 @@ The Type Block section consists of a series of templates specific to different r
 
 <details>
 <summary>Car Rental Object</summary>
+<article>
 
 ### Car Rental
 
@@ -116,9 +119,11 @@ The Type Block section consists of a series of templates specific to different r
 > [!NOTE]
 > The specific schema will be described in a future update.
 
+</article>
 </details>
 <details>
 <summary>Location Object</summary>
+<article>
 
 ### Location
 
@@ -128,43 +133,52 @@ Brick-and-mortar location for in-person purchases.
 | ---------- | -------- | ------------------------- |
 | `location` | `object` | A [place](#place) object. |
 
+</article>
 </details>
 <details>
 <summary>Lodging Object</summary>
+<article>
 
 ### Lodging
 
 > [!NOTE]
 > The specific schema will be described in a future update.
 
+</article>
 </details>
 <details>
 <summary>Transit Route Object</summary>
+<article>
 
 ### Transit Route
 
 > [!NOTE]
 > The specific schema will be described in a future update.
 
+</article>
 </details>
 <details>
 <summary>Subscription Object</summary>
+<article>
 
 ### Subscription
 
 > [!NOTE]
 > The specific schema will be described in a future update.
 
+</article>
 </details>
 
 <details>
 <summary>Shipment Object</summary>
+<article>
 
 ### Shipment
 
 > [!NOTE]
 > The specific schema will be described in a future update.
 
+</article>
 </details>
 
 ## Line Items
@@ -212,6 +226,7 @@ Line items describe the goods and services that make up the purchase. The sum of
 
 <details>
 <summary>Metadata Object</summary>
+<article>
 
 ### Metadata
 
@@ -222,6 +237,7 @@ Line item metadata consists of key/value pairs. This can be used to track things
 | `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
 | `value` | `string` | The corresponding value.                       |
 
+</article>
 </details>
 
 ## Roll-up
@@ -266,6 +282,7 @@ Foundational objects used in a variety of locations within the receipt schema.
 
 <details>
 <summary>Merchant Primitive</summary>
+<article>
 
 ### Merchant
 
@@ -292,26 +309,31 @@ A merchant profile.
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
 | `website`     | `nullable string` | Merchant’s primary website url.                                    |
 
+</article>
 </details>
 <details>
 <summary>Place Primitive</summary>
+<article>
 
 ### Place
 
 Describes a brick-and-mortar location.
 
-| Field     | Type              | Description                                      |
-| --------- | ----------------- | ------------------------------------------------ |
-| `address` | `nullable object` | An [address](#address) object.                   |
-| `name`    | `nullable string` | Place name.                                      |
-| `phone`   | `nullable string` |                                                  |
-| `url`     | `nullable string` | URL for specific place, e.g. chain.com/store-id. |
-| `lat`     | `nullable int`    |                                                  |
-| `lon`     | `nullable int`    |                                                  |
+| Field             | Type              | Description                                                                                                                    |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `address`         | `nullable object` | An [address](#address) object.                                                                                                 |
+| `name`            | `nullable string` | Place name.                                                                                                                    |
+| `phone`           | `nullable string` |                                                                                                                                |
+| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                               |
+| `lat`             | `nullable int`    |                                                                                                                                |
+| `lon`             | `nullable int`    |                                                                                                                                |
+| `google_place_id` | `nullable string` | Optional mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id) |
 
+</article>
 </details>
 <details>
 <summary>Address Primitive</summary>
+<article>
 
 ### Address
 
@@ -323,6 +345,7 @@ Describes a brick-and-mortar location.
 | `country`        | `string`          | Three letter ISO 3166 country code |
 | `postal_code`    | `nullable string` |                                    |
 
+</article>
 </details>
 
 ## Definitions & Formatting
