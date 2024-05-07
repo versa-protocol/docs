@@ -101,6 +101,18 @@ The Type Block section consists of a series of templates specific to different r
 > [!TIP]
 > A receipt may have zero, one, or multiple types. For instance, a delivery from a Home Depot location could have a `shipment` object and a `location` object. However, some objects are mutually exclusive. For example, you wouldn't have a `location` and a `lodging` object on the same receipt, because the `lodging` object contains a place.
 
+```JSON
+"type_block": {
+  "car_rental": null,
+  "flight": null,
+  "location": null,
+  "lodging": null,
+  "transit_route": null,
+  "subscription": null,
+  "shipment": null,
+}
+```
+
 <details>
 <summary>Car Rental Object</summary>
 <article>
@@ -154,8 +166,41 @@ Brick-and-mortar location for in-person purchases.
 
 ### Transit Route
 
-> [!NOTE]
-> The specific schema will be described in a future update.
+A route, typically used by rideshare / taxi services.
+
+```JSON
+"route": {
+  "departure_address": {
+    "street_address": "273 Sesame St",
+    "city": "Brooklyn",
+    "region": "NY",
+    "country": "US",
+    "postal_code": "11205",
+    "lat": 40.68266,
+    "lon": -73.94237,
+  },
+  "arrival_address": {
+    "street_address": "141 Broadway",
+    "city": "Brooklyn",
+    "region": "NY",
+    "country": "US",
+    "postal_code": "11205",
+    "lat": 40.69954,
+    "lon": -73.97064,
+  },
+  "departure_time": 1713196492,
+  "arrival_time": 1713197752,
+  "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
+},
+```
+
+| Field               | Type              | Description                                                                                                       |
+| ------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_address` | `object`          | The origin [address](#address) object.                                                                            |
+| `arrival_address`   | `object`          | The destination [address](#address) object.                                                                       |
+| `departure_time`    | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_time`      | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `polyline`          | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
 
 </article>
 </details>
@@ -321,13 +366,11 @@ A merchant profile.
 Describes a brick-and-mortar location.
 
 | Field             | Type              | Description                                                                                                                    |
-| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------ | --- |
 | `address`         | `nullable object` | An [address](#address) object.                                                                                                 |
 | `name`            | `nullable string` | Place name.                                                                                                                    |
 | `phone`           | `nullable string` |                                                                                                                                |
-| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                               |
-| `lat`             | `nullable int`    |                                                                                                                                |
-| `lon`             | `nullable int`    |                                                                                                                                |
+| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                               |     |
 | `google_place_id` | `nullable string` | Optional mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id) |
 
 </article>
@@ -345,6 +388,8 @@ Describes a brick-and-mortar location.
 | `region`         | `nullable string` | Two letter region code             |
 | `country`        | `string`          | Three letter ISO 3166 country code |
 | `postal_code`    | `nullable string` |                                    |
+| `lat`            | `nullable int`    |                                    |
+| `lon`            | `nullable int`    |
 
 </article>
 </details>
