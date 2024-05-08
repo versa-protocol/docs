@@ -132,17 +132,16 @@ The Type Block section consists of a series of templates specific to different r
 }
 ```
 
-| Field                  | Type               | Description                                                                        |
-| ---------------------- | ------------------ | ---------------------------------------------------------------------------------- |
-| `rental_time`          | `integer`          | Rental time. Measured in seconds since the Unix epoch.                             |
-| `return_time`          | `integer`          | Return time. Measured in seconds since the Unix epoch.                             |
-| `rental_location`      | `object`           | A [place](#place) describing the rental location.                                  |
-| `return_location`      | `object`           | A [place](#place) describing the return location.                                  |
-| `vehicle_desscription` | `string`           | Make and model of vehicle.                                                         |
-| `acriss_car_code`      | `nullable string`  | Four-letter Association of Car Rental Industry Systems Standard (ACRISS) car code. |
-| `driver_name`          | `nullable string`  |                                                                                    |
-| `odometer_reading_in`  | `nullable integer` |                                                                                    |
-| `odometer_reading_out` | `nullable integer` |                                                                                    |
+| Field                  | Type               | Description                                            |
+| ---------------------- | ------------------ | ------------------------------------------------------ |
+| `rental_time`          | `integer`          | Rental time. Measured in seconds since the Unix epoch. |
+| `return_time`          | `integer`          | Return time. Measured in seconds since the Unix epoch. |
+| `rental_location`      | `object`           | A [place](#place) describing the rental location.      |
+| `return_location`      | `object`           | A [place](#place) describing the return location.      |
+| `vehicle_desscription` | `string`           | Make and model of vehicle.                             |
+| `driver_name`          | `nullable string`  |                                                        |
+| `odometer_reading_in`  | `nullable integer` |                                                        |
+| `odometer_reading_out` | `nullable integer` |                                                        |
 
 </article>
 </details>
