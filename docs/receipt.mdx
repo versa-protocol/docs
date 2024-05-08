@@ -9,7 +9,7 @@ Itemized receipts are the core data model of Versa. They include both “header�
 Versa receipts are composed of five sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special types of line items, e.g. flight, e-commerce purchase, hotel stay.
+2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, subscription.
 3. [**Roll-up**](#roll-up): Aggregated taxes, fees, tip, discounts.
 4. [**Actions**](#actions): Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 5. [**Payment**](#payment): Payment status of the receipt.
@@ -25,7 +25,6 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
   "sender_id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
   "schema_version": 1,
   "header": { ... },
-  "type_block": { ... },
   "itemization": { ... },
   "roll_up": { ... },
   "actions": { ... },
@@ -38,7 +37,7 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 | `sender_id`      | `string`  | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
 | `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                               |
 
-The rest of the receipt is composed of the five objects described above: `header`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these five sections in detail.
+The rest of the receipt is composed of the five objects described above: `header`, `itemization`, `roll_up`, `actions`, and `payment`. Below we cover each of these five sections in detail.
 
 ## Header
 
@@ -103,7 +102,7 @@ Use the optional third party object in cases where the sender is a platform. For
 
 ### Customer
 
-Used in cases where the merchant has a profile for the customer. Can be left null in guest checkout flows. The email domain is sometimes used to map the receipt to the buyer.
+Used in cases where the merchant has a profile for the customer. Can be left null i.e. for guest checkout flows.
 
 | Field     | Type              | Description                    |
 | --------- | ----------------- | ------------------------------ |
@@ -117,10 +116,10 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 
 ## Itemization
 
-The Itemization section describes the goods and services that make up the transaction. This section must conform to one of seven templates, according to the category of goods and services being described: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one line item grouping must be non-null.
+The Itemization section describes the goods and services that compose the purchase. The object conforms to one of seven templates, according to the purchase category: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one itemization template must be non-null.
 
 ```json
-"line_items": {
+"itemization": {
   "general": [ ... ],
   "lodging": null,
   "ecommerce": null,
@@ -135,32 +134,11 @@ The Itemization section describes the goods and services that make up the transa
 <summary>General Object</summary>
 <article>
 
-```json
-"general": [
-  {
-    "quantity": 10,
-    "description": "Blue Cheese Crumbles",
-    "unit_cost": 178,
-    "tax": 100,
-    "total": 1780,
-    "metadata": [{ "key": "SKU", "value": "524959" }],
-    "product_image": "",
-    "group": "Dairy"
-  }
-]
-```
+### General
 
-| Field           | Type               | Description                                                                                                    |
-| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `description`   | `string`           | Description of the good / service.                                                                             |
-| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` + `tax`).                                          |
-| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
-| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
-| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
-| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
-| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
-| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
-| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
+| Field     | Type    | Description                                |
+| --------- | ------- | ------------------------------------------ |
+| `general` | `array` | An array of generic [item](#item) objects. |
 
 </article>
 </details>
@@ -421,6 +399,43 @@ Describes a brick-and-mortar location.
 | `postal_code`    | `nullable string` |                                   |
 | `lat`            | `nullable int`    |                                   |
 | `lon`            | `nullable int`    |                                   |
+
+</article>
+</details>
+
+<details>
+<summary>Item Primitive</summary>
+<article>
+
+### Item
+
+A generic line item.
+
+```json
+{
+  "quantity": 10,
+  "description": "Blue Cheese Crumbles",
+  "unit_cost": 178,
+  "tax": 100,
+  "total": 1780,
+  "metadata": [{ "key": "SKU", "value": "524959" }],
+  "product_image": "",
+  "group": "Dairy"
+}
+]
+```
+
+| Field           | Type               | Description                                                                                                    |
+| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `description`   | `string`           | Description of the good / service.                                                                             |
+| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` + `tax`).                                          |
+| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
+| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
+| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
+| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
+| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
+| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
+| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
 
 </article>
 </details>
