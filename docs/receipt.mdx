@@ -77,7 +77,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party) involved in the transaction, where applicable.                                          |
 | `customer`    | `nullable object`  | [Customer](#customer) involved in the transaction, where applicable.                                                |
-| `location`    | `nullable object`  | Brick-and-mortar [place](#place) object for in-person purchases..                                                   |
+| `location`    | `nullable object`  | [Place](#place) object for brick-and-mortar in-person purchases.                                                    |
 
 <details>
 <summary>Third Party Object</summary>
@@ -106,8 +106,8 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 
 | Field     | Type              | Description                    |
 | --------- | ----------------- | ------------------------------ |
-| `email`   | `string`          |                                |
 | `name`    | `string`          |                                |
+| `email`   | `nullable string` |                                |
 | `address` | `nullable object` | An [address](#address) object. |
 | `phone`   | `nullable string` |                                |
 
@@ -116,7 +116,7 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 
 ## Itemization
 
-The Itemization section describes the goods and services that compose the purchase. The object conforms to one of seven templates, according to the purchase category: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one itemization template must be non-null.
+The Itemization section describes the goods and services that compose the purchase. The object conforms to one of seven templates, according to the purchase category: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Subscription](#subscription), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
 
 ```json
 "itemization": {
