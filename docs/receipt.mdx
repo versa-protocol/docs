@@ -87,7 +87,7 @@ Use the optional third party object in cases where the sender is a platform. For
 
 | Field                  | Type      | Description                                                                                         |
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
-| `first_party_relation` | `string`  | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
+| `first_party_relation` | `enum`    | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
 | `merchant`             | `string`  | A [merchant](#merchant) object representing the third party.                                        |
 
@@ -241,13 +241,19 @@ For SaaS bills, phone bills, etc.
 
 ```JSON
 "subscription": {
-  "subscription_renew_date": 1716405417
+  "interval": "month",
+  "interval_count": 1,
+  "current_period_start": 1679609767,
+  "current_period_end": 1682288167
 }
 ```
 
-| Field                     | Type      | Description                                             |
-| ------------------------- | --------- | ------------------------------------------------------- |
-| `subscription_renew_date` | `integer` | Renewal date. Measured in seconds since the Unix epoch. |
+| Field                  | Type      | Description                                                                                                                                                         |
+| ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `interval`             | `enum`    | On of `day`, `week`, `month` or `year`                                                                                                                              |
+| `interval_count`       | `integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `current_period_start` | `integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_end`   | `integer` | End of the current period.                                                                                                                                          |
 
 </article>
 </details>
@@ -420,15 +426,15 @@ Describes a brick-and-mortar location.
 
 ### Address
 
-| Field            | Type              | Description                         |
-| ---------------- | ----------------- | ----------------------------------- |
-| `street_address` | `nullable string` |                                     |
-| `city`           | `nullable string` |                                     |
-| `region`         | `nullable string` | Two letter region code.             |
-| `country`        | `string`          | Three letter ISO 3166 country code. |
-| `postal_code`    | `nullable string` |                                     |
-| `lat`            | `nullable int`    |                                     |
-| `lon`            | `nullable int`    |                                     |
+| Field            | Type              | Description                       |
+| ---------------- | ----------------- | --------------------------------- |
+| `street_address` | `nullable string` |                                   |
+| `city`           | `nullable string` |                                   |
+| `region`         | `nullable string` | Two letter region code.           |
+| `country`        | `string`          | Two letter ISO 3166 country code. |
+| `postal_code`    | `nullable string` |                                   |
+| `lat`            | `nullable int`    |                                   |
+| `lon`            | `nullable int`    |                                   |
 
 </article>
 </details>
