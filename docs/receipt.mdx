@@ -6,14 +6,13 @@ title: "Receipt Object"
 
 Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
 
-Versa receipts are composed of six sections:
+Versa receipts are composed of five sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. [**Type Block**](#type-block): Type-specific objects describing the purchased goods and services. E.g. check-in and check-out information for a hotel stay, route and ticket information for a flight. Note: this section is only present for special receipt types, and is otherwise empty.
-3. [**Line Items**](#line-items): Description, quantity, unit cost, and total for each line item.
-4. [**Roll-up**](#roll-up): Taxes, fees, tip, discounts.
-5. [**Actions**](#actions): Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
-6. [**Payment**](#payment): Payment status of the receipt.
+2. [**Line Items**](#line-items): Description, quantity, unit cost, and total for each line item. Type-specific objects describe special types of line items, e.g. flight, ecommerce purchase, hotel stay.
+3. [**Roll-up**](#roll-up): Aggregated taxes, fees, tip, discounts.
+4. [**Actions**](#actions): Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
+5. [**Payment**](#payment): Payment status of the receipt.
 
 ## Wrapper
 
@@ -27,7 +26,7 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
   "schema_version": 1,
   "header": { ... },
   "type_block": { ... },
-  "line_items": [ ... ],
+  "line_items": { ... },
   "roll_up": { ... },
   "actions": { ... },
   "payment": { ... }
@@ -39,7 +38,7 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 | `sender_id`      | `string`  | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
 | `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                               |
 
-The rest of the receipt is composed of the six objects described above: `header`, `type_block`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these six sections in detail.
+The rest of the receipt is composed of the five objects described above: `header`, `line_items`, `roll_up`, `actions`, and `payment`. Below we cover each of these five sections in detail.
 
 ## Header
 
@@ -77,6 +76,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party) involved in the transaction, where applicable.                                          |
 | `customer`    | `nullable object`  | [Customer](#customer) involved in the transaction, where applicable.                                                |
+| `location`    | `nullable object`  | Brick-and-mortar [place](#place) object for in-person purchases..                                                   |
 
 <details>
 <summary>Third Party Object</summary>
@@ -113,24 +113,55 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 </article>
 </details>
 
-## Type Block
+## Line Items
 
-The Type Block section consists of a series of templates specific to different receipt types. Versa covers the following types: [Car Rental](#car-rental), [Flight](#flight), [Location](#location), [Lodging](#lodging), [Transit Route](#transit-route), [Subscription](#subscription), [Shipment](#shipment).
+Line items describe the goods and services that make up the transaction. Line items fall into one of seven categories: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one line item grouping must be non-null.
 
-> [!TIP]
-> A receipt may have zero, one, or multiple types. For instance, a delivery from a Home Depot location could have a `shipment` object and a `location` object. However, some objects are mutually exclusive. For example, you wouldn't have a `location` and a `lodging` object on the same receipt, because the `lodging` object contains a place.
-
-```JSON
-"type_block": {
-  "car_rental": null,
-  "flight": null,
-  "location": null,
+```json
+"line_items": {
+  "general": [ ... ],
   "lodging": null,
+  "ecommerce": null,
+  "car_rental": null,
   "transit_route": null,
   "subscription": null,
-  "shipment": null,
+  "flight": null
 }
 ```
+
+<details>
+<summary>General Object</summary>
+<article>
+
+```json
+"general": [
+  {
+    "quantity": 10,
+    "description": "Blue Cheese Crumbles",
+    "unit_cost": 178,
+    "tax": 100,
+    "total": 1780,
+    "metadata": [{ "key": "SKU", "value": "524959" }],
+    "product_image": "",
+    "group": "Dairy"
+  }
+]
+```
+
+| Field           | Type               | Description                                                                                                    |
+| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `description`   | `string`           | Description of the good / service.                                                                             |
+| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` + `tax`).                                          |
+| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
+| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
+| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
+| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
+| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
+| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
+| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
+
+</article>
+</details>
 
 <details>
 <summary>Car Rental Object</summary>
@@ -173,21 +204,6 @@ The Type Block section consists of a series of templates specific to different r
 
 > [!NOTE]
 > The specific schema will be described in a future update.
-
-</article>
-</details>
-
-<details>
-<summary>Location Object</summary>
-<article>
-
-### Location
-
-Brick-and-mortar location for in-person purchases.
-
-| Field      | Type     | Description               |
-| ---------- | -------- | ------------------------- |
-| `location` | `object` | A [place](#place) object. |
 
 </article>
 </details>
@@ -277,72 +293,13 @@ For SaaS bills, phone bills, etc.
 </details>
 
 <details>
-<summary>Shipment Object</summary>
+<summary>E-commerce Object</summary>
 <article>
 
-### Shipment
+### E-commerce
 
 > [!NOTE]
 > The specific schema will be described in a future update.
-
-</article>
-</details>
-
-## Line Items
-
-Line items describe the goods and services that make up the purchase. The sum of the line item totals equal the `subtotal` value in the receipt header.
-
-`line_items` is an array of `line_item` objects:
-
-```json
-"line_items": [
-  {
-    "quantity": 10,
-    "description": "Blue Cheese Crumbles",
-    "unit_cost": 178,
-    "tax": 100,
-    "total": 1780,
-    "metadata": [{ "key": "SKU", "value": "524959" }],
-    "product_image": "",
-    "group": "Dairy"
-  },
-  {
-    "quantity": 3,
-    "description": "Vinegar Sherry Wine Spain",
-    "unit_cost": 267,
-    "tax": 100,
-    "total": 801,
-    "metadata": [{ "key": "SKU", "value": "941157" }],
-    "product_image": "",
-    "group": "Canned & Dry"
-  }
-]
-```
-
-| Field           | Type               | Description                                                                                                    |
-| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `description`   | `string`           | Description of the good / service.                                                                             |
-| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` + `tax`).                                          |
-| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
-| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
-| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
-| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
-| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
-| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
-| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
-
-<details>
-<summary>Metadata Object</summary>
-<article>
-
-### Metadata
-
-Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
-
-| Field   | Type     | Description                                    |
-| ------- | -------- | ---------------------------------------------- |
-| `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
-| `value` | `string` | The corresponding value.                       |
 
 </article>
 </details>
@@ -453,6 +410,22 @@ Describes a brick-and-mortar location.
 | `postal_code`    | `nullable string` |                                   |
 | `lat`            | `nullable int`    |                                   |
 | `lon`            | `nullable int`    |                                   |
+
+</article>
+</details>
+
+<details>
+<summary>Metadata Primitive</summary>
+<article>
+
+### Metadata
+
+Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
+
+| Field   | Type     | Description                                    |
+| ------- | -------- | ---------------------------------------------- |
+| `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
+| `value` | `string` | The corresponding value.                       |
 
 </article>
 </details>
