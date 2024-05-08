@@ -76,6 +76,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 | `date_time`   | `integer`          | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
 | `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object`  | [Third party](#third-party) involved in the transaction, where applicable.                                          |
+| `customer`    | `nullable object`  | [Customer](#customer) involved in the transaction, where applicable.                                                |
 
 <details>
 <summary>Third Party Object</summary>
@@ -90,6 +91,24 @@ Use the optional third party object in cases where the sender is a platform. For
 | `first_party_relation` | `enum`    | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
 | `merchant`             | `string`  | A [merchant](#merchant) object representing the third party.                                        |
+
+</article>
+</details>
+
+<details>
+<summary>Customer Object</summary>
+<article>
+
+### Customer
+
+Used in cases where the merchant has a profile for the customer. Can be left null in guest checkout flows. The email domain is sometimes used to map the receipt to the buyer.
+
+| Field     | Type              | Description                    |
+| --------- | ----------------- | ------------------------------ |
+| `email`   | `string`          |                                |
+| `name`    | `string`          |                                |
+| `address` | `nullable object` | An [address](#address) object. |
+| `phone`   | `nullable string` |                                |
 
 </article>
 </details>
