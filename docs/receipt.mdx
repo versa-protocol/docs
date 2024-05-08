@@ -9,7 +9,7 @@ Itemized receipts are the core data model of Versa. They include both “header�
 Versa receipts are composed of five sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. [**Line Items**](#line-items): Description, quantity, unit cost, and total for each line item. Type-specific objects describe special types of line items, e.g. flight, ecommerce purchase, hotel stay.
+2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special types of line items, e.g. flight, e-commerce purchase, hotel stay.
 3. [**Roll-up**](#roll-up): Aggregated taxes, fees, tip, discounts.
 4. [**Actions**](#actions): Merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 5. [**Payment**](#payment): Payment status of the receipt.
@@ -26,7 +26,7 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
   "schema_version": 1,
   "header": { ... },
   "type_block": { ... },
-  "line_items": { ... },
+  "itemization": { ... },
   "roll_up": { ... },
   "actions": { ... },
   "payment": { ... }
@@ -62,7 +62,9 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
       "logo": "https://static.platform.co/merchants/widget-co.png",
       "website": ""
     }
-  }
+  },
+  "customer": null,
+  "location": null
 }
 ```
 
@@ -113,9 +115,9 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 </article>
 </details>
 
-## Line Items
+## Itemization
 
-Line items describe the goods and services that make up the transaction. Line items fall into one of seven categories: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one line item grouping must be non-null.
+The Itemization section describes the goods and services that make up the transaction. This section must conform to one of seven templates, according to the category of goods and services being described: General, Car Rental, E-commerce, Flight, Lodging, Subscription, or Transit Route. Exactly one line item grouping must be non-null.
 
 ```json
 "line_items": {
@@ -168,6 +170,9 @@ Line items describe the goods and services that make up the transaction. Line it
 <article>
 
 ### Car Rental
+
+> [!NOTE]
+> This needs to be updated, pulling in line-item info
 
 ```JSON
 "car_rental": {
@@ -228,6 +233,9 @@ Line items describe the goods and services that make up the transaction. Line it
 
 A route, typically used by rideshare / taxi services.
 
+> [!NOTE]
+> This needs to be updated, pulling in line-item info
+
 ```JSON
 "transit_route": {
   "departure_address": {
@@ -272,6 +280,9 @@ A route, typically used by rideshare / taxi services.
 ### Subscription
 
 For SaaS bills, phone bills, etc.
+
+> [!NOTE]
+> This needs to be updated, pulling in line-item info
 
 ```JSON
 "subscription": {
