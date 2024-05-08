@@ -96,7 +96,7 @@ Use the optional third party object in cases where the sender is a platform. For
 
 ## Type Block
 
-The Type Block section consists of a series of templates specific to different receipt types. Versa covers the following types: [`car_rental`](#car-rental), [`flight`](#flight), [`location`](#location), [`lodging`](#lodging), [`transit_route`](#transit-route), [`subscription`](#subscription), [`shipment`](#shipment).
+The Type Block section consists of a series of templates specific to different receipt types. Versa covers the following types: [Car Rental](#car-rental), [Flight](#flight), [Location](#location), [Lodging](#lodging), [Transit Route](#transit-route), [Subscription](#subscription), [Shipment](#shipment).
 
 > [!TIP]
 > A receipt may have zero, one, or multiple types. For instance, a delivery from a Home Depot location could have a `shipment` object and a `location` object. However, some objects are mutually exclusive. For example, you wouldn't have a `location` and a `lodging` object on the same receipt, because the `lodging` object contains a place.
@@ -236,6 +236,8 @@ A route, typically used by rideshare / taxi services.
 <article>
 
 ### Subscription
+
+For SaaS bills, phone bills, etc.
 
 ```JSON
 "subscription": {
