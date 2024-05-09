@@ -23,7 +23,7 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 ```json
 {
   "sender_id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
-  "schema_version": 1,
+  "version": "0.1.0",
   "header": { ... },
   "itemization": { ... },
   "roll_up": { ... },
@@ -32,10 +32,10 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 }
 ```
 
-| Field            | Type      | Description                                                                                                     |
-| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
-| `sender_id`      | `string`  | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
-| `schema_version` | `integer` | Version of the receipt schema; useful for validating the receipt.                                               |
+| Field       | Type     | Description                                                                                                     |
+| ----------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `sender_id` | `string` | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
+| `version`   | `string` | Version of the receipt schema; useful for validating the receipt.                                               |
 
 The rest of the receipt is composed of the five objects described above: `header`, `itemization`, `roll_up`, `actions`, and `payment`. Below we cover each of these five sections in detail.
 
@@ -67,17 +67,17 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 }
 ```
 
-| Field         | Type               | Description                                                                                                         |
-| ------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `receipt_id`  | `string`           | Unique identifier for the receipt.                                                                                  |
-| `currency`    | `string`           | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
-| `amount`      | `integer`          | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
-| `subtotal`    | `integer`          | Receipt subtotal (before taxes, fees, and tip).                                                                     |
-| `date_time`   | `integer`          | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
-| `mcc`         | `nullable integer` | Merchant Category Code. This value should match the value on the card network.                                      |
-| `third_party` | `nullable object`  | [Third party](#third-party) involved in the transaction, where applicable.                                          |
-| `customer`    | `nullable object`  | [Customer](#customer) involved in the transaction, where applicable.                                                |
-| `location`    | `nullable object`  | [Place](#place) object for brick-and-mortar in-person purchases.                                                    |
+| Field         | Type              | Description                                                                                                         |
+| ------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `receipt_id`  | `string`          | Unique identifier for the receipt.                                                                                  |
+| `currency`    | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
+| `amount`      | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
+| `subtotal`    | `integer`         | Receipt subtotal (before taxes, fees, and tip).                                                                     |
+| `date_time`   | `integer`         | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
+| `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
+| `third_party` | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
+| `customer`    | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
+| `location`    | `nullable object` | [Place](#place) object for brick-and-mortar in-person purchases.                                                    |
 
 <details>
 <summary>Third Party Object</summary>
@@ -91,7 +91,7 @@ Use the optional third party object in cases where the sender is a platform / br
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------- |
 | `first_party_relation` | `enum`    | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
 | `make_primary`         | `boolean` | Determines whether the merchant or third party gets top billing on the receipt.                     |
-| `merchant`             | `string`  | A [merchant](#merchant) object representing the third party.                                        |
+| `merchant`             | `object`  | A [merchant](#merchant) object representing the third party.                                        |
 
 </article>
 </details>
