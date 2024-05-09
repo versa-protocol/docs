@@ -275,6 +275,12 @@ For SaaS bills, phone bills, etc. At least one subscription item within the subs
 }]
 ```
 
+| Field          | Type    | Description                                     |
+| -------------- | ------- | ----------------------------------------------- |
+| `subscription` | `array` | An array of [subscription item](#item) objects. |
+
+#### Subscription Item
+
 | Field                  | Type               | Description                                                                                                                                                         |
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`                 | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
