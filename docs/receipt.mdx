@@ -257,26 +257,38 @@ A route, typically used by rideshare / taxi services.
 
 ### Subscription
 
-For SaaS bills, phone bills, etc.
-
-> [!NOTE]
-> This needs to be updated, pulling in line-item info
+For SaaS bills, phone bills, etc. At least one subscription item within the subscription array should be type `recurring`.
 
 ```JSON
-"subscription": {
+"subscription": [{
+  "type": "recurring",
+  "description": "Pro monthly plan",
   "interval": "month",
   "interval_count": 1,
   "current_period_start": 1679609767,
-  "current_period_end": 1682288167
-}
+  "current_period_end": 1682288167,
+  "quantity": 10,
+  "unit_cost": 875,
+  "taxes": null,
+  "metadata": null,
+  "discounts": null
+}]
 ```
 
-| Field                  | Type      | Description                                                                                                                                                         |
-| ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `interval`             | `enum`    | On of `day`, `week`, `month` or `year`                                                                                                                              |
-| `interval_count`       | `integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
-| `current_period_start` | `integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
-| `current_period_end`   | `integer` | End of the current period.                                                                                                                                          |
+| Field                  | Type               | Description                                                                                                                                                         |
+| ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`                 | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `description`          | `string`           | Description of the good / service.                                                                                                                                  |
+| `total`                | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                                                               |
+| `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`                                                                                                                              |
+| `interval_count`       | `inullable nteger` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
+| `quantity`             | `nullable float`   | Quantity of items.                                                                                                                                                  |
+| `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
+| `taxes`                | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                                       |
+| `metadata`             | `nullable array`   | Array of key/value [metadata pairs](#item-metadata), e.g. SKU.                                                                                                      |
+| `discounts`            | `nullable array`   | Array of [discount](#discount) objects.                                                                                                                             |
 
 </article>
 </details>
@@ -307,22 +319,22 @@ Merchants have the option to provide useful next actions in the Actions section.
 ```JSON
 "actions": [
   {
-    "description": "Emergency Roadside Assistance",
+    "name": "Emergency Roadside Assistance",
     "url": "https://yourco.com/support/be1e1b57-8fe9-4729-8b7d-f9a4690bb2cd",
   },
   {
-    "description": "Rebook",
+    "name": "Rebook",
     "url": "https://yourco.com/buy/ad058b82-d0dd-4534-a915-d448df098167",
     "icon": "rebuy"
   }
 ]
 ```
 
-| Field         | Type              | Description                                                                                 |
-| ------------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| `description` | `string`          | Label that appears on the button.                                                           |
-| `url`         | `string`          | Action deep link.                                                                           |
-| `icon`        | `nullable string` | For certain action types, a supporting icon. Currently, the only supported icon is `rebuy`. |
+| Field  | Type            | Description                                                        |
+| ------ | --------------- | ------------------------------------------------------------------ |
+| `name` | `string`        | Label that appears on the button.                                  |
+| `url`  | `string`        | Action deep link.                                                  |
+| `type` | `nullable enum` | One of `rebuy`. May be used to apply an icon to the action button. |
 
 ## Payment
 
@@ -429,7 +441,7 @@ A generic line item.
 | `description`   | `string`           | Description of the good / service.                                                                                           |
 | `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                        |
 | `quantity`      | `nullable float`   | Quantity of items.                                                                                                           |
-| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                                         |
+| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
 | `taxes`         | `nullable array`   | Array of [tax](#tax) objects.                                                                                                |
 | `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#item-metadata), e.g. SKU.                                                               |
@@ -447,13 +459,16 @@ A generic line item.
 
 ### Item Metadata
 
-Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
+Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 
-| Field        | Type              | Description                                                                                   |
-| ------------ | ----------------- | --------------------------------------------------------------------------------------------- |
-| `type_key`   | `nullable enum`   | One of `sku`, `unspsc`, `asin`. Otherwise leave null and use `custom_key` instead.            |
-| `custom_key` | `nullable string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
-| `value`      | `string`          | The corresponding value.                                                                      |
+> [!TIP]
+> Either use the `type` field or the `name` field, not both.
+
+| Field   | Type              | Description                                                                                   |
+| ------- | ----------------- | --------------------------------------------------------------------------------------------- |
+| `type`  | `nullable enum`   | One of `sku`, `unspsc`, `asin`. Otherwise leave null and use `custom_key`.                    |
+| `name`  | `nullable string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
+| `value` | `string`          | The corresponding value.                                                                      |
 
 </article>
 </details>
@@ -464,11 +479,11 @@ Line item metadata consists of key/value pairs. This can be used to track things
 
 ### Tax
 
-| Field    | Type             | Description                                                              |
-| -------- | ---------------- | ------------------------------------------------------------------------ |
-| `amount` | `int`            | The total tax, in the [smallest currency unit](/definitions#currencies). |
-| `rate`   | `nullable float` | The tax rate, e.g. 0.05 for 5%.                                          |
-| `name`   | `string`         | E.g. 'VAT' or 'GST'.                                                     |
+| Field    | Type             | Description                                                       |
+| -------- | ---------------- | ----------------------------------------------------------------- |
+| `amount` | `int`            | The total tax, in the [smallest currency unit](#currency-values). |
+| `rate`   | `nullable float` | The tax rate, e.g. 0.05 for 5%.                                   |
+| `name`   | `string`         | E.g. 'VAT' or 'GST'.                                              |
 
 </article>
 </details>
@@ -483,8 +498,8 @@ Line item metadata consists of key/value pairs. This can be used to track things
 | -------- | ---------------- | ---------------------------------------------------------------------- |
 | `amount` | `int`            | The total discount, in the [smallest currency unit](#currency-values). |
 | `name`   | `string`         | The name of the discount.                                              |
-| `type`   | `nullable enum`  | One of `amount` or `percentage`.                                       |
-| `rate`   | `nullable float` | The discount rate, e.g. 0.1 for 10%. Null for amount-based discount.   |
+| `type`   | `nullable enum`  | One of `fixed` or `percentage`.                                        |
+| `rate`   | `nullable float` | The discount rate, e.g. 0.1 for 10%. Null for fixed discount.          |
 
 </article>
 </details>
