@@ -424,33 +424,36 @@ A generic line item.
 }
 ```
 
-| Field           | Type               | Description                                                                                                    |
-| --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `description`   | `string`           | Description of the good / service.                                                                             |
-| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` + `tax`).                                          |
-| `quantity`      | `nullable float`   | Quantity of items.                                                                                             |
-| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                           |
-| `unit`          | `nullable string`  | Optional field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. |
-| `tax`           | `nullable integer` | Tax for the line item (defaults to 0).                                                                         |
-| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                |
-| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                        |
-| `group`         | `nullable string`  | Optional grouping of line items.                                                                               |
+| Field           | Type               | Description                                                                                                                  |
+| --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `description`   | `string`           | Description of the good / service.                                                                                           |
+| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                        |
+| `quantity`      | `nullable float`   | Quantity of items.                                                                                                           |
+| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](/definitions#currencies).                                         |
+| `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
+| `taxes`         | `nullable array`   | Array of [tax](#tax) objects.                                                                                                |
+| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#item-metadata), e.g. SKU.                                                               |
+| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                                      |
+| `group`         | `nullable string`  | Grouping of line items.                                                                                                      |
+| `url`           | `nullable string`  | URL to product page.                                                                                                         |
+| `discounts`     | `nullable array`   | Array of [discount](#discount) objects.                                                                                      |
 
 </article>
 </details>
 
 <details>
-<summary>Metadata Primitive</summary>
+<summary>Item Metadata Primitive</summary>
 <article>
 
-### Metadata
+### Item Metadata
 
 Line item metadata consists of key/value pairs. This can be used to track things like SKU, Size, Color, UNSPSC Code, etc.
 
-| Field   | Type     | Description                                    |
-| ------- | -------- | ---------------------------------------------- |
-| `key`   | `string` | The type of metadata, e.g. 'SKU', 'Size', etc. |
-| `value` | `string` | The corresponding value.                       |
+| Field        | Type              | Description                                                                        |
+| ------------ | ----------------- | ---------------------------------------------------------------------------------- |
+| `type_key`   | `nullable enum`   | One of `sku`, `unspsc`, `asin`. Otherwise leave null and use `custom_key` instead. |
+| `custom_key` | `nullable string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', etc.              |
+| `value`      | `string`          | The corresponding value.                                                           |
 
 </article>
 </details>
@@ -461,8 +464,25 @@ Line item metadata consists of key/value pairs. This can be used to track things
 
 ### Tax
 
-> [!NOTE]
-> The tax object will be described in a future update.
+| Field    | Type     | Description                                                              |
+| -------- | -------- | ------------------------------------------------------------------------ |
+| `amount` | `int`    | The total tax, in the [smallest currency unit](/definitions#currencies). |
+| `rate`   | `float`  | The tax rate, e.g. 0.05 for 5%.                                          |
+| `name`   | `string` | E.g. 'VAT' or 'GST'.                                                     |
+
+</article>
+</details>
+
+<details>
+<summary>Discount</summary>
+<article>
+
+### Discount
+
+| Field    | Type     | Description                                                                   |
+| -------- | -------- | ----------------------------------------------------------------------------- |
+| `amount` | `int`    | The total discount, in the [smallest currency unit](/definitions#currencies). |
+| `name`   | `string` | The name of the discount.                                                     |
 
 </article>
 </details>
