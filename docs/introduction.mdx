@@ -8,9 +8,9 @@ Versa is a protocol for the secure exchange of business receipt data between mer
 
 ## How It Works
 
-The Versa Protocol is designed for data transfer without the need to trust a third-party. Senders (merchants) send receipts directly to customers’ financial services (their bank, their expense management software, etc.).
+The Versa Protocol is designed for data transfer without the need to trust a third-party. Senders (merchants) send receipts directly to a customers’ authorized financial apps (their bank or spend management software).
 
-The receipt data never touches Versa servers. Instead, the Versa Registry acts like DNS on the web: the registry returns a list of authorized receivers for any given sale, based on details about the customer (either the domain of the customer’s email, or a card reference). The rest of the exchange is handled directly between senders and registered receivers.
+The receipt data never touches Versa servers. Instead, the Versa Registry acts like DNS on the web: the registry returns a list of authorized receivers for any given sale, based on details about the customer (the domain of the customer’s email, their bank routing number, or a card reference). The rest of the exchange is handled directly between senders and those registered receivers.
 
 ![A diagram outlining the steps involved in sending a receipt from sender to receiver.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/versa_diagram.svg)
 
