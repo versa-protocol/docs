@@ -211,9 +211,6 @@ The Itemization section describes the goods and services that compose the purcha
 
 A route, typically used by rideshare / taxi services.
 
-> [!NOTE]
-> This needs to be updated, pulling in line-item info
-
 ```JSON
 "transit_route": {
   "departure_address": {
@@ -237,6 +234,10 @@ A route, typically used by rideshare / taxi services.
   "departure_time": 1713196492,
   "arrival_time": 1713197752,
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
+  "total": 1000,
+  "taxes": null,
+  "metadata": null,
+  "discounts": null
 },
 ```
 
@@ -247,6 +248,10 @@ A route, typically used by rideshare / taxi services.
 | `departure_time`    | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
 | `arrival_time`      | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
 | `polyline`          | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `total`             | `integer`         | Total for the line item.                                                                                          |
+| `taxes`             | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
+| `metadata`          | `nullable array`  | Array of key/value [metadata pairs](#item-metadata), e.g. SKU.                                                    |
+| `discounts`         | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
 
 </article>
 </details>
@@ -266,6 +271,7 @@ For SaaS bills, phone bills, etc.
 "subscription": [{
   "type": "recurring",
   "description": "Pro monthly plan",
+  "total": 1000,
   "interval": "month",
   "interval_count": 1,
   "current_period_start": 1679609767,
