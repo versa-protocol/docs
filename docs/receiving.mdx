@@ -12,9 +12,18 @@ The Receiver is a protocol client typically operated by a bank or spend manageme
 
 ## Receive the encrypted receipt
 
+Example payload:
+
+```json
+{
+  "hash": "a1b2c3",
+  "encrypted_receipt": "asdfghjkl1234567890qwertyuiop"
+}
+```
+
 ## Exchange the hash for a key via the registry
 
-```curl
+```bash
 curl --request POST \
   --url 'https://api.versa.org/key' \
   --header 'Authorization: Bearer <API KEY>' \
@@ -29,7 +38,13 @@ Example response:
 
 ```json
 {
-  "key": "a1b2c3"
+  "key": "a1b2c3",
+  "from": {
+    "name": "Platform Co.",
+    "brand_color": "f0C14B",
+    "logo": "https://static.platform.co/image_url.png",
+    "website": "platform.co"
+  }
 }
 ```
 
