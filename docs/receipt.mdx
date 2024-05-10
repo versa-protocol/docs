@@ -290,7 +290,7 @@ For SaaS bills, phone bills, etc.
 | `description`          | `string`           | Description of the good / service.                                                                                                                                  |
 | `total`                | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                                                               |
 | `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
-| `interval_count`       | `inullable nteger` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
 | `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
 | `quantity`             | `nullable float`   | Quantity of items.                                                                                                                                                  |
@@ -470,14 +470,11 @@ A generic line item.
 
 Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 
-> [!TIP]
-> Either use the `type` field or the `name` field, not both.
-
-| Field   | Type              | Description                                                                                   |
-| ------- | ----------------- | --------------------------------------------------------------------------------------------- |
-| `type`  | `nullable enum`   | One of `sku`, `unspsc`, `asin`. Otherwise leave null and use `custom_key`.                    |
-| `name`  | `nullable string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
-| `value` | `string`          | The corresponding value.                                                                      |
+| Field   | Type     | Description                                                                                   |
+| ------- | -------- | --------------------------------------------------------------------------------------------- |
+| `name`  | `string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
+| `type`  | `enum`   | One of `sku`, `unspsc`, `asin`, `other`.                                                      |
+| `value` | `string` | The corresponding value.                                                                      |
 
 </article>
 </details>
@@ -507,7 +504,7 @@ Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 | -------- | ---------------- | ---------------------------------------------------------------------- |
 | `amount` | `int`            | The total discount, in the [smallest currency unit](#currency-values). |
 | `name`   | `string`         | The name of the discount.                                              |
-| `type`   | `nullable enum`  | One of `fixed` or `percentage`.                                        |
+| `type`   | `enum`           | One of `fixed` or `percentage`.                                        |
 | `rate`   | `nullable float` | The discount rate, e.g. 0.1 for 10%. Null for fixed discount.          |
 
 </article>
