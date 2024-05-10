@@ -6,17 +6,17 @@ title: "Introduction"
 
 Versa helps merchants securely send business receipt data to customers.
 
-Gathering receipts historically has been a time-consuming administrative effort (snapping photos of paper receipts, taking screenshots of email receipts, etc.). With Versa, merchants send digital receipts directly to customers’ authorized financial apps (their bank or spend management software), resulting in less manual work, and better data.
+Gathering receipts historically has been a time-consuming administrative effort (snapping photos of paper receipts, taking screenshots of email receipts, etc.). With Versa, this process is automated: merchants send digital receipts directly to customers’ authorized financial apps (their bank or spend management software).
 
 ## How It Works
 
-The Versa Registry acts like DNS on the web: for any given sales receipt, the registry returns a list of matching authorized receivers. This list of authorized receivers is determined on the basis of a few key customer details (the domain of the customer’s email, a bank routing number, or card reference).
+The Versa Registry acts something like DNS on the web. For any given sales receipt, the registry returns a list of matching authorized receivers. This list of authorized receivers is determined on the basis of a few key customer details (the domain of the customer’s email, a bank routing number, or card reference).
 
 ![A diagram outlining the steps involved in sending a receipt from sender to receiver.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/versa_diagram.svg)
 
-The Versa Protocal is designed such that merchants send receipts without needing to pass that data through middlemen. The receipts never touch Versa servers; the exchange is peer-to-peer.
+The Versa Protocal is designed such that merchants send receipts without needing to pass that data through trusted middlemen. The receipts never touch Versa servers; the exchange is peer-to-peer.
 
-On both ends, Versa offers open source client lbraries, assisting merchants with sending, and receivers with decrypting and rendering.
+On both ends, Versa offers open source client lbraries, assisting merchants with the sending steps, and receivers with the decrypting and rendering steps. Use ours, or roll your own.
 
 ## Getting Started
 
