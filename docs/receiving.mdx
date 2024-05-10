@@ -6,12 +6,31 @@ title: "Receiving a Receipt"
 
 The Receiver is a protocol client typically operated by a bank or spend management app. Their responsiblities are:
 
-1. Receiving the encrypted receipt.
-2. Exchanging the hash for a key, via the registry.
-3. Decrypting and rendering the receipt.
+1. Receive the encrypted receipt.
+2. Exchange the hash for a key, via the registry.
+3. Decrypt and render the receipt.
 
-## Receiving the encrypted receipt
+## Receive the encrypted receipt
 
-## Exchanging the hash for a key via the registry
+## Exchange the hash for a key via the registry
 
-## Decrypting and rendering the receipt
+```curl
+curl --request POST \
+  --url 'https://api.versa.org/key' \
+  --header 'Authorization: Bearer <API KEY>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "hash": "asdf1234",
+    "version": "0.1.0"
+  }'
+```
+
+Example response:
+
+```json
+{
+  "key": "a1b2c3"
+}
+```
+
+## Decrypt and render the receipt

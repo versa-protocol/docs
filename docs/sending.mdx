@@ -6,12 +6,38 @@ title: "Sending a Receipt"
 
 The Sender is a protocol client typically operated by a merchant. Their responsibilities are:
 
-1. Encrypting the receipt.
-2. Registering the transaction.
-3. Sending the encrypted receipt.
+1. Register the transaction.
+2. Encrypt the receipt.
+3. Send the encrypted receipt.
 
-## Encrypting the receipt
+## Register the transaction
 
-## Registering the transaction
+```curl
+curl --request POST \
+  --url 'https://api.versa.org/register' \
+  --header 'Authorization: Bearer <API KEY>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "hash": "asdf1234",
+    "version": "0.1.0",
+    "customer_email": "sue@acme.com",
+    "routing_number": null,
+    "bin": null
+  }'
+```
 
-## Sending the encrypted receipt
+Example response:
+
+```json
+{
+  "key": "a1b2c3",
+  "receivers": [
+    { "address": "https://bank.com/receipt" },
+    { "address": "https://expenseapp.com/receipt" }
+  ]
+}
+```
+
+## Encrypt the receipt
+
+## Send the encrypted receipt
