@@ -25,15 +25,19 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
   "version": "0.1.0",
   "header": { ... },
   "itemization": { ... },
-  "actions": { ... },
+  "actions": [ ... ],
   "payment": { ... }
 }
 ```
 
-| Field       | Type     | Description                                                                                                     |
-| ----------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `sender_id` | `string` | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
-| `version`   | `string` | Version of the receipt schema; useful for validating the receipt.                                               |
+| Field         | Type             | Description                                                                                                     |
+| ------------- | ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `sender_id`   | `string`         | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
+| `version`     | `string`         | Version of the receipt schema; useful for validating the receipt.                                               |
+| `header`      | `object`         | Receipt [header](#header).                                                                                      |
+| `itemization` | `object`         | Receipt [itemization](#itemization) object.                                                                     |
+| `actions`     | `nullable array` | List of [actions](#actions).                                                                                    |
+| `payment`     | `nullable array` | [Payment](#payment) details.                                                                                    |
 
 The rest of the receipt is composed of the four objects described above: `header`, `itemization`, `actions`, and `payment`. Below we cover each of these four sections in detail.
 
