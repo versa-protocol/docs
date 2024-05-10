@@ -197,8 +197,25 @@ The Itemization section describes the goods and services that compose the purcha
 
 ### Lodging
 
-> [!NOTE]
-> The specific schema will be described in a future update.
+```JSON
+lodging: {
+  "check_in": 1713196492,
+  "check_out": 1713473361,
+  "location": { ... },
+  "items": [ ... ],
+  "room": "806",
+  "guests": "Sue Shmoe"
+}
+```
+
+| Field       | Type              | Description                                                                                                  |
+| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| `check_in`  | `int`             | Check-in date. Measured in seconds since the Unix epoch.                                                     |
+| `check_out` | `int`             | Check-out date. Measured in seconds since the Unix epoch.                                                    |
+| `location`  | `object`          | A [place](#place) object describing the hotel / lodging.                                                     |
+| `itmes`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
+| `room`      | `nullable string` | Room number.                                                                                                 |
+| `guests`    | `nullable string` |                                                                                                              |
 
 </article>
 </details>
@@ -234,7 +251,6 @@ A route, typically used by rideshare / taxi services.
   "departure_time": 1713196492,
   "arrival_time": 1713197752,
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
-  "total": 1000,
   "taxes": null,
   "metadata": null,
   "discounts": null
@@ -248,7 +264,6 @@ A route, typically used by rideshare / taxi services.
 | `departure_time`    | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
 | `arrival_time`      | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
 | `polyline`          | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
-| `total`             | `integer`         | Total for the line item.                                                                                          |
 | `taxes`             | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
 | `metadata`          | `nullable array`  | Array of key/value [metadata pairs](#item-metadata), e.g. SKU.                                                    |
 | `discounts`         | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
@@ -399,13 +414,14 @@ A merchant profile.
 
 Describes a brick-and-mortar location.
 
-| Field             | Type              | Description                                                                                                                     |
-| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `name`            | `nullable string` | Place name.                                                                                                                     |
-| `address`         | `nullable object` | An [address](#address) object.                                                                                                  |
-| `phone`           | `nullable string` |                                                                                                                                 |
-| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                                |
-| `google_place_id` | `nullable string` | Optional mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id). |
+| Field             | Type              | Description                                                                                                            |
+| ----------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `name`            | `nullable string` | Place name.                                                                                                            |
+| `address`         | `nullable object` | An [address](#address) object.                                                                                         |
+| `phone`           | `nullable string` |                                                                                                                        |
+| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                       |
+| `google_place_id` | `nullable string` | Mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id). |
+| `image`           | `nullable string` | Image representing the place.                                                                                          |
 
 </article>
 </details>
