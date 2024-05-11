@@ -116,7 +116,7 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 
 ## Itemization
 
-The Itemization section describes the goods and services that compose the purchase. The object conforms to one of seven templates, according to the purchase category: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Subscription](#subscription), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Subscription](#subscription), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
 
 ```json
 "itemization": {
