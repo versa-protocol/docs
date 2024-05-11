@@ -15,13 +15,10 @@ Versa receipts are composed of four sections:
 
 ## Wrapper
 
-Receipts are wrapped in an object that includes the sender reference and schema version.
-
-When the receiver decrypts the receipt object via the Versa Registry, the Versa Registry will expand the `sender_id` into a full sender profile. This ensures that the receiver always has a consistent, up-to-date profile for the sending merchant. The overall Versa receipt structure looks like this:
+Receipts are wrapped in an object that includes the schema version. The overall Versa receipt structure looks like this:
 
 ```json
 {
-  "sender_id": "merchant_113fd137-3f9f-40fc-b60d-a8a30a415d9e",
   "version": "0.1.0",
   "header": { ... },
   "itemization": { ... },
@@ -30,16 +27,15 @@ When the receiver decrypts the receipt object via the Versa Registry, the Versa 
 }
 ```
 
-| Field         | Type             | Description                                                                                                     |
-| ------------- | ---------------- | --------------------------------------------------------------------------------------------------------------- |
-| `sender_id`   | `string`         | A reference to the sending merchant. The receiver will expand this id into a full [merchant](merchant) profile. |
-| `version`     | `string`         | Version of the receipt schema; useful for validating the receipt.                                               |
-| `header`      | `object`         | Receipt [header](#header).                                                                                      |
-| `itemization` | `object`         | Receipt [itemization](#itemization) object.                                                                     |
-| `actions`     | `nullable array` | List of [actions](#actions).                                                                                    |
-| `payment`     | `nullable array` | [Payment](#payment) details.                                                                                    |
+| Field         | Type             | Description                                                       |
+| ------------- | ---------------- | ----------------------------------------------------------------- |
+| `version`     | `string`         | Version of the receipt schema; useful for validating the receipt. |
+| `header`      | `object`         | Receipt [header](#header).                                        |
+| `itemization` | `object`         | Receipt [itemization](#itemization) object.                       |
+| `actions`     | `nullable array` | List of [actions](#actions).                                      |
+| `payment`     | `nullable array` | [Payment](#payment) details.                                      |
 
-The rest of the receipt is composed of the four objects described above: `header`, `itemization`, `actions`, and `payment`. Below we cover each of these four sections in detail.
+Below we cover each of these four sections in detail.
 
 ## Header
 
