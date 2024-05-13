@@ -27,12 +27,12 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 }
 ```
 
-| Field         | Type             | Description                                                       |
-| ------------- | ---------------- | ----------------------------------------------------------------- |
-| `version`     | `string`         | Version of the receipt schema; useful for validating the receipt. |
-| `header`      | `object`         | Receipt [header](#header).                                        |
-| `itemization` | `object`         | Receipt [itemization](#itemization) object.                       |
-| `actions`     | `nullable array` | List of [actions](#actions).                                      |
+| Field         | Type              | Description                                                       |
+| ------------- | ----------------- | ----------------------------------------------------------------- |
+| `version`     | `string`          | Version of the receipt schema; useful for validating the receipt. |
+| `header`      | `object`          | Receipt [header](#header).                                        |
+| `itemization` | `object`          | Receipt [itemization](#itemization) object.                       |
+| `actions`     | `nullable array`  | List of [actions](#actions).                                      |
 | `payment`     | `nullable object` | [Payment](#payment) details.                                      |
 
 Below we cover each of these four sections in detail.
@@ -291,7 +291,7 @@ For SaaS bills, phone bills, etc.
 
 ```JSON
 "subscription": {
-  "subscriptions": [{
+  "subscription_items": [{
     "type": "recurring",
     "description": "Pro monthly plan",
     "total": 1000,
@@ -310,7 +310,7 @@ For SaaS bills, phone bills, etc.
 
 | Field                     | Type             | Description                                                                                                                                               |
 | ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscriptions`           | `array`          | An array of [subscription item](#subscription-item) objects.                                                                                              |
+| `subscription_items`      | `array`          | An array of [subscription item](#subscription-item) objects.                                                                                              |
 | `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 #### Subscription Item
