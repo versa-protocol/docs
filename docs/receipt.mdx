@@ -66,18 +66,17 @@ The receipt header is the 10,000 foot view of the transaction, describing the to
 }
 ```
 
-| Field         | Type              | Description                                                                                                                                     |
-| ------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `receipt_id`  | `string`          | Unique identifier for the receipt.                                                                                                              |
-| `currency`    | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                                                      |
-| `amount`      | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values).                             |
-| `subtotal`    | `integer`         | Receipt subtotal (before taxes, fees, and tip).                                                                                                 |
-| `date_time`   | `integer`         | Time at which the object was created. Measured in seconds since the Unix epoch.                                                                 |
-| `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                                                  |
-| `third_party` | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                                                      |
-| `customer`    | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                                            |
-| `location`    | `nullable object` | [Place](#place) object for brick-and-mortar in-person purchases.                                                                                |
-| `discounts`   | `nullable array`  | Array of [discounts](#discount) applied at the top level. These are independent of line item discounts, which are added at the line item level. |
+| Field         | Type              | Description                                                                                                         |
+| ------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `receipt_id`  | `string`          | Unique identifier for the receipt.                                                                                  |
+| `currency`    | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
+| `amount`      | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
+| `subtotal`    | `integer`         | Receipt subtotal (before taxes, fees, and tip).                                                                     |
+| `date_time`   | `integer`         | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
+| `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
+| `third_party` | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
+| `customer`    | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
+| `location`    | `nullable object` | [Place](#place) object for brick-and-mortar in-person purchases.                                                    |
 
 <details>
 <summary>Third Party Object</summary>
@@ -120,7 +119,7 @@ The Itemization section describes the goods and services that compose the purcha
 
 ```json
 "itemization": {
-  "general": [ ... ],
+  "general": { ... },
   "lodging": null,
   "ecommerce": null,
   "car_rental": null,
@@ -136,9 +135,10 @@ The Itemization section describes the goods and services that compose the purcha
 
 ### General
 
-| Field     | Type    | Description                                |
-| --------- | ------- | ------------------------------------------ |
-| `general` | `array` | An array of generic [item](#item) objects. |
+| Field                     | Type             | Description                                                                                                                                               |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `line_items`              | `array`          | An array of generic [item](#item) objects.                                                                                                                |
+| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 </article>
 </details>
@@ -162,21 +162,22 @@ The Itemization section describes the goods and services that compose the purcha
   "driver_name": "Henry Ford",
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
-  "metadata": null
+  "metadata": null,
 }
 ```
 
-| Field                  | Type               | Description                                                      |
-| ---------------------- | ------------------ | ---------------------------------------------------------------- |
-| `rental_time`          | `integer`          | Rental time. Measured in seconds since the Unix epoch.           |
-| `return_time`          | `integer`          | Return time. Measured in seconds since the Unix epoch.           |
-| `rental_location`      | `object`           | A [place](#place) describing the rental location.                |
-| `return_location`      | `object`           | A [place](#place) describing the return location.                |
-| `vehicle_desscription` | `string`           | Make and model of vehicle.                                       |
-| `driver_name`          | `nullable string`  |                                                                  |
-| `odometer_reading_in`  | `nullable integer` |                                                                  |
-| `odometer_reading_out` | `nullable integer` |                                                                  |
-| `metadata`             | `nullable array`   | Array of [metadata](#metadata) objects, for any additional info. |
+| Field                     | Type               | Description                                                                                                                                               |
+| ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rental_time`             | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                    |
+| `return_time`             | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                    |
+| `rental_location`         | `object`           | A [place](#place) describing the rental location.                                                                                                         |
+| `return_location`         | `object`           | A [place](#place) describing the return location.                                                                                                         |
+| `vehicle_desscription`    | `string`           | Make and model of vehicle.                                                                                                                                |
+| `driver_name`             | `nullable string`  |                                                                                                                                                           |
+| `odometer_reading_in`     | `nullable integer` |                                                                                                                                                           |
+| `odometer_reading_out`    | `nullable integer` |                                                                                                                                                           |
+| `metadata`                | `nullable array`   | Array of [metadata](#metadata) objects, for any additional info.                                                                                          |
+| `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 </article>
 </details>
@@ -211,15 +212,16 @@ lodging: {
 }
 ```
 
-| Field       | Type              | Description                                                                                                  |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check_in`  | `int`             | Check-in date. Measured in seconds since the Unix epoch.                                                     |
-| `check_out` | `int`             | Check-out date. Measured in seconds since the Unix epoch.                                                    |
-| `location`  | `object`          | A [place](#place) object describing the hotel / lodging.                                                     |
-| `itmes`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
-| `room`      | `nullable string` | Room number.                                                                                                 |
-| `guests`    | `nullable string` |                                                                                                              |
-| `metadata`  | `nullable array`  | Array of [metadata](#metadata) objects, for any additional info.                                             |
+| Field                     | Type              | Description                                                                                                                                               |
+| ------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check_in`                | `int`             | Check-in date. Measured in seconds since the Unix epoch.                                                                                                  |
+| `check_out`               | `int`             | Check-out date. Measured in seconds since the Unix epoch.                                                                                                 |
+| `location`                | `object`          | A [place](#place) object describing the hotel / lodging.                                                                                                  |
+| `itmes`                   | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                              |
+| `room`                    | `nullable string` | Room number.                                                                                                                                              |
+| `guests`                  | `nullable string` |                                                                                                                                                           |
+| `metadata`                | `nullable array`  | Array of [metadata](#metadata) objects, for any additional info.                                                                                          |
+| `invoice_level_discounts` | `nullable array`  | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 </article>
 </details>
@@ -261,16 +263,17 @@ A route, typically used by rideshare / taxi services.
 },
 ```
 
-| Field               | Type              | Description                                                                                                       |
-| ------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `departure_address` | `object`          | The origin [address](#address) object.                                                                            |
-| `arrival_address`   | `object`          | The destination [address](#address) object.                                                                       |
-| `departure_time`    | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
-| `arrival_time`      | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
-| `polyline`          | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
-| `taxes`             | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
-| `metadata`          | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
-| `discounts`         | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
+| Field                     | Type              | Description                                                                                                                                               |
+| ------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `departure_address`       | `object`          | The origin [address](#address) object.                                                                                                                    |
+| `arrival_address`         | `object`          | The destination [address](#address) object.                                                                                                               |
+| `departure_time`          | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
+| `arrival_time`            | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `polyline`                | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
+| `taxes`                   | `nullable array`  | Array of [tax](#tax) objects.                                                                                                                             |
+| `metadata`                | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                                                           |
+| `discounts`               | `nullable array`  | Array of [discount](#discount) objects.                                                                                                                   |
+| `invoice_level_discounts` | `nullable array`  | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 </article>
 </details>
@@ -287,25 +290,28 @@ For SaaS bills, phone bills, etc.
 > At least one subscription item within your subscription array must be type `recurring`.
 
 ```JSON
-"subscription": [{
-  "type": "recurring",
-  "description": "Pro monthly plan",
-  "total": 1000,
-  "interval": "month",
-  "interval_count": 1,
-  "current_period_start": 1679609767,
-  "current_period_end": 1682288167,
-  "quantity": 10,
-  "unit_cost": 875,
-  "taxes": null,
-  "metadata": null,
-  "discounts": null
-}]
+"subscription": {
+  "subscriptions": [{
+    "type": "recurring",
+    "description": "Pro monthly plan",
+    "total": 1000,
+    "interval": "month",
+    "interval_count": 1,
+    "current_period_start": 1679609767,
+    "current_period_end": 1682288167,
+    "quantity": 10,
+    "unit_cost": 875,
+    "taxes": null,
+    "metadata": null,
+    "discounts": null
+  }]
+}
 ```
 
-| Field          | Type    | Description                                                  |
-| -------------- | ------- | ------------------------------------------------------------ |
-| `subscription` | `array` | An array of [subscription item](#subscription-item) objects. |
+| Field                     | Type             | Description                                                                                                                                               |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscriptions`           | `array`          | An array of [subscription item](#subscription-item) objects.                                                                                              |
+| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 
 #### Subscription Item
 
