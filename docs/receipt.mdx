@@ -39,7 +39,7 @@ Below we cover each of these four sections in detail.
 
 ## Header
 
-The receipt header is the 10,000 foot view of the transaction, describing the total amount of the purchase, the date, etc. An example receipt header:
+The receipt header is the 10,000 foot view of the transaction, describing the “who,” “when,” and “where” (the “what” is covered in the itemization section). An example receipt header:
 
 ```json
 "header": {
@@ -163,6 +163,7 @@ The Itemization section describes the goods and services that compose the purcha
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
   "metadata": null,
+  "invoice_level_discounts": null
 }
 ```
 
@@ -208,7 +209,8 @@ lodging: {
   "items": [ ... ],
   "room": "806",
   "guests": "Sue Shmoe",
-    "metadata": null
+  "metadata": null,
+  "invoice_level_discounts": null
 }
 ```
 
@@ -259,7 +261,8 @@ A route, typically used by rideshare / taxi services.
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
   "taxes": null,
   "metadata": null,
-  "discounts": null
+  "discounts": null,
+  "invoice_level_discounts": null
 },
 ```
 
@@ -304,7 +307,8 @@ For SaaS bills, phone bills, etc.
     "taxes": null,
     "metadata": null,
     "discounts": null
-  }]
+  }],
+  "invoice_level_discounts": null
 }
 ```
 
