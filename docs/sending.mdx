@@ -4,7 +4,7 @@ title: "Sending a Receipt"
 
 # Sending a Receipt
 
-The Sender is a protocol client typically operated by a merchant. Their responsibilities are:
+The sender is a protocol client typically operated by a merchant. The sender's responsibilities include:
 
 1. Register the transaction.
 2. Encrypt the receipt.
@@ -14,15 +14,13 @@ The Sender is a protocol client typically operated by a merchant. Their responsi
 
 ```bash
 curl --request POST \
-  --url 'https://api.versa.org/register' \
-  --header 'Authorization: Bearer <API KEY>' \
+  --url 'https://registry.versa.org/register' \
+  --header 'Authorization: <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "hash": "asdf1234",
-    "version": "0.1.0",
-    "customer_email": "sue@acme.com",
-    "routing_number": null,
-    "bin": null
+    "receipt_hash": 123456,
+    "protocol_version": "0.1.0",
+    "customer_email": "sue@acme.com"
   }'
 ```
 
@@ -30,7 +28,7 @@ Example response:
 
 ```json
 {
-  "key": "a1b2c3",
+  "key": [123, 123, 45, 456],
   "receivers": [
     { "address": "https://bank.com/receipt" },
     { "address": "https://expenseapp.com/receipt" }
@@ -40,8 +38,16 @@ Example response:
 
 ## Encrypt the receipt
 
-...
+Receipts are encrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
 
 ## Send the encrypted receipt
 
-...
+The nonce and encrypted data are sent to each receiver address, at which point they have the opportunity to check out the key from the registry, and decrypt the envelope.
+
+```json
+{
+  "receipt_hash": 1234567890,
+  "nonce": [12, 124, 123],
+  "encrypted": [12, 124, 123]
+}
+```

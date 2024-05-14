@@ -4,7 +4,7 @@ title: "Receiving a Receipt"
 
 # Receiving a Receipt
 
-The Receiver is a protocol client typically operated by a bank or spend management app. Their responsiblities are:
+The receiver is a protocol client typically operated by a bank or spend management app. The receiver's responsiblities include:
 
 1. Receive the encrypted receipt.
 2. Exchange the hash for a key, via the registry.
@@ -12,12 +12,13 @@ The Receiver is a protocol client typically operated by a bank or spend manageme
 
 ## Receive the encrypted receipt
 
-Example payload:
+Example payload that you will receive at your registered address.
 
 ```json
 {
-  "hash": "asdf1234",
-  "encrypted_receipt": "asdfghjkl1234567890qwertyuiop"
+  "receipt_hash": 1234567890,
+  "nonce": [12, 124, 123],
+  "encrypted": [12, 124, 123]
 }
 ```
 
@@ -25,12 +26,12 @@ Example payload:
 
 ```bash
 curl --request POST \
-  --url 'https://api.versa.org/key' \
-  --header 'Authorization: Bearer <API KEY>' \
+  --url 'https://registry.versa.org/checkout' \
+  --header 'Authorization: <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "hash": "asdf1234",
-    "version": "0.1.0"
+    "receipt_hash": "asdf1234",
+    "protocol_version": "0.1.0"
   }'
 ```
 
@@ -38,8 +39,8 @@ Example response:
 
 ```json
 {
-  "key": "a1b2c3",
-  "from": {
+  "key": [123, 123, 45, 456],
+  "sender": {
     "name": "Platform Co.",
     "brand_color": "f0C14B",
     "logo": "https://static.platform.co/image_url.png",
@@ -48,6 +49,13 @@ Example response:
 }
 ```
 
+| Field    | Type     | Description                                                  |
+| -------- | -------- | ------------------------------------------------------------ |
+| `key`    | `binary` |                                                              |
+| `sender` | `object` | A [merchant object](https://docs.versa.org/receipt#merchant) |
+
 ## Decrypt and render the receipt
 
-...
+Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
+
+Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use the Versa frontend library.
