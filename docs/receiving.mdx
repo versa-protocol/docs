@@ -49,13 +49,10 @@ Example response:
 }
 ```
 
-| Field    | Type     | Description                                                  |
-| -------- | -------- | ------------------------------------------------------------ |
-| `key`    | `binary` |                                                              |
-| `sender` | `object` | A [merchant object](https://docs.versa.org/receipt#merchant) |
+The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
 ## Decrypt and render the receipt
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
-Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use the Versa frontend library.
+Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use the Versa frontend library to render the object.

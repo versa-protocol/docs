@@ -62,7 +62,6 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
   },
   "customer": null,
   "location": null,
-  "discounts": null
 }
 ```
 
@@ -503,14 +502,23 @@ A generic line item.
 
 ```json
 {
-  "quantity": 10,
   "description": "Blue Cheese Crumbles",
-  "unit_cost": 178,
-  "tax": 100,
   "total": 1780,
+  "quantity": 10,
+  "unit_cost": 178,
+  "unit": null,
+  "taxes": [
+    {
+      "amount": 432,
+      "rate": 0.0875,
+      "name": "GST"
+    }
+  ],
   "metadata": [{ "key": "SKU", "value": "524959" }],
-  "product_image": "",
-  "group": "Dairy"
+  "product_image": null,
+  "group": null,
+  "url": null,
+  "discounts": null
 }
 ```
 

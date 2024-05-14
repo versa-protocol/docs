@@ -1,0 +1,52 @@
+{
+  "version": "0.1.0",
+  "header": {
+    "receipt_id": "auth_1MzFN1K8F4fqH0lBmFq8CjbU",
+    "currency": "usd",
+    "amount": 6332,
+    "subtotal": 5928,
+    "date_time": 1713295619,
+    "mcc": null,
+    "third_party": null,
+    "customer": null,
+    "location": null
+  },
+  "itemization": {
+    "general": {
+      "line_items": [
+        {
+          "description": "Widget",
+          "total": 1780,
+          "quantity": 10,
+          "unit_cost": 178,
+          "unit": null,
+          "taxes": [
+            {
+              "amount": 432,
+              "rate": 0.0875,
+              "name": "GST"
+            }
+          ],
+          "metadata": null,
+          "product_image": null,
+          "group": null,
+          "url": null,
+          "discounts": null
+        }
+      ],
+      "invoice_level_discounts": null
+    },
+    "lodging": null,
+    "ecommerce": null,
+    "car_rental": null,
+    "transit_route": null,
+    "subscription": null,
+    "flight": null
+  },
+  "actions": [
+    { "name": "Manage Order", "url": "https://acme.com/" },
+    { "name": "Contact Support", "url": "https://acme.com/" },
+    { "name": "Specials & Offers", "url": "https://acme.com/" }
+  ],
+  "payment": null
+}
