@@ -6,7 +6,7 @@ title: "Receipt Schema"
 
 Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
 
-Technically, the Versa receipt object is an invoice combined with an associated payment. In certain AP / AR scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload. 
+Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain AP / AR scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload. 
 
 Versa receipts are composed of four sections:
 
