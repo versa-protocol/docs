@@ -4,15 +4,17 @@ title: "Receiver Configuration"
 
 # Receiver Configuration
 
-## Register your address
+To get set up to receive receipts, the first step is to create your account on Versa.
 
-Register your address to receive receipts.
+Once you have an account and you’re logged in, you’ll need to register the web address at which you will receive receipts. Go to the 'Credentials' tab, issue a new receiver key, and set your address.
+
+![A screenshot showing the Versa app, on the screen where you can register a receiving URL.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/temp-register-address-screenshot.png)
 
 ## Register company handles
 
-Register the companies that you're authorized to receive receipts for.
+Now all you need to do is register the customers for whom you’re authorized to receive receipts. Register the companies that you're authorized to receive receipts for.
 
-Add —
+To add new registered customers:
 
 ```bash
 curl --request POST \
@@ -25,7 +27,7 @@ curl --request POST \
   }'
 ```
 
-Or remove —
+If you lose a customer, or they revoke your authority to receive their receipts, you will need to remove them from the registry:
 
 ```bash
 curl --request DELETE \
@@ -37,3 +39,5 @@ curl --request DELETE \
     "handle": "acme.com"
   }'
 ```
+
+You’re all set! Now prepare to [receive your first receipt](https://docs.versa.org/receiving).
