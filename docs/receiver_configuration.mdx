@@ -4,17 +4,19 @@ title: "Receiver Configuration"
 
 # Receiver Configuration
 
-To get set up to receive receipts, the first step is to create your account on Versa.
+Receipt receivers are typically expense management platforms or financial institutions. To receive receipts via the Versa network, you’ll first need to ]create an account](https://app.versa.org) on Versa.
 
-Once you have an account and you’re logged in, you’ll need to register the web address at which you will receive receipts. Go to the 'Credentials' tab, issue a new receiver key, and set your address.
+Once you’re logged in to your account, you’re able to register the web address at which you will receive receipts. Go to the 'Credentials' tab, issue a new receiver key, and set your address.
 
 ![A screenshot showing the Versa app, on the screen where you can register a receiving URL.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/temp-register-address-screenshot.png)
 
 ## Register company handles
 
-Now all you need to do is register the customers for whom you’re authorized to receive receipts. Register the companies that you're authorized to receive receipts for.
+Now that your account is configured, you’ll need to register the customers for whom you’re authorized to receive receipts. To register a customer, you will need to post their work email domain.
 
-To add new registered customers:
+Typically, you’ll do a batch registration when onboarding onto Versa, and from that point onwards, you’ll manage your list of authorized customers, registering and de-registering profiles.
+
+To add a new registered profile:
 
 ```bash
 curl --request POST \
@@ -27,7 +29,15 @@ curl --request POST \
   }'
 ```
 
-If you lose a customer, or they revoke your authority to receive their receipts, you will need to remove them from the registry:
+| Field         | Type     | Description            |
+| ------------- | -------- | ---------------------- |
+| `handle_type` | `enum`   | One of `email_domain`. |
+| `handle`      | `string` | The handle value.      |
+
+> [!NOTE]
+> Currently, the only valid `handle_type` is `email_domain` however in the future we expect to add other types.
+
+To remove a registered profile:
 
 ```bash
 curl --request DELETE \
