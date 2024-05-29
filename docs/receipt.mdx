@@ -72,7 +72,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 | `receipt_id`  | `string`          | Unique identifier for the receipt.                                                                                  |
 | `currency`    | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
 | `amount`      | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
-| `subtotal`    | `integer`         | Receipt subtotal (before taxes, fees, and tip).                                                                     |
+| `subtotal`    | `integer`         | Receipt subtotal (before taxes, fees, tip, and discounts).                                                          |
 | `created_at`  | `integer`         | Time at which the object was created. Measured in seconds since the Unix epoch.                                     |
 | `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party` | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
@@ -262,21 +262,22 @@ A route, typically used by rideshare / taxi services.
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
   "taxes": null,
   "metadata": null,
-  "discounts": null,
-  "invoice_level_discounts": null
+  "invoice_level_discounts": null,
+  "tip": null
 },
 ```
 
-| Field                     | Type              | Description                                                                                                                                               |
-| ------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `departure_address`       | `object`          | The origin [address](#address) object.                                                                                                                    |
-| `arrival_address`         | `object`          | The destination [address](#address) object.                                                                                                               |
-| `departure_time`          | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
-| `arrival_time`            | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
-| `polyline`                | `nullable object` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
-| `taxes`                   | `nullable array`  | Array of [tax](#tax) objects.                                                                                                                             |
-| `metadata`                | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                                                           |
-| `invoice_level_discounts` | `nullable array`  | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                     | Type               | Description                                                                                                                                               |
+| ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `departure_address`       | `object`           | The origin [address](#address) object.                                                                                                                    |
+| `arrival_address`         | `object`           | The destination [address](#address) object.                                                                                                               |
+| `departure_time`          | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
+| `arrival_time`            | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `polyline`                | `nullable object`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
+| `taxes`                   | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                             |
+| `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| `metadata`                | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                                                           |
+| `tip`                     | `nullable integer` | The tip amount, if applicable, in the [smallest currency unit](#currency-values).                                                                         |
 
 </article>
 </details>
@@ -561,6 +562,8 @@ Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 <article>
 
 ### Tax
+
+Also can be used for tolls and other ancillary fees.
 
 | Field    | Type             | Description                                                       |
 | -------- | ---------------- | ----------------------------------------------------------------- |
