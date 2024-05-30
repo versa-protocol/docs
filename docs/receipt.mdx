@@ -273,7 +273,7 @@ A route, typically used by rideshare / taxi services.
 | `arrival_address`         | `object`           | The destination [address](#address) object.                                                                                                               |
 | `departure_time`          | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
 | `arrival_time`            | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
-| `polyline`                | `nullable object`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
+| `polyline`                | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
 | `taxes`                   | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                             |
 | `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
 | `metadata`                | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                                                           |
