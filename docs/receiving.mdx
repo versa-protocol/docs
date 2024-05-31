@@ -16,7 +16,7 @@ An example payload that you will receive at your registered address, from the se
 
 ```json
 {
-  "receipt_hash": 1234567890,
+  "receipt_hash": 175932758392347,
   "nonce": [...],
   "encrypted": [...]
 }
@@ -27,10 +27,10 @@ An example payload that you will receive at your registered address, from the se
 ```bash
 curl --request POST \
   --url 'https://registry.versa.org/checkout' \
-  --header 'Authorization: <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": "asdf1234",
+    "receipt_hash": 175932758392347,
     "protocol_version": "0.1.0"
   }'
 ```

@@ -15,10 +15,10 @@ The sender is a protocol client typically operated by a merchant. The sender's r
 ```bash
 curl --request POST \
   --url 'https://registry.versa.org/register' \
-  --header 'Authorization: <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": 123456,
+    "receipt_hash": 175932758392347,
     "protocol_version": "0.1.0",
     "email_domain": "acme.com"
   }'
@@ -46,7 +46,7 @@ The nonce and encrypted data are sent to each receiver address, at which point t
 
 ```json
 {
-  "receipt_hash": 1234567890,
+  "receipt_hash": 175932758392347,
   "nonce": [...],
   "encrypted": [...]
 }
