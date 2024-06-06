@@ -150,9 +150,6 @@ The Itemization section describes the goods and services that compose the purcha
 
 ### Car Rental
 
-> [!NOTE]
-> This needs to be updated, pulling in line-item info
-
 ```JSON
 "car_rental": {
   "rental_time": 1713196492,
@@ -164,7 +161,8 @@ The Itemization section describes the goods and services that compose the purcha
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
   "metadata": null,
-  "invoice_level_discounts": null
+  "invoice_level_discounts": null,
+  "line_items": { ... }
 }
 ```
 
@@ -180,6 +178,7 @@ The Itemization section describes the goods and services that compose the purcha
 | `odometer_reading_out`    | `nullable integer` |                                                                                                                                                           |
 | `metadata`                | `nullable array`   | Array of [metadata](#metadata) objects, for any additional info.                                                                                          |
 | `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| `line_items`              | `array`            | An array of generic [item](#item) objects.                                                                                                                |
 
 </article>
 </details>
@@ -190,8 +189,31 @@ The Itemization section describes the goods and services that compose the purcha
 
 ### Flight
 
-> [!NOTE]
-> The specific schema will be described in a future update.
+| Field                     | Type             | Description                                                                                                                                               |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `itinerary_locator`       | `string`         |                                                                                                                                                           |
+| `tickets`                 | `array`          | An array of [ticket](#ticket) objects.                                                                                                                    |
+| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+
+#### Tickets
+
+| Field            | Type     | Description                    |
+| ---------------- | -------- | ------------------------------ |
+| `number`         | `string` |                                |
+| `record_locator` | `string` |                                |
+| `passenger`      | `string` |                                |
+| `segments`       | `string` | Array of [segments](#segments) |
+
+#### Segments
+
+| Field                      | Type      | Description |
+| -------------------------- | --------- | ----------- |
+| `fare`                     | `integer` |             |
+| `taxes`                    | `object`  |             |
+| `class_of_service`         | `string`  |             |
+| `flight_number`            | `string`  |             |
+| `origin_airport_code`      | `string`  |             |
+| `destination_airport_code` | `string`  |             |
 
 </article>
 </details>
