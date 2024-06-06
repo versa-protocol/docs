@@ -204,27 +204,35 @@ The Itemization section describes the goods and services that compose the purcha
 
 ```JSON
 lodging: {
-  "check_in": 1713196492,
-  "check_out": 1713473361,
-  "location": { ... },
-  "items": [ ... ],
-  "room": "806",
-  "guests": "Sue Shmoe",
-  "metadata": null,
+  "lodging_items": [{
+    "check_in": 1713196492,
+    "check_out": 1713473361,
+    "location": { ... },
+    "items": [ ... ],
+    "room": "806",
+    "guests": "Sue Shmoe",
+    "metadata": null,
+  }],
   "invoice_level_discounts": null
 }
 ```
 
-| Field                     | Type              | Description                                                                                                                                               |
-| ------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `check_in`                | `int`             | Check-in date. Measured in seconds since the Unix epoch.                                                                                                  |
-| `check_out`               | `int`             | Check-out date. Measured in seconds since the Unix epoch.                                                                                                 |
-| `location`                | `object`          | A [place](#place) object describing the hotel / lodging.                                                                                                  |
-| `itmes`                   | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                              |
-| `room`                    | `nullable string` | Room number.                                                                                                                                              |
-| `guests`                  | `nullable string` |                                                                                                                                                           |
-| `metadata`                | `nullable array`  | Array of [metadata](#metadata) objects, for any additional info.                                                                                          |
-| `invoice_level_discounts` | `nullable array`  | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                     | Type             | Description                                                                                                                                               |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lodging_items`           | `array`          | An array of [lodging item](#lodging-item) objects.                                                                                                        |
+| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+
+#### Lodging Item
+
+| Field       | Type              | Description                                                                                                  |
+| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
+| `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
+| `location`  | `object`          | A [place](#place) object describing the hotel / lodging.                                                     |
+| `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
+| `room`      | `nullable string` | Room number.                                                                                                 |
+| `guests`    | `nullable string` |                                                                                                              |
+| `metadata`  | `nullable array`  | Array of [metadata](#metadata) objects, for any additional info.                                             |
 
 </article>
 </details>
