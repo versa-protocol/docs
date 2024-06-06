@@ -1,0 +1,90 @@
+{
+  "version": "0.1.0",
+  "header": {
+    "receipt_id": "auth_1MzFN1K8F4fqH0lBmFq8CjbU",
+    "currency": "usd",
+    "amount": 6332,
+    "subtotal": 5928,
+    "created_at": 1713295619,
+    "mcc": null,
+    "third_party": null,
+    "customer": null,
+    "location": null
+  },
+  "itemization": {
+    "general": null,
+    "lodging": {
+      "lodging_items": [
+        {
+          "check_in": 1713196492,
+          "check_out": 1713473361,
+          "room": "806",
+          "location": {
+            "name": "Courtyard Boston Downtown",
+            "address": {
+              "street_address": "107 Beverly St",
+              "city": "Boston",
+              "region": "MA",
+              "country": "US",
+              "postal_code": "02114",
+              "lat": 40.68266,
+              "lon": -73.94237
+            },
+            "phone": "(718) 278-9031",
+            "url": null,
+            "google_place_id": null,
+            "image": "https://versa.org/temp_demo_assets/marriott/beverly.jpg"
+          },
+          "items": [
+            {
+              "description": "Room Charge",
+              "total": 25600,
+              "quantity": null,
+              "unit_cost": null,
+              "unit": null,
+              "taxes": [
+                {
+                  "amount": 1664,
+                  "rate": 0.0475,
+                  "name": "City Tax"
+                },
+                {
+                  "amount": 1459,
+                  "rate": null,
+                  "name": "State Occupancy Tax"
+                },
+                {
+                  "amount": 384,
+                  "rate": null,
+                  "name": "Convention Tourism Tax"
+                },
+                {
+                  "amount": 704,
+                  "rate": null,
+                  "name": "County Tax"
+                }
+              ],
+              "metadata": null,
+              "product_image": null,
+              "group": null,
+              "url": null,
+              "discounts": null
+            }
+          ]
+        }
+      ],
+      "invoice_level_discounts": null
+    },
+    "ecommerce": null,
+    "car_rental": null,
+    "transit_route": null,
+    "subscription": null,
+    "flight": null
+  },
+  "actions": [
+    { "name": "Manage Order", "url": "https://acme.com/" },
+    { "name": "Contact Support", "url": "https://acme.com/" },
+    { "name": "Specials & Offers", "url": "https://acme.com/" }
+  ],
+  "payment": null
+}
