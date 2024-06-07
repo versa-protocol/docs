@@ -152,8 +152,8 @@ The Itemization section describes the goods and services that compose the purcha
 
 ```JSON
 "car_rental": {
-  "rental_time": 1713196492,
-  "return_time": 1713415500,
+  "rental_at": 1713196492,
+  "return_at": 1713415500,
   "rental_location": { ... },
   "return_location": { ... },
   "vehicle_desscription": "Polestar 2",
@@ -168,8 +168,8 @@ The Itemization section describes the goods and services that compose the purcha
 
 | Field                     | Type               | Description                                                                                                                                               |
 | ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `rental_time`             | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                    |
-| `return_time`             | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                    |
+| `rental_at`               | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                    |
+| `return_at`               | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                    |
 | `rental_location`         | `object`           | A [place](#place) describing the rental location.                                                                                                         |
 | `return_location`         | `object`           | A [place](#place) describing the return location.                                                                                                         |
 | `vehicle_desscription`    | `string`           | Make and model of vehicle.                                                                                                                                |
@@ -211,8 +211,8 @@ The Itemization section describes the goods and services that compose the purcha
 | `fare`                   | `integer`          |                                                           |
 | `departure_airport_code` | `string`           |                                                           |
 | `arrival_airport_code`   | `string`           |                                                           |
-| `departure_time`         | `nullable integer` | Departure time. Measured in seconds since the Unix epoch. |
-| `arrival_time`           | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.   |
+| `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch. |
+| `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.   |
 | `flight_number`          | `nullable string`  |                                                           |
 | `class_of_service`       | `nullable string`  |                                                           |
 | `taxes`                  | `nullable object`  |                                                           |
@@ -290,8 +290,8 @@ A route, typically used by rideshare / taxi services.
     "lat": 40.69954,
     "lon": -73.97064,
   },
-  "departure_time": 1713196492,
-  "arrival_time": 1713197752,
+  "departure_at": 1713196492,
+  "arrival_at": 1713197752,
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
   "taxes": null,
   "metadata": null,
@@ -304,8 +304,8 @@ A route, typically used by rideshare / taxi services.
 | ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `departure_address`       | `object`           | The origin [address](#address) object.                                                                                                                    |
 | `arrival_address`         | `object`           | The destination [address](#address) object.                                                                                                               |
-| `departure_time`          | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
-| `arrival_time`            | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `departure_at`            | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
+| `arrival_at`              | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
 | `polyline`                | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
 | `taxes`                   | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                             |
 | `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
