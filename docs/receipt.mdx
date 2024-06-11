@@ -415,6 +415,7 @@ Merchants have the option to provide useful next actions in the Actions section.
 "payments": [{
   "paid_at": 1679609767,
   "type": "card",
+  "amount": "234",
   "card_payment": {
     "last_four": 7806,
     "network": "mastercard",
@@ -426,6 +427,7 @@ Merchants have the option to provide useful next actions in the Actions section.
 
 | Field          | Type              | Description                               |
 | -------------- | ----------------- | ----------------------------------------- |
+| `amount`       | `int`             |                                           |
 | `paid_at`      | `int`             | Measured in seconds since the Unix epoch. |
 | `type`         | `enum`            | One of `card` or `ach`.                   |
 | `card_payment` | `nullable object` | [Card payment](#card-payment) object.     |
