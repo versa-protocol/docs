@@ -35,7 +35,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 | `header`      | `object`         | Receipt [header](#header).                                        |
 | `itemization` | `object`         | Receipt [itemization](#itemization) object.                       |
 | `actions`     | `nullable array` | List of [actions](#actions).                                      |
-| `payment`     | `nullable array` | List of [payments](#payment).                                     |
+| `payments`    | `nullable array` | List of [payments](#payments).                                    |
 
 Below we cover each of these four sections in detail.
 
@@ -388,6 +388,9 @@ For SaaS bills, phone bills, etc.
 
 Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant’s website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions per receipt.
 
+> [!NOTE]
+> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Action URLs that don’t share a domain with the sending merchant may be filtered out by the receiver.
+
 ```JSON
 "actions": [
   {
@@ -406,10 +409,10 @@ Merchants have the option to provide useful next actions in the Actions section.
 | `name` | `string` | Label that appears on the button. |
 | `url`  | `string` | Action deep link.                 |
 
-## Payment
+## Payments
 
 ```JSON
-"payment": {
+"payments": [{
   "paid_at": 1679609767,
   "type": "card",
   "card_payment": {
@@ -418,7 +421,7 @@ Merchants have the option to provide useful next actions in the Actions section.
     }
     "ach_payment": null
   }
-}
+}]
 ```
 
 | Field          | Type              | Description                               |
