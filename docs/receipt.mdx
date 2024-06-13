@@ -309,6 +309,7 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
   },
   "departure_at": 1713196492,
   "arrival_at": 1713197752,
+  "fare": 4215,
   "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
   "taxes": null,
   "metadata": null,
@@ -323,6 +324,7 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
 | `arrival_address`         | `object`           | The destination [address](#address) object.                                                                                                               |
 | `departure_at`            | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
 | `arrival_at`              | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `fare`                    | `integer`          | Ride amount, typically the same as the header subtotal.                                                                                                   |
 | `polyline`                | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
 | `taxes`                   | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                             |
 | `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
