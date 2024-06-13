@@ -396,8 +396,23 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 ### E-commerce
 
-> [!NOTE]
-> The specific schema will be described in a future update.
+For online orders, with shipping info. If items have not been assigned to a shipment, add those items to `invoice_level_line_items`. Once they’ve been assigned to a shipment, move them to `shipment.items`.
+
+| Field                      | Type             | Description                                                                                                                                               |
+| -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `invoice_level_line_items` | `nullable array` | An array of [item](#item) objects at the invoice level. For items that are part of shipment, move them under the [shipment](#shipment) object.            |
+| `invoice_level_discounts`  | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| `shipments`                | `nullable array` | An array of [shipment](#shipment) objects.                                                                                                                |
+
+#### Shipment
+
+| Field                  | Type              | Description                                          |
+| ---------------------- | ----------------- | ---------------------------------------------------- |
+| `items`                | `array`           | An array of [item](#item) objects at shipment level. |
+| `tracking_number`      | `nullable string` | Label that appears on the button.                    |
+| `expected_delivery_at` | `nullable int`    | Measured in seconds since the Unix epoch.            |
+| `shipment_status`      | `nullable enum`   | One of `prep`, `in_transit`, `delivered`.            |
+| `destination_address`  | `nullable object` | An [address](#address) object.                       |
 
 </article>
 </details>
