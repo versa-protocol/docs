@@ -329,17 +329,17 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
 
 #### Transit Route Item
 
-| Field               | Type              | Description                                                                                                       |
-| ------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `departure_address` | `object`          | The origin [address](#address) object.                                                                            |
-| `arrival_address`   | `object`          | The destination [address](#address) object.                                                                       |
-| `departure_at`      | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
-| `arrival_at`        | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
-| `fare`              | `integer`         | Ride amount, typically the same as the header subtotal.                                                           |
-| `polyline`          | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
-| `taxes`             | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
-| `metadata`          | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
-| `discounts`         | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
+| Field                | Type              | Description                                                                                                       |
+| -------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_location` | `object`          | The origin [place](#place) object.                                                                                |
+| `arrival_location`   | `object`          | The destination [place](#place) object.                                                                           |
+| `departure_at`       | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_at`         | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `fare`               | `integer`         | Ride amount, typically the same as the header subtotal.                                                           |
+| `polyline`           | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `taxes`              | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
+| `metadata`           | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
+| `discounts`          | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
 
 </article>
 </details>
