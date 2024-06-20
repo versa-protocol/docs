@@ -289,30 +289,33 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
 
 ```JSON
 "transit_route": {
-  "departure_address": {
-    "street_address": "273 Sesame St",
-    "city": "Brooklyn",
-    "region": "NY",
-    "country": "US",
-    "postal_code": "11205",
-    "lat": 40.68266,
-    "lon": -73.94237,
-  },
-  "arrival_address": {
-    "street_address": "141 Broadway",
-    "city": "Brooklyn",
-    "region": "NY",
-    "country": "US",
-    "postal_code": "11205",
-    "lat": 40.69954,
-    "lon": -73.97064,
-  },
-  "departure_at": 1713196492,
-  "arrival_at": 1713197752,
-  "fare": 4215,
-  "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
-  "taxes": null,
-  "metadata": null,
+  "transit_route_items": [{
+    "departure_address": {
+      "street_address": "273 Sesame St",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.68266,
+      "lon": -73.94237,
+    },
+    "arrival_address": {
+      "street_address": "141 Broadway",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.69954,
+      "lon": -73.97064,
+    },
+    "departure_at": 1713196492,
+    "arrival_at": 1713197752,
+    "fare": 4215,
+    "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
+    "taxes": null,
+    "metadata": null,
+    "discounts": null
+  }],
   "invoice_level_discounts": null,
   "tip": null
 }
@@ -320,16 +323,23 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
 
 | Field                     | Type               | Description                                                                                                                                               |
 | ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `departure_address`       | `object`           | The origin [address](#address) object.                                                                                                                    |
-| `arrival_address`         | `object`           | The destination [address](#address) object.                                                                                                               |
-| `departure_at`            | `integer`          | Departure time. Measured in seconds since the Unix epoch.                                                                                                 |
-| `arrival_at`              | `integer`          | Arrival time. Measured in seconds since the Unix epoch.                                                                                                   |
-| `fare`                    | `integer`          | Ride amount, typically the same as the header subtotal.                                                                                                   |
-| `polyline`                | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route.                                         |
-| `taxes`                   | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                             |
+| `transit_route_items`     | `array`            | Array of [transit route item]{#transit-route-item} objects.                                                                                               |
 | `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
-| `metadata`                | `nullable array`   | Array of key/value [metadata pairs](#metadata).                                                                                                           |
 | `tip`                     | `nullable integer` | The tip amount, if applicable, in the [smallest currency unit](#currency-values).                                                                         |
+
+#### Transit Route Item
+
+| Field               | Type              | Description                                                                                                       |
+| ------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_address` | `object`          | The origin [address](#address) object.                                                                            |
+| `arrival_address`   | `object`          | The destination [address](#address) object.                                                                       |
+| `departure_at`      | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_at`        | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `fare`              | `integer`         | Ride amount, typically the same as the header subtotal.                                                           |
+| `polyline`          | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `taxes`             | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
+| `metadata`          | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
+| `discounts`         | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
 
 </article>
 </details>
