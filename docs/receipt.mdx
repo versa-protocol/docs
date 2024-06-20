@@ -311,6 +311,9 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
     "departure_at": 1713196492,
     "arrival_at": 1713197752,
     "fare": 4215,
+    "passenger": null,
+    "ticket_number": null,
+    "class_of_service": null,
     "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
     "taxes": null,
     "metadata": null,
@@ -336,6 +339,9 @@ A route, typically used by rideshare / taxi services. View a complete [transit r
 | `departure_at`       | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
 | `arrival_at`         | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
 | `fare`               | `integer`         | Ride amount, typically the same as the header subtotal.                                                           |
+| `passenger`          | `nullable string` | For ticketed local transit, the passenger name.                                                                   |
+| `ticket_number`      | `nullable string` | For ticketed local transit, the ticket number.                                                                    |
+| `class_of_service`   | `nullable string` | Class of service, e.g. 'first-class'.                                                                             |
 | `polyline`           | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
 | `taxes`              | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
 | `metadata`           | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
