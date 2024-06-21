@@ -137,10 +137,10 @@ The Itemization section describes the goods and services that compose the purcha
 
 ### General
 
-| Field                     | Type             | Description                                                                                                                                               |
-| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `items`                   | `array`          | An array of generic [item](#item) objects.                                                                                                                |
-| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                       | Type             | Description                                                                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`                     | `array`          | An array of generic [item](#item) objects.                                                                                                                      |
+| `invoice_level_adjustments` | `nullable array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
 </article>
 </details>
@@ -167,24 +167,24 @@ View a complete [car rental receipt](https://versa.org/demo/interactive?sender=g
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
   "metadata": null,
-  "invoice_level_discounts": null,
+  "invoice_level_adjustments": null,
   "items": [ ... ]
 }
 ```
 
-| Field                     | Type               | Description                                                                                                                                               |
-| ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `rental_at`               | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                    |
-| `return_at`               | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                    |
-| `rental_location`         | `object`           | A [place](#place) describing the rental location.                                                                                                         |
-| `return_location`         | `object`           | A [place](#place) describing the return location.                                                                                                         |
-| `vehicle`                 | `string`           | A [vehicle](#vehicle) object.                                                                                                                             |
-| `driver_name`             | `nullable string`  |                                                                                                                                                           |
-| `odometer_reading_in`     | `nullable integer` |                                                                                                                                                           |
-| `odometer_reading_out`    | `nullable integer` |                                                                                                                                                           |
-| `metadata`                | `nullable array`   | Array of [metadata](#metadata) objects, for any additional info.                                                                                          |
-| `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
-| `items`                   | `array`            | An array of generic [item](#item) objects.                                                                                                                |
+| Field                       | Type               | Description                                                                                                                                                     |
+| --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rental_at`                 | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                          |
+| `return_at`                 | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                          |
+| `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
+| `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
+| `vehicle`                   | `string`           | A [vehicle](#vehicle) object.                                                                                                                                   |
+| `driver_name`               | `nullable string`  |                                                                                                                                                                 |
+| `odometer_reading_in`       | `nullable integer` |                                                                                                                                                                 |
+| `odometer_reading_out`      | `nullable integer` |                                                                                                                                                                 |
+| `metadata`                  | `nullable array`   | Array of [metadata](#metadata) objects, for any additional info.                                                                                                |
+| `invoice_level_adjustments` | `nullable array`   | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+| `items`                     | `array`            | An array of generic [item](#item) objects.                                                                                                                      |
 
 #### Vehicle
 
@@ -204,11 +204,11 @@ View a complete [car rental receipt](https://versa.org/demo/interactive?sender=g
 
 View a complete [flight receipt](https://versa.org/demo/interactive?sender=generic&receipt=flight) example.
 
-| Field                     | Type              | Description                                                                                                                                               |
-| ------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tickets`                 | `array`           | An array of [ticket](#ticket) objects.                                                                                                                    |
-| `itinerary_locator`       | `nullable string` |                                                                                                                                                           |
-| `invoice_level_discounts` | `nullable array`  | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                       | Type              | Description                                                                                                                                                     |
+| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tickets`                   | `array`           | An array of [ticket](#ticket) objects.                                                                                                                          |
+| `itinerary_locator`         | `nullable string` |                                                                                                                                                                 |
+| `invoice_level_adjustments` | `nullable array`  | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
 #### Tickets
 
@@ -231,7 +231,7 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 | `flight_number`          | `nullable string`  |                                                           |
 | `class_of_service`       | `nullable string`  |                                                           |
 | `taxes`                  | `nullable object`  |                                                           |
-| `discounts`              | `nullable array`   | Array of [discount](#discount) objects.                   |
+| `adjustments`            | `nullable array`   | Array of [adjustment](#adjustment) objects.               |
 
 </article>
 </details>
@@ -255,14 +255,14 @@ lodging: {
     "guests": "Sue Shmoe",
     "metadata": null,
   }],
-  "invoice_level_discounts": null
+  "invoice_level_adjustments": null
 }
 ```
 
-| Field                     | Type             | Description                                                                                                                                               |
-| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lodging_items`           | `array`          | An array of [lodging item](#lodging-item) objects.                                                                                                        |
-| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                       | Type             | Description                                                                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lodging_items`             | `array`          | An array of [lodging item](#lodging-item) objects.                                                                                                              |
+| `invoice_level_adjustments` | `nullable array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
 #### Lodging Item
 
@@ -315,18 +315,18 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
     "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
     "taxes": null,
     "metadata": null,
-    "discounts": null
+    "adjustments": null
   }],
-  "invoice_level_discounts": null,
+  "invoice_level_adjustments": null,
   "tip": null
 }
 ```
 
-| Field                     | Type               | Description                                                                                                                                               |
-| ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `transit_route_items`     | `array`            | Array of [transit route item](#transit-route-item) objects.                                                                                               |
-| `invoice_level_discounts` | `nullable array`   | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
-| `tip`                     | `nullable integer` | The tip amount, if applicable, in the [smallest currency unit](#currency-values).                                                                         |
+| Field                       | Type               | Description                                                                                                                                                     |
+| --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transit_route_items`       | `array`            | Array of [transit route item](#transit-route-item) objects.                                                                                                     |
+| `invoice_level_adjustments` | `nullable array`   | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+| `tip`                       | `nullable integer` | The tip amount, if applicable, in the [smallest currency unit](#currency-values).                                                                               |
 
 #### Transit Route Item
 
@@ -342,7 +342,7 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 | `polyline`           | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
 | `taxes`              | `nullable array`  | Array of [tax](#tax) objects.                                                                                     |
 | `metadata`           | `nullable array`  | Array of key/value [metadata pairs](#metadata).                                                                   |
-| `discounts`          | `nullable array`  | Array of [discount](#discount) objects.                                                                           |
+| `adjustments`        | `nullable array`  | Array of [adjustment](#adjustment) objects.                                                                       |
 
 </article>
 </details>
@@ -372,16 +372,16 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
     "unit_cost": 875,
     "taxes": null,
     "metadata": null,
-    "discounts": null
+    "adjustments": null
   }],
-  "invoice_level_discounts": null
+  "invoice_level_adjustments": null
 }
 ```
 
-| Field                     | Type             | Description                                                                                                                                               |
-| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscription_items`      | `array`          | An array of [subscription item](#subscription-item) objects.                                                                                              |
-| `invoice_level_discounts` | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
+| Field                       | Type             | Description                                                                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscription_items`        | `array`          | An array of [subscription item](#subscription-item) objects.                                                                                                    |
+| `invoice_level_adjustments` | `nullable array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
 #### Subscription Item
 
@@ -389,7 +389,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`                 | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
 | `description`          | `string`           | Description of the good / service.                                                                                                                                  |
-| `total`                | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                                                               |
+| `total`                | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `adjustments` + `taxes`).                                                                             |
 | `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
 | `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
@@ -398,7 +398,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
 | `taxes`                | `nullable array`   | Array of [tax](#tax) objects.                                                                                                                                       |
 | `metadata`             | `nullable array`   | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
-| `discounts`            | `nullable array`   | Array of [discount](#discount) objects.                                                                                                                             |
+| `adjustments`          | `nullable array`   | Array of [adjustment](#adjustment) objects.                                                                                                                         |
 
 </article>
 </details>
@@ -411,11 +411,11 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 For online orders, with shipping info. If items have not been assigned to a shipment, add those items to `invoice_level_line_items`. Once they’ve been assigned to a shipment, move them to `shipment.items`. View a complete [E-commerce receipt](https://versa.org/demo/interactive?sender=generic&receipt=ecommerce) example.
 
-| Field                      | Type             | Description                                                                                                                                               |
-| -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `invoice_level_line_items` | `nullable array` | An array of [item](#item) objects at the invoice level. For items that are part of shipment, move them under the [shipment](#shipment) object.            |
-| `invoice_level_discounts`  | `nullable array` | Array of [discounts](#discount) applied at the top (invoice) level. These are independent of line item discounts, which are added at the line item level. |
-| `shipments`                | `nullable array` | An array of [shipment](#shipment) objects.                                                                                                                |
+| Field                       | Type             | Description                                                                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `invoice_level_line_items`  | `nullable array` | An array of [item](#item) objects at the invoice level. For items that are part of shipment, move them under the [shipment](#shipment) object.                  |
+| `invoice_level_adjustments` | `nullable array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+| `shipments`                 | `nullable array` | An array of [shipment](#shipment) objects.                                                                                                                      |
 
 #### Shipment
 
@@ -605,14 +605,14 @@ A generic line item.
   "product_image": null,
   "group": null,
   "url": null,
-  "discounts": null
+  "adjustments": null
 }
 ```
 
 | Field           | Type               | Description                                                                                                                  |
 | --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `description`   | `string`           | Description of the good / service.                                                                                           |
-| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `discounts` + `taxes`).                                        |
+| `total`         | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `adjustments` + `taxes`).                                      |
 | `quantity`      | `nullable float`   | Quantity of items.                                                                                                           |
 | `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
@@ -621,7 +621,7 @@ A generic line item.
 | `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                                      |
 | `group`         | `nullable string`  | Grouping of line items.                                                                                                      |
 | `url`           | `nullable string`  | URL to product page.                                                                                                         |
-| `discounts`     | `nullable array`   | Array of [discount](#discount) objects.                                                                                      |
+| `adjustments`   | `nullable array`   | Array of [adjustment](#adjustment) objects.                                                                                  |
 
 </article>
 </details>
@@ -648,8 +648,6 @@ Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 
 ### Tax
 
-Also to be used for tolls, fees, surcharges, and other adjustments.
-
 | Field    | Type             | Description                                                       |
 | -------- | ---------------- | ----------------------------------------------------------------- |
 | `amount` | `int`            | The total tax, in the [smallest currency unit](#currency-values). |
@@ -660,17 +658,19 @@ Also to be used for tolls, fees, surcharges, and other adjustments.
 </details>
 
 <details>
-<summary>Discount Primitive</summary>
+<summary>Adjustment Primitive</summary>
 <article>
 
-### Discount
+### Adjustment
 
-| Field    | Type             | Description                                                            |
-| -------- | ---------------- | ---------------------------------------------------------------------- |
-| `amount` | `int`            | The total discount, in the [smallest currency unit](#currency-values). |
-| `name`   | `string`         | The name of the discount.                                              |
-| `type`   | `enum`           | One of `fixed` or `percentage`.                                        |
-| `rate`   | `nullable float` | The discount rate, e.g. 0.1 for 10%. Null for fixed discount.          |
+To be used for discounts, tip, fees, surchages, tolls.
+
+| Field    | Type              | Description                                                                                                                   |
+| -------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `amount` | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive for costs, negative for adjustments. |
+| `type`   | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                     |
+| `name`   | `nullable string` | The name of the adjustment.                                                                                                   |
+| `rate`   | `nullable float`  | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
 
 </article>
 </details>
