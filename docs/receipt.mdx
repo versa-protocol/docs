@@ -318,15 +318,13 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
     "adjustments": null
   }],
   "invoice_level_adjustments": null,
-  "tip": null
 }
 ```
 
-| Field                       | Type               | Description                                                                                                                                                     |
-| --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `transit_route_items`       | `array`            | Array of [transit route item](#transit-route-item) objects.                                                                                                     |
-| `invoice_level_adjustments` | `nullable array`   | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
-| `tip`                       | `nullable integer` | The tip amount, if applicable, in the [smallest currency unit](#currency-values).                                                                               |
+| Field                       | Type             | Description                                                                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transit_route_items`       | `array`          | Array of [transit route item](#transit-route-item) objects.                                                                                                     |
+| `invoice_level_adjustments` | `nullable array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
 #### Transit Route Item
 
