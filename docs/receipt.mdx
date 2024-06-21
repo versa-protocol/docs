@@ -665,12 +665,12 @@ Ue line item metadata to track things like SKU, Size, Color, UNSPSC Code, etc.
 
 To be used for discounts, tip, fees, surchages, tolls.
 
-| Field    | Type              | Description                                                                                                                   |
-| -------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `amount` | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive for costs, negative for adjustments. |
-| `type`   | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                     |
-| `name`   | `nullable string` | The name of the adjustment.                                                                                                   |
-| `rate`   | `nullable float`  | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
+| Field             | Type              | Description                                                                                                                   |
+| ----------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive for costs, negative for adjustments. |
+| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                     |
+| `name`            | `nullable string` | The name of the adjustment.                                                                                                   |
+| `rate`            | `nullable float`  | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
 
 </article>
 </details>
