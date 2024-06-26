@@ -29,6 +29,7 @@ Example response:
 ```json
 {
   "key": [...],
+  "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
   "receivers": [
     { "address": "https://bank.com/receipt" },
     { "address": "https://expenseapp.com/receipt" }
@@ -51,3 +52,26 @@ The nonce and encrypted data are sent to each receiver address, at which point t
   "encrypted": [...]
 }
 ```
+
+## Updating an Existing Receipt
+
+Updating a receipt, such as to include a tip, refund, or other adjustment, is no different from registering a new receipt.
+The only difference is that the original transaction_id returned by the registry must be included in the updated registration request.
+
+E.g. 
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/register' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "receipt_hash": 923232454472219,
+    "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
+    "protocol_version": "0.1.0",
+    "email_domain": "acme.com"
+  }'
+```
+
+This will associate the new receipt record with the original receipt's transaction record.
+The transaction_id is always returned to each receiver when they check out their keys, so that they can update the receipts on their end and trigger events to their customers.
