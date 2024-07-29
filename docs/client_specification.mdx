@@ -1,0 +1,57 @@
+---
+title: "Client Specifications"
+---
+
+# Client Specifications
+
+A starting guide to implementing a Versa client. This guide is intended for developers who are integrating with the Versa network.
+
+## Sender Specification
+
+Senders on the Versa network are data providers; they participate in the network to provide a better billing experience for their customers.
+
+To operate according to specification, senders must have:
+ - a production-gated client registered at https://app.versa.org
+ - the CLIENT_ID and CLIENT_SECRET for the registered client
+ - the REGISTRY_URL of the Versa network (https://registry.versa.org)
+
+### Step One: Construct a Versa Receipt from your data
+
+You can experiment with our schema in our interactive studio here: https://versa.org/demo/interactive
+
+Choose the itemization structure that makes the most sense for any given purchase. Convert your model to the a JSON structure that satisfies our [JSON schema](https://github.com/versa-protocol/schema);
+then canonize the JSON with a library like [json-canon](https://crates.io/crates/json-canon) and generate a hash. We recommend using [SipHash 2](https://hexdocs.pm/siphash/2.0.0/SipHash.html), but hash verification of data 
+is not currently a protocol requirement.
+
+### Step Two: Register a Receipt with Customer References
+
+```sh
+curl -X POST ${REGISTRY_URL}/http/register \
+-H "Content-Type: application/json" \
+-d '{
+    "customer_email_domain": "customerco.com",
+    "receipt_hash": "1234555",
+    "schema_version": "1.0.0",
+    }'
+```
+
+### Step Three: Encrypt and Send Receipts to Receivers
+
+For each authorized receiver returned by the registry, generate a unique nonce, encrypt the receipt with the registry key and nonce,
+then send the encrypted payload with nonce, hash, and receiptId to the receiver, including an HMAC Verification token in the X-Request-Signature header
+(you will generate this with the receiver secret returned by the registry)
+
+
+## Receiver Specification
+
+Receivers on the Versa network are data consumers; they participate in the network to provide a better expense, audit, or analytics experience for their customers.
+
+To operate according to specification, receivers must have:
+ - a production-gated client registered at https://app.versa.org
+ - the CLIENT_ID and CLIENT_SECRET for the registered client
+ - the REGISTRY_URL of the Versa network (https://registry.versa.org)
+ - a RECEIVER_SECRET with which to perform the HMAC verification of incoming receipts
+
+
+
+ 
