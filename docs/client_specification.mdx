@@ -41,6 +41,7 @@ For each authorized receiver returned by the registry, generate a unique nonce, 
 then send the encrypted payload with nonce, hash, and receiptId to the receiver, including an HMAC Verification token in the X-Request-Signature header
 (you will generate this with the receiver secret returned by the registry)
 
+The encryption algorithm used by Versa is AES-SIV, which is a nonce-misuse resistant authenticated encryption algorithm. You can find implementations in various languages. See [Encryption](encryption) for more information.
 
 ## Receiver Specification
 
@@ -52,6 +53,30 @@ To operate according to specification, receivers must have:
  - the REGISTRY_URL of the Versa network (https://registry.versa.org)
  - a RECEIVER_SECRET with which to perform the HMAC verification of incoming receipts
 
+### Step One: Receive an encrypted envelope
 
+Verify the HMAC verification token in the X-Request-Signature header using your receiver secret, then make a checkout request to the registry.
 
- 
+### Step Two: Decrypt the envelope
+
+The registry will return the sender information (including brand details like logo and color) and the encryption key. Use this key to decrypt the receipt data.
+
+### Step Three: Process the Receipt
+
+From here, it's up to you how to process the receipt. You can store it, run validation, and display it to the user either rolling your own UI or using our React library.
+
+If the receipt is invalid, see Step Four:
+
+### Step Four: Feedback and Reporting
+
+Since the Versa registry does not handle receipts directly, we rely on receivers to provide feedback on the quality of the receipts they receive. If you receive a receipt that is invalid or produces warnings, you can report it to the registry.
+
+Reasons a receipt might be invalid include:
+1. Decryption fails using the provided key and nonce
+2. The receipt data does not validate against our JSON schema for the attached schema version
+3. 
+
+Reasons a receipt might produce warnings include:
+1. Actions or image URLs are not trusted sources (Coming soon: see [Assets](#) and [Trusted Sources](#))
+2. The receipt data does not validate against our recommended validation checks
+
