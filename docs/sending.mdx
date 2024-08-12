@@ -76,6 +76,46 @@ curl --request POST \
 This will associate the new receipt record with the original receipt's transaction record.
 The transaction_id is always returned to each receiver when they check out their keys, so that they can update the receipts on their end and trigger events to their customers.
 
+## (Optional) Checking registration
+
+For application purposes, it may be useful to check the registration of a hypothetical transaction before registering it.
+This can be done by posting a registration request to the `regcheck` endpoint instead of to `register`.
+The `regcheck` endpoint expects the same body JSON as the `register` endpoint, but returns a list of matched receiver profiles instead of their addresses and secrets.
+
+E.g.
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/regcheck' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "receipt_hash": 923232454472219,
+    "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
+    "protocol_version": "0.1.0",
+    "email_domain": "acme.com"
+  }'
+```
+
+Returning:
+
+```json
+{
+  "env": "prod",
+  "receivers": [
+    {
+      "client_id": "versa_cid_prod_05d108be2b974577b203a4d907a61e7d,
+      "receiver": {
+        "id": "org_67b09701789b44428e69664e7f1eb165",
+        "name": "Acme Bank",
+        "slug": "acme-bank",
+        ...
+      }
+    }
+  ]
+}
+```
+
 ## Testing your integration
 
 As a sender, you can test your integration by using test client credentials and our sandbox receiver. The sandbox receiver is a client that only accepts receipts in test,
