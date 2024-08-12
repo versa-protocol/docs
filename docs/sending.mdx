@@ -19,8 +19,10 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "receipt_hash": 175932758392347,
-    "protocol_version": "0.1.0",
-    "email_domain": "acme.com"
+    "schema_version": "1.0.0",
+    "handles": {
+      "customer_email_domain": "acme.com"
+    }
   }'
 ```
 
@@ -28,11 +30,23 @@ Example response:
 
 ```json
 {
-  "key": [...],
+  "env": "prod",
+  "encryption_key": [...],
+  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
   "receivers": [
-    { "address": "https://bank.com/receipt" },
-    { "address": "https://expenseapp.com/receipt" }
+    {
+      "address": "https://bank.com/receipt",
+      "client_id": "versa_cid_prod_9c014de1835a46de8d3e1fd54547dd29",
+      "org_id": "org_39a0e09cf0a24b02ba92bf8c8369b319",
+      "secret": "versa_rsk_prod_d9362d18f76845afb4c75b8388d2e549"
+    },
+    {
+      "address": "https://expenseapp.com/receipt",
+      "client_id": "versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba",
+      "org_id": "org_df8d2ce28f6e48afb2dfe4af0c57788f",
+      "secret": "versa_rsk_prod_56781edd14ba47a4938e252b0c3932ee"
+    }
   ]
 }
 ```
@@ -47,9 +61,13 @@ The nonce and encrypted data are sent to each receiver address, at which point t
 
 ```json
 {
-  "receipt_hash": 175932758392347,
-  "nonce": [...],
-  "encrypted": [...]
+  "sender_client_id": "versa_cid_prod_3633863a5e5d417eb723124b387ec929",
+  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "envelope": {
+    "encrypted": [...],
+    "hash": 175932758392347,
+    "nonce": [...]
+  }
 }
 ```
 
@@ -68,8 +86,10 @@ curl --request POST \
   --data '{
     "receipt_hash": 923232454472219,
     "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
-    "protocol_version": "0.1.0",
-    "email_domain": "acme.com"
+    "schema_version": "1.0.0",
+    "handles": {
+      "customer_email_domain": "acme.com"
+    }
   }'
 ```
 
@@ -79,8 +99,9 @@ The transaction_id is always returned to each receiver when they check out their
 ## (Optional) Checking registration
 
 For application purposes, it may be useful to check the registration of a hypothetical transaction before registering it.
-This can be done by posting a registration request to the `regcheck` endpoint instead of to `register`.
-The `regcheck` endpoint expects the same body JSON as the `register` endpoint, but returns a list of matched receiver profiles instead of their addresses and secrets.
+This can be done by posting a set of TransactionHandles to the registry checkpoint.
+Instead of registering your receipt, send only the customer references, or handles.
+This endpoint returns a list of matched receiver profiles instead of their addresses and secrets.
 
 E.g.
 
@@ -90,10 +111,7 @@ curl --request POST \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": 923232454472219,
-    "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
-    "protocol_version": "0.1.0",
-    "email_domain": "acme.com"
+    "customer_email_domain": "acme.com"
   }'
 ```
 
@@ -133,7 +151,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "receipt_hash": 555232454472219,
-    "protocol_version": "1.0.0",
+    "schema_version": "1.0.0",
     "email_domain": "sandbox-firehose.versa.org"
   }'
 ```
