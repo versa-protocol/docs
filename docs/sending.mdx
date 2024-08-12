@@ -53,7 +53,7 @@ The nonce and encrypted data are sent to each receiver address, at which point t
 }
 ```
 
-## Updating an Existing Receipt
+## Updating an existing receipt
 
 Updating a receipt, such as to include a tip, refund, or other adjustment, is no different from registering a new receipt.
 The only difference is that the original transaction_id returned by the registry must be included in the updated registration request.
@@ -76,7 +76,7 @@ curl --request POST \
 This will associate the new receipt record with the original receipt's transaction record.
 The transaction_id is always returned to each receiver when they check out their keys, so that they can update the receipts on their end and trigger events to their customers.
 
-## Testing your Integration
+## Testing your integration
 
 As a sender, you can test your integration by using test client credentials and our sandbox receiver. The sandbox receiver is a client that only accepts receipts in test,
 and exposes those receipts to any authorized user via the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
