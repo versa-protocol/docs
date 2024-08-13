@@ -55,4 +55,19 @@ The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
-Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use the Versa frontend library to render the object.
+Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use a Versa frontend library to render the object.
+For example, if you use React, you can use the [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package
+
+```jsx
+import { ReceiptDisplay } from "@versaprotocol/react";
+
+export const YourReceiptWrapper = ({senderProfileReturnedByRegistry, decryptedReceipt}) => {
+  return (
+    <ReceiptDisplay
+      merchant={senderProfileReturnedByRegistry}
+      receipt={decryptedReceipt}
+    />
+  );
+};
+
+```
