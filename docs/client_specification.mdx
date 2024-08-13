@@ -11,16 +11,17 @@ A starting guide to implementing a Versa client. This guide is intended for deve
 Senders on the Versa network are data providers; they participate in the network to provide a better billing experience for their customers.
 
 To operate according to specification, senders must have:
- - a production-gated client registered at https://app.versa.org
- - the CLIENT_ID and CLIENT_SECRET for the registered client
- - the REGISTRY_URL of the Versa network (https://registry.versa.org)
+
+- a production-gated client registered at https://app.versa.org
+- the CLIENT_ID and CLIENT_SECRET for the registered client
+- the REGISTRY_URL of the Versa network (https://registry.versa.org)
 
 ### Step One: Construct a Versa Receipt from your data
 
 You can experiment with our schema in our interactive studio here: https://versa.org/demo/interactive
 
 Choose the itemization structure that makes the most sense for any given purchase. Convert your model to the a JSON structure that satisfies our [JSON schema](https://github.com/versa-protocol/schema);
-then canonize the JSON with a library like [json-canon](https://crates.io/crates/json-canon) and generate a hash. We recommend using [SipHash 2](https://hexdocs.pm/siphash/2.0.0/SipHash.html), but hash verification of data 
+then canonize the JSON with a library like [json-canon](https://crates.io/crates/json-canon) and generate a hash. We recommend using [SipHash 2](https://hexdocs.pm/siphash/2.0.0/SipHash.html), but hash verification of data
 is not currently a protocol requirement.
 
 ### Step Two: Register a Receipt with Customer References
@@ -48,10 +49,11 @@ The encryption algorithm used by Versa is AES-SIV, which is a nonce-misuse resis
 Receivers on the Versa network are data consumers; they participate in the network to provide a better expense, audit, or analytics experience for their customers.
 
 To operate according to specification, receivers must have:
- - a production-gated client registered at https://app.versa.org
- - the CLIENT_ID and CLIENT_SECRET for the registered client
- - the REGISTRY_URL of the Versa network (https://registry.versa.org)
- - a RECEIVER_SECRET with which to perform the HMAC verification of incoming receipts
+
+- a production-gated client registered at https://app.versa.org
+- the CLIENT_ID and CLIENT_SECRET for the registered client
+- the REGISTRY_URL of the Versa network (https://registry.versa.org)
+- a RECEIVER_SECRET with which to perform the HMAC verification of incoming receipts
 
 ### Step One: Receive an encrypted envelope
 
@@ -72,10 +74,11 @@ If the receipt is invalid, see Step Four:
 Since the Versa registry does not handle receipts directly, we rely on receivers to provide feedback on the quality of the receipts they receive. If you receive a receipt that is invalid or produces warnings, you can report it to the registry.
 
 Reasons a receipt might be invalid include:
+
 1. Decryption fails using the provided key and nonce
 2. The receipt data does not validate against our JSON schema for the attached schema version
-3. 
 
 Reasons a receipt might produce warnings include:
+
 1. Actions or image URLs are not trusted sources (Coming soon: see [Assets](#) and [Trusted Sources](#))
 2. The receipt data does not validate against our recommended validation checks
