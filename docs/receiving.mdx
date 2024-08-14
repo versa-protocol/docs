@@ -4,21 +4,29 @@ title: "Receiving a Receipt"
 
 # Receiving a Receipt
 
-The receiver is a protocol client typically operated by a bank or spend management app. The receiver's responsiblities include:
+Receivers are typically financial institutions or spend management apps. As a receiver, you'll collect and display your customers' receipts.
 
-1. Receive the encrypted receipt.
-2. Exchange the hash for a key, via the registry.
-3. Decrypt and render the receipt.
+To onboard as a receiver, you'll need to:
 
-## Receiver Configuration
+1. Set up your client
+2. Register customers
+3. Collect receipts
+4. Render receipts
 
-Receipt receivers are typically expense management platforms or financial institutions. To receive receipts via the Versa network, you’ll first need to [create an account](https://app.versa.org) on Versa.
+## Set up your client
 
-Once you’re logged in to your account, you’re able to register the web address at which you will receive receipts. Go to the 'Credentials' tab, issue a new receiver key, and set your address.
+First, you’ll need to [create an account](https://app.versa.org) on Versa.
 
-![A screenshot showing the Versa app, on the screen where you can register a receiving URL.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/temp-register-address-screenshot.png)
+Just as on the sending end, receivers need to pick how they'd like to receive receipts:
 
-## Register company handles
+1. Via a custodial configuration. With this arrangement, you'll receive webhook events containing the receipt json at the url you specify.
+2. Via a self-hosted configuration. With this arrangement, the receiver collects and decrypts receipts directly. The webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
+
+The custodial configuration is typically easier. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
+
+## Register customers
+
+Before you start receiving specific customers' receipts, you'll need them to authorize access.
 
 Now that your account is configured, you’ll need to register the customers for whom you’re authorized to receive receipts. To register a customer, you will need to post their work email domain.
 
@@ -58,9 +66,19 @@ curl --request DELETE \
   }'
 ```
 
-You’re all set! Now prepare to [receive your first receipt](https://docs.versa.org/receiving).
+## Collect receipts
 
-## Receive the encrypted receipt
+### Custodial mode
+
+If you've set up your client in custodial mode,
+
+### Self-hosted configuration
+
+1. Receive the encrypted receipt.
+2. Exchange the id for a key, via the registry.
+3. Decrypt and render the receipt.
+
+#### Receive the encrypted receipt
 
 An example payload that you will receive at your registered address, from the sender (merchant).
 
@@ -72,7 +90,7 @@ An example payload that you will receive at your registered address, from the se
 }
 ```
 
-## Exchange the hash for a key via the registry
+#### Exchange the hash for a key via the registry
 
 ```bash
 curl --request POST \
@@ -101,9 +119,11 @@ Example response:
 
 The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
-## Decrypt and render the receipt
+#### Decrypt the receipt
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
+
+## Render receipts
 
 Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use a Versa frontend library to render the object.
 For example, if you use React, you can use the [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package
@@ -111,7 +131,10 @@ For example, if you use React, you can use the [@versaprotocol/react](https://ww
 ```jsx
 import { ReceiptDisplay } from "@versaprotocol/react";
 
-export const YourReceiptWrapper = ({senderProfileReturnedByRegistry, decryptedReceipt}) => {
+export const YourReceiptWrapper = ({
+  senderProfileReturnedByRegistry,
+  decryptedReceipt,
+}) => {
   return (
     <ReceiptDisplay
       merchant={senderProfileReturnedByRegistry}
@@ -119,5 +142,4 @@ export const YourReceiptWrapper = ({senderProfileReturnedByRegistry, decryptedRe
     />
   );
 };
-
 ```
