@@ -9,7 +9,7 @@ Receipt senders are merchants or merchant service providers — E-commerce websi
 Senders first need to pick how they'd like to send receipts:
 
 1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipts is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
-   2.Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
+2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
 
 The custodial configuration is typically easier to get started with. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers choose this path.
 
