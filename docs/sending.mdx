@@ -59,7 +59,6 @@ curl --request POST \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": 175932758392347,
     "schema_version": "1.0.0",
     "handles": {
       "customer_email_domain": "acme.com"
@@ -67,11 +66,10 @@ curl --request POST \
   }'
 ```
 
-| Field            | Type      | Description                                                                                 |
-| ---------------- | --------- | ------------------------------------------------------------------------------------------- |
-| `receipt_hash`   | `integer` | ...                                                                                         |
-| `schema_version` | `string`  | The version of your sender client.                                                          |
-| `handles`        | `object`  | The customer identifier. For now the only supported handle type is `customer_email_domain`. |
+| Field            | Type     | Description                                                                                 |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `schema_version` | `string` | The version of your sender client.                                                          |
+| `handles`        | `object` | The customer identifier. For now the only supported handle type is `customer_email_domain`. |
 
 Example response:
 
@@ -98,6 +96,25 @@ Example response:
 }
 ```
 
+#### Registry Response
+
+| Field            | Type     | Description                                                                    |
+| ---------------- | -------- | ------------------------------------------------------------------------------ |
+| `env`            | `enum`   | One of `test` or `prod`.                                                       |
+| `encryption_key` | `string` | The key you'll use to encrypt your receipt.                                    |
+| `receipt_id`     | `string` | The id of the specific receipt being sent.                                     |
+| `transaction_id` | `string` | The parent of the receipt — used for [updating receipts](#updating-a-receipt). |
+| `receivers`      | `array`  | A list of [receiver objects](#receiver-object).                                |
+
+#### Receiver Object
+
+| Field       | Type     | Description                                                   |
+| ----------- | -------- | ------------------------------------------------------------- |
+| `address`   | `string` | The address where you'll post the encrypted receipt.          |
+| `client_id` | `string` | The id of the receiving client.                               |
+| `org_id`    | `string` | The id of the receiving org (orgs can have multiple clients). |
+| `secret`    | `string` | Used in HMAC verification.                                    |
+
 If there are no authorized receivers for the given handles, Versa will return an empty array.
 
 ### 2. Encrypt the Receipt
@@ -106,8 +123,7 @@ Receipts are encrypted with the AES 256 encryption algorithm, using the registry
 
 ### 3. Send the Receipt
 
-For each receiver, generate an HMAC verification token using their receiver secret. 
-The nonce and encrypted data are then sent to each receiver address, at which point the receiver will check out the key from the registry and decrypt the envelope.
+For each receiver, generate an HMAC verification token using their receiver secret. The nonce and encrypted data are then sent to each receiver address, at which point the receiver will check out the key from the registry and decrypt the envelope.
 
 ```bash
 curl --request POST \
@@ -118,12 +134,26 @@ curl --request POST \
     "sender_client_id": "versa_cid_prod_3633863a5e5d417eb723124b387ec929",
     "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
     "envelope": {
-      "encrypted": [...],
+      "encrypted": [ ... ],
       "hash": 175932758392347,
-      "nonce": [...]
+      "nonce": [ ... ]
     }
   }'
 ```
+
+| Field              | Type     | Description                                                                    |
+| ------------------ | -------- | ------------------------------------------------------------------------------ |
+| `sender_client_id` | `string` | Your [sender client id](https://app.versa.org/client).                         |
+| `receipt_id`       | `string` | The id of the receipt, taken from the [registry response](#registry-response). |
+| `envelope`         | `string` | The container for the receipt.                                                 |
+
+#### Envelope Object
+
+| Field       | Type     | Description            |
+| ----------- | -------- | ---------------------- |
+| `encrypted` | `string` | The encrypted receipt. |
+| `hash`      | `string` | ?                      |
+| `nonce`     | `string` | ?                      |
 
 ## Updating a Receipt
 
@@ -137,7 +167,6 @@ curl --request POST \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": 923232454472219,
     "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
     "schema_version": "1.0.0",
     "handles": {
@@ -157,7 +186,7 @@ Once you are ready to send receipts, you can test your configuration by using te
 > [!WARNING]  
 > Please be aware that the Sandbox Firehose page is accessible to any user of the Versa web app. Do not send production or sensitive data to the sandbox.
 
-To send a receipt to the sandbox, ensure that you use the following domain in your receipt's routing data: `sandbox-firehose.versa.org`.
+To send a receipt to the sandbox, ensure that you use the following domain in your receipt's routing data: "sandbox-firehose.versa.org".
 
 For example, with a fully implemented self-hosted client:
 
@@ -167,7 +196,6 @@ curl --request POST \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "receipt_hash": 555232454472219,
     "schema_version": "1.0.0",
     "handles": {
       "customer_email_domain": "sandbox-firehose.versa.org"
