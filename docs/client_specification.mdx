@@ -30,7 +30,9 @@ is not currently a protocol requirement.
 curl -X POST ${REGISTRY_URL}/http/register \
 -H "Content-Type: application/json" \
 -d '{
-    "customer_email_domain": "customerco.com",
+    "handles": {
+      "customer_email_domain": "acme.com"
+    },
     "receipt_hash": "1234555",
     "schema_version": "1.0.0",
     }'

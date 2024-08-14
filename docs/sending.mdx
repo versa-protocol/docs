@@ -137,7 +137,9 @@ curl --request POST \
   --data '{
     "receipt_hash": 555232454472219,
     "schema_version": "1.0.0",
-    "email_domain": "sandbox-firehose.versa.org"
+    "handles": {
+      "customer_email_domain": "sandbox-firehose.versa.org"
+    }
   }'
 ```
 
@@ -150,7 +152,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
   "handles": {
-    "customer_email": "thomas@sandbox-firehose.versa.org"
+    "customer_email_domain": "sandbox-firehose.versa.org"
   },
   "receipt": {
     "version": "1.0.0",
