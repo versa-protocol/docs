@@ -10,6 +10,56 @@ The receiver is a protocol client typically operated by a bank or spend manageme
 2. Exchange the hash for a key, via the registry.
 3. Decrypt and render the receipt.
 
+## Receiver Configuration
+
+Receipt receivers are typically expense management platforms or financial institutions. To receive receipts via the Versa network, you’ll first need to [create an account](https://app.versa.org) on Versa.
+
+Once you’re logged in to your account, you’re able to register the web address at which you will receive receipts. Go to the 'Credentials' tab, issue a new receiver key, and set your address.
+
+![A screenshot showing the Versa app, on the screen where you can register a receiving URL.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/temp-register-address-screenshot.png)
+
+## Register company handles
+
+Now that your account is configured, you’ll need to register the customers for whom you’re authorized to receive receipts. To register a customer, you will need to post their work email domain.
+
+Typically, you’ll do a batch registration when onboarding onto Versa, and from that point onwards, you’ll manage your list of authorized customers, registering and de-registering handles.
+
+To register a handle:
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "handle_type": "email_domain",
+    "handle": "acme.com"
+  }'
+```
+
+| Field         | Type     | Description            |
+| ------------- | -------- | ---------------------- |
+| `handle_type` | `enum`   | One of `email_domain`. |
+| `handle`      | `string` | The handle value.      |
+
+> [!NOTE]
+> Currently, the only valid `handle_type` is `email_domain`, however in the future we expect to add other types.
+
+To remove a registered profile:
+
+```bash
+curl --request DELETE \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "handle_type": "email_domain",
+    "handle": "acme.com"
+  }'
+```
+
+You’re all set! Now prepare to [receive your first receipt](https://docs.versa.org/receiving).
+
 ## Receive the encrypted receipt
 
 An example payload that you will receive at your registered address, from the sender (merchant).
