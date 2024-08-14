@@ -68,7 +68,7 @@ curl --request POST \
 
 | Field            | Type     | Description                                                                                 |
 | ---------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `schema_version` | `string` | The version of your sender client.                                                          |
+| `schema_version` | `string` | The schema version of the receipt that you will send.                                       |
 | `handles`        | `object` | The customer identifier. For now the only supported handle type is `customer_email_domain`. |
 
 Example response:
@@ -113,7 +113,7 @@ Example response:
 | `address`   | `string` | The address where you'll post the encrypted receipt.          |
 | `client_id` | `string` | The id of the receiving client.                               |
 | `org_id`    | `string` | The id of the receiving org (orgs can have multiple clients). |
-| `secret`    | `string` | Used in HMAC verification.                                    |
+| `secret`    | `string` | Used for HMAC verification.                                   |
 
 If there are no authorized receivers for the given handles, Versa will return an empty array.
 
@@ -135,7 +135,6 @@ curl --request POST \
     "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
     "envelope": {
       "encrypted": [ ... ],
-      "hash": 175932758392347,
       "nonce": [ ... ]
     }
   }'
@@ -145,15 +144,7 @@ curl --request POST \
 | ------------------ | -------- | ------------------------------------------------------------------------------ |
 | `sender_client_id` | `string` | Your [sender client id](https://app.versa.org/client).                         |
 | `receipt_id`       | `string` | The id of the receipt, taken from the [registry response](#registry-response). |
-| `envelope`         | `string` | The container for the receipt.                                                 |
-
-#### Envelope Object
-
-| Field       | Type     | Description            |
-| ----------- | -------- | ---------------------- |
-| `encrypted` | `string` | The encrypted receipt. |
-| `hash`      | `string` | ?                      |
-| `nonce`     | `string` | ?                      |
+| `envelope`         | `string` | The container for the encrypted receipt and nonce.                             |
 
 ## Updating a Receipt
 
