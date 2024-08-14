@@ -106,18 +106,23 @@ Receipts are encrypted with the AES 256 encryption algorithm, using the registry
 
 ### 3. Send the Receipt
 
-The nonce and encrypted Versa receipt are sent to each receiver address, at which point they have the opportunity to check out the key from the registry, and decrypt the envelope.
+For each receiver, generate an HMAC verification token using their receiver secret. 
+The nonce and encrypted data are then sent to each receiver address, at which point the receiver will check out the key from the registry and decrypt the envelope.
 
-```json
-{
-  "sender_client_id": "versa_cid_prod_3633863a5e5d417eb723124b387ec929",
-  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "envelope": {
-    "encrypted": [ ... ],
-    "hash": 175932758392347,
-    "nonce": [ ... ]
-  }
-}
+```bash
+curl --request POST \
+  --url 'https://expenseapp.com/receipt' \
+  --header 'X-Request-Signature: <HMAC_TOKEN>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "sender_client_id": "versa_cid_prod_3633863a5e5d417eb723124b387ec929",
+    "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+    "envelope": {
+      "encrypted": [...],
+      "hash": 175932758392347,
+      "nonce": [...]
+    }
+  }'
 ```
 
 ## Updating a Receipt
