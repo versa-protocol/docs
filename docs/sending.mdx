@@ -8,10 +8,10 @@ Receipt senders are merchants or merchant service providers — E-commerce websi
 
 Senders first need to pick how they'd like to send receipts:
 
-1. Via a _custodial_ configuration: With this arrangement, sending a receipts is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
-2. Via a _self-hosted_ configuration: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
+1. **[Via a custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipts is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
+2. **[Via a self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
 
-The custodial configuration is easy to get started with. THe self-hosted configuration, on the other hand, removes the need to trust a third-party with the receipt data. At any point you can 'eject' from a custodial to self-hosted configuration. Most developers take this path.
+The custodial configuration is typically easier to get started with. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers choose this path.
 
 ## Getting Started
 
@@ -23,13 +23,13 @@ Before you can send your first receipt, you’ll need to [create an account](htt
 
 ## Self-hosted Configuration
 
-A self-hosted sending configuration involves three steps:
+Ready to implement a full 'self-hosted' Versa sender? This configuration involves three steps:
 
-1. Register the transaction.
-2. Encrypt the receipt.
-3. Send the encrypted receipt.
+1. Register the Transaction.
+2. Encrypt the Receipt.
+3. Send the Receipt.
 
-### 1. Register the transaction
+### 1. Register the Transaction
 
 The only valid handle at the moment is a `customer_email_domain` — in the future, there likely will be others.
 
@@ -72,11 +72,11 @@ Example response:
 }
 ```
 
-### 2. Encrypt the receipt
+### 2. Encrypt the Receipt
 
 Receipts are encrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
 
-### 3. Send the encrypted receipt
+### 3. Send the Receipt
 
 The nonce and encrypted data are sent to each receiver address, at which point they have the opportunity to check out the key from the registry, and decrypt the envelope.
 

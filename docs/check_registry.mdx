@@ -4,11 +4,11 @@ title: "Check Registry"
 
 # Check Registry
 
-It may be useful to check the registration of a hypothetical transaction before registering it, or to see what registered receivers exist for a user.
+It may be useful to check the registration of a hypothetical transaction before registering it, or to see what registered receivers exist for a given user.
 
-The `regcheck` endpoint returns a list of matched receiver profiles.
+The 'regcheck' endpoint returns a list of matched receiver profiles.
 
-E.g.:
+Request:
 
 ```bash
 curl --request POST \
@@ -20,7 +20,7 @@ curl --request POST \
   }'
 ```
 
-Returning:
+Returns:
 
 ```json
 {
