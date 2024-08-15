@@ -11,19 +11,19 @@ Senders first need to pick how they'd like to send receipts:
 1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipts is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
 2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
 
-The custodial configuration is typically easier. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
+The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
 ## Getting Started
 
 Before you can send your first receipt, you’ll need to [create an account](https://app.versa.org) on Versa.
 
-Youl will then need to adapt your internal sales data to Versa's [Receipt Schema](/receipt-schema). Versa offers several different templates for different types of receipts. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
+Youl will then need to adapt your sales event data to Versa's [Receipt Schema](/receipt-schema). Versa offers several different templates for different types of receipts. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
 
 ## Custodial Configuration
 
-When you [create your client](https://app.versa.org/client) in the Versa web app, you'll need to select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Once you create your custodial sender client, copy your Client Secret and save it someplace safe.
+When you [create your client](https://app.versa.org/client) in the Versa web app, select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Once you create your custodial sender client, copy your Client Secret and save it someplace safe.
 
-You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a valid Versa receipt JSON object. For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain`. Read the [Testing](#testing-your-connection) for more details.
+You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a valid Versa receipt JSON object. For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain` and you can copy one of the sample receipts from the [receipt schema documentation](/receipt-schema)). Read the [Testing](#testing-your-connection) for more details.
 
 ```bash
 curl --request POST \
@@ -41,9 +41,12 @@ Congratulations! You've sent your first receipt.
 
 ## Self-hosted Configuration
 
-Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [Custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you handle the encryption and sending on your own.
+Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you handle the encryption and sending on your own.
 
-You'll first need an active sending [client](https://app.versa.org/client). If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration.
+You'll first need an active sending [client](https://app.versa.org/client).
+
+> [!TIP]
+> If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration.
 
 Once you have an active cleint, there are three steps:
 
@@ -53,7 +56,7 @@ Once you have an active cleint, there are three steps:
 
 ### 1. Register the Transaction
 
-Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle, and Versa will return the addresses of any authorized receivers.
+Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
 
 The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
 
@@ -114,7 +117,7 @@ Example response:
 
 | Field       | Type     | Description                                                   |
 | ----------- | -------- | ------------------------------------------------------------- |
-| `address`   | `string` | The address where you'll post the encrypted receipt.          |
+| `address`   | `string` | The url where you'll post the encrypted receipt.              |
 | `client_id` | `string` | The id of the receiving client.                               |
 | `org_id`    | `string` | The id of the receiving org (orgs can have multiple clients). |
 | `secret`    | `string` | Used for HMAC verification.                                   |
@@ -176,12 +179,12 @@ This will associate the new receipt record with the original receipt.
 
 You can test that your receipts conform to the Versa JSON [Receipt Schema](/receipt) using the [Studio](https://app.versa.org/studio).
 
-Once you are ready to send receipts, you can test your configuration by using test client credentials and our sandbox receiver. The sandbox receiver is a client that only accepts receipts in test, and exposes those receipts to any authorized user via the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
+Once you're ready to send receipts, you can test your configuration by using test client credentials and our Sandbox Firehose Receiver. The Sandbox Firehose Receiver only accepts receipts sent via a test client, and exposes those receipts to any authorized user via the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
 
 > [!WARNING]  
-> Please be aware that the Sandbox Firehose page is accessible to any user of the Versa web app. Do not send production or sensitive data to the sandbox.
+> Please be aware that the Sandbox Firehose page is accessible to all Versa web app users. Do not send production or sensitive data to the sandbox.
 
-To send a receipt to the sandbox, ensure that you use the following domain in your receipt's routing data: "sandbox-firehose.versa.org".
+To send a receipt to the sandbox, ensure that you use the following domain as your customer email domain handle: "sandbox-firehose.versa.org".
 
 For example, with a fully implemented self-hosted client:
 

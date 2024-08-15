@@ -22,7 +22,7 @@ Just as on the sending end, receivers need to pick how they'd like to receive re
 1. Via a custodial configuration. With this arrangement, you'll receive webhook events containing the receipt json at the url you specify.
 2. Via a self-hosted configuration. With this arrangement, the receiver collects and decrypts receipts directly. The webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
 
-The custodial configuration is typically easier. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
+The custodial configuration is typically easier for developers to implement quicky. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
 ## Register customers
 
