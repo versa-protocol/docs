@@ -19,8 +19,8 @@ First, you’ll need to [create an account](https://app.versa.org) on Versa.
 
 Just as on the sending end, receivers need to choose how they'd like to receive receipts:
 
-1. Via a [custodial configuration](#custodial-configuration). With this arrangement, you'll receive webhook events containing the receipt json at the url you specify. Versa handles the decryption.
-2. Via a [self-hosted configuration](#self-hosted-configuration). With this arrangement, the receiver collects and decrypts receipts directly. You'll still receive webhook events, but the webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
+1. Via a **[custodial configuration](#custodial-configuration)**. With this arrangement, you'll receive webhook events containing the receipt json at the url you specify. Versa handles the decryption.
+2. Via a **[self-hosted configuration](#self-hosted-configuration)**. With this arrangement, the receiver collects and decrypts receipts directly. You'll still receive webhook events, but the webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
 
 The custodial configuration is typically easier for developers to implement quicky. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
@@ -80,9 +80,9 @@ If you've set up a custodial client, you will receive decrypted receipt objects 
 
 If your client is configured in 'self-hosted' mode, you'll recieve encrypted receipt objects. Your responsiblities will then include:
 
-1. [Receive the encrypted receipt](#1-receive-the-encrypted-receipt)
-2. [Exchange the id for a key, via the registry](#2-get-the-key)
-3. [Decrypt the receipt](#3-decrypt-the-receipt)
+1. **[Receive the encrypted receipt](#1-receive-the-encrypted-receipt)**
+2. **[Exchange the id for a key, via the registry](#2-get-the-key)**
+3. **[Decrypt the receipt](#3-decrypt-the-receipt)**
 
 #### 1. Receive the encrypted receipt
 
