@@ -6,6 +6,14 @@ title: "Sending a Receipt"
 
 Receipt senders are merchants or merchant service providers — E-commerce websites, online booking tools, hotel chains, etc. — who wish to pass receipts through to their customers.
 
+## Getting Started
+
+Before you can send your first receipt, you’ll need to [create an account](https://app.versa.org) on Versa.
+
+Youl will then need to adapt your sales event data to Versa's [Receipt Schema](/receipt-schema). Versa offers several different templates for different types of receipts. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
+
+## Sending Receipts
+
 Senders first need to pick how they'd like to send receipts:
 
 1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipts is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
@@ -13,13 +21,7 @@ Senders first need to pick how they'd like to send receipts:
 
 The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
-## Getting Started
-
-Before you can send your first receipt, you’ll need to [create an account](https://app.versa.org) on Versa.
-
-Youl will then need to adapt your sales event data to Versa's [Receipt Schema](/receipt-schema). Versa offers several different templates for different types of receipts. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
-
-## Custodial Configuration
+### Custodial Configuration
 
 When you [create your client](https://app.versa.org/client) in the Versa web app, select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Once you create your custodial sender client, copy your Client Secret and save it someplace safe.
 
@@ -39,7 +41,7 @@ curl --request POST \
 
 Congratulations! You've sent your first receipt.
 
-## Self-hosted Configuration
+### Self-hosted Configuration
 
 Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you handle the encryption and sending on your own.
 
@@ -54,7 +56,7 @@ Once you have an active cleint, there are three steps:
 2. [Encrypt the Receipt](#2-encrypt-the-receipt)
 3. [Send the Receipt](#3-send-the-receipt)
 
-### 1. Register the Transaction
+#### 1. Register the Transaction
 
 Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
 
@@ -103,7 +105,7 @@ Example response:
 }
 ```
 
-#### Registry Response
+##### Registry Response
 
 | Field            | Type     | Description                                                                    |
 | ---------------- | -------- | ------------------------------------------------------------------------------ |
@@ -113,7 +115,7 @@ Example response:
 | `transaction_id` | `string` | The parent of the receipt — used for [updating receipts](#updating-a-receipt). |
 | `receivers`      | `array`  | A list of [receiver objects](#receiver-object).                                |
 
-#### Receiver Object
+##### Receiver Object
 
 | Field       | Type     | Description                                                   |
 | ----------- | -------- | ------------------------------------------------------------- |
@@ -124,11 +126,11 @@ Example response:
 
 If there are no authorized receivers for the given handles, Versa will return an empty array.
 
-### 2. Encrypt the Receipt
+#### 2. Encrypt the Receipt
 
 Receipts are encrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
 
-### 3. Send the Receipt
+#### 3. Send the Receipt
 
 For each receiver, generate an HMAC verification token using their receiver secret. The nonce and encrypted data are then sent to each receiver address, at which point the receiver will check out the key from the registry and decrypt the envelope.
 

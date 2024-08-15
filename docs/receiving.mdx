@@ -78,11 +78,11 @@ If you've set up a custodial client, you will receive decrypted receipt objects 
 
 If you've set up a self-hosted client, you'll recieve encrypted receipt objects. Your responsiblities include:
 
-1. [Receive the encrypted receipt](#receive-the-encrypted-receipt)
-2. [Exchange the id for a key, via the registry](#get-the-key)
-3. [Decrypt the receipt](#decrypt-the-receipt)
+1. [Receive the encrypted receipt](#1-receive-the-encrypted-receipt)
+2. [Exchange the id for a key, via the registry](#2-get-the-key)
+3. [Decrypt the receipt](#3-decrypt-the-receipt)
 
-#### Receive the encrypted receipt
+#### 1. Receive the encrypted receipt
 
 An example payload that you will receive at your registered address, from the sender (merchant).
 
@@ -94,7 +94,7 @@ An example payload that you will receive at your registered address, from the se
 }
 ```
 
-#### Get the key
+#### 2. Get the key
 
 Take the receipt id, and exchange it for a key.
 
@@ -130,7 +130,7 @@ Example response:
 
 The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
-#### Decrypt the receipt
+#### 3. Decrypt the receipt
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
