@@ -8,12 +8,12 @@ Receivers are typically financial institutions or spend management apps. As a re
 
 To onboard as a receiver, you'll need to:
 
-1. Set up your client
-2. Register your customers
-3. Collect receipts
-4. Render receipts
+1. [Set up your client](#client-configuration)
+2. [Register your customers](#customer-registration)
+3. [Collect receipts](#collecting-receipts)
+4. [Render receipts](#rendering-receipts)
 
-## Set up your client
+## Client Configuration
 
 First, you’ll need to [create an account](https://app.versa.org) on Versa.
 
@@ -24,7 +24,7 @@ Just as on the sending end, receivers need to pick how they'd like to receive re
 
 The custodial configuration is typically easier for developers to implement quicky. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
-## Register customers
+## Customer Registration
 
 Before you start receiving specific customers' receipts, you'll need them to authorize access.
 
@@ -66,17 +66,17 @@ curl --request DELETE \
   }'
 ```
 
-## Collect receipts
+## Collecting Receipts
 
-### Custodial mode
+### Custodial Configuration
 
 If you've set up your client in custodial mode,
 
-### Self-hosted configuration
+### Self-hosted Configuration
 
-1. Receive the encrypted receipt.
-2. Exchange the id for a key, via the registry.
-3. Decrypt and render the receipt.
+1. [Receive the encrypted receipt](#receive-the-encrypted-receipt)
+2. [Exchange the id for a key, via the registry](#get-the-key)
+3. [Decrypt the receipt](#decrypt-the-receipt)
 
 #### Receive the encrypted receipt
 
@@ -90,7 +90,7 @@ An example payload that you will receive at your registered address, from the se
 }
 ```
 
-#### Exchange the hash for a key via the registry
+#### Get the key
 
 ```bash
 curl --request POST \
@@ -123,7 +123,7 @@ The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
-## Render receipts
+## Rendering Receipts
 
 Once decrypted, the receiver can either store and render the receipt as they see fit, or they can use a Versa frontend library to render the object.
 For example, if you use React, you can use the [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package
