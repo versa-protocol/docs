@@ -80,11 +80,11 @@ If you've set up a custodial client, you will receive decrypted receipt objects 
 
 If your client is configured in 'self-hosted' mode, you'll recieve encrypted receipt objects. Your responsiblities will then include:
 
-1. **[Receive the encrypted receipt](#1-receive-the-encrypted-receipt)**
-2. **[Exchange the id for a key, via the registry](#2-get-the-key)**
-3. **[Decrypt the receipt](#3-decrypt-the-receipt)**
+1. **[Receive Encrypted Receipt](#1-receive-the-encrypted-receipt)**
+2. **[Get the Key](#2-get-the-key)**
+3. **[Decrypt Receipt](#3-decrypt-the-receipt)**
 
-#### 1. Receive the encrypted receipt
+#### 1. Receive the Encrypted Receipt
 
 An example payload that you will receive at your registered address, from the sending merchant:
 
@@ -96,9 +96,9 @@ An example payload that you will receive at your registered address, from the se
 }
 ```
 
-#### 2. Get the key
+#### 2. Get the Key
 
-Take the receipt id you received, and exchange it for the key.
+Take the receipt id you received, and exchange it for the key, via the Versa Registry.
 
 ```bash
 curl --request POST \
@@ -132,7 +132,7 @@ Example response:
 
 The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
-#### 3. Decrypt the receipt
+#### 3. Decrypt the Receipt
 
 Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
