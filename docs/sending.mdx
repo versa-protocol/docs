@@ -25,7 +25,7 @@ The custodial configuration is typically a faster implementation; the self-hoste
 
 When you [create your client](https://app.versa.org/client) in the Versa web app, select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Once you create your custodial sender client, copy your Client Secret and save it someplace safe.
 
-You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a valid Versa receipt JSON object. For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain` and you can copy one of the sample receipts from the [receipt schema documentation](/receipt-schema)). Read the [Testing](#testing-your-connection) for more details.
+You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a Versa receipt object. For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain` and you can copy one of the sample receipts from the [receipt schema documentation](/receipt-schema). Read the [testing section](#testing-your-connection) for more details.
 
 ```bash
 curl --request POST \
@@ -47,20 +47,21 @@ Ready to implement a full 'self-hosted' Versa sender client? This configuration 
 
 You'll first need an active sending [client](https://app.versa.org/client).
 
-> [!TIP]
-> If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration.
-
 Once you have an active cleint, there are three steps:
 
 1. [Register the Transaction](#1-register-the-transaction)
 2. [Encrypt the Receipt](#2-encrypt-the-receipt)
 3. [Send the Receipt](#3-send-the-receipt)
 
+> [!TIP]
+> If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration.
+
 #### 1. Register the Transaction
 
 Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
 
-The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
+> [!NOTE]
+> The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
 
 ```bash
 curl --request POST \

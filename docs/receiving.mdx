@@ -26,13 +26,13 @@ The custodial configuration is typically easier for developers to implement quic
 
 ## Customer Registration
 
-Before you start receiving receipts, you'll need register your customers who have granted you access. This matching is done via your customers' email domain.
+Before you can start receiving receipts, you'll need to register your customers who have granted you that permission. This matching is done via your customers' email domain.
 
-Typically, you’ll do a batch registration when onboarding onto Versa, and from that point onwards, you’ll manage your list of authorized customers, registering and de-registering handles.
+Typically, you’ll do a batch registration when onboarding onto Versa, and from that point onwards, you’ll manage your list of authorized customers, registering and de-registering handles as you add and remove customers.
 
-Registering and de-registering customers is typically handled via API, but the Versa web app also includes a user interface to add and remove customers.
+Registering and de-registering handles is typically performed via API, but the Versa web app also includes a user interface for this action.
 
-To register a handle:
+To register a handle via API:
 
 ```bash
 curl --request POST \
@@ -40,18 +40,18 @@ curl --request POST \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "handle_type": "email_domain",
+    "handle_type": "customer_email_domain",
     "handle": "acme.com"
   }'
 ```
 
-| Field         | Type     | Description            |
-| ------------- | -------- | ---------------------- |
-| `handle_type` | `enum`   | One of `email_domain`. |
-| `handle`      | `string` | The handle value.      |
+| Field         | Type     | Description                     |
+| ------------- | -------- | ------------------------------- |
+| `handle_type` | `enum`   | One of `customer_email_domain`. |
+| `handle`      | `string` | The handle value.               |
 
 > [!NOTE]
-> Currently, the only valid `handle_type` is `email_domain`, however in the future we expect to add other types.
+> The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
 
 When you lose a customer, you will de-register them. To remove a registered profile:
 
@@ -61,22 +61,24 @@ curl --request DELETE \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "handle_type": "email_domain",
+    "handle_type": "customer_email_domain",
     "handle": "acme.com"
   }'
 ```
 
 ## Collecting Receipts
 
-Once your customers are registered, receipts that match your customer handles will start hitting the webhook address you've specified in your client. The contents of that webhook depend on whether you've configured a custodial or self-hosted client.
+Once your customers are registered with Versa, incoming receipts that match your customer handles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
 
 ### Custodial Configuration
 
 If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store those receipts and [render them](#rendering-receipts) within your app.
 
+(Todo: high level example of the json)
+
 ### Self-hosted Configuration
 
-If you've set up a self-hosted client, you'll recieve encrypted receipt objects. Your responsiblities include:
+If your client is configured in 'self-hosted' mode, you'll recieve encrypted receipt objects. Your responsiblities will then include:
 
 1. [Receive the encrypted receipt](#1-receive-the-encrypted-receipt)
 2. [Exchange the id for a key, via the registry](#2-get-the-key)
@@ -84,7 +86,7 @@ If you've set up a self-hosted client, you'll recieve encrypted receipt objects.
 
 #### 1. Receive the encrypted receipt
 
-An example payload that you will receive at your registered address, from the sender (merchant).
+An example payload that you will receive at your registered address, from the sending merchant:
 
 ```json
 {
@@ -96,7 +98,7 @@ An example payload that you will receive at your registered address, from the se
 
 #### 2. Get the key
 
-Take the receipt id, and exchange it for a key.
+Take the receipt id you received, and exchange it for the key.
 
 ```bash
 curl --request POST \
@@ -136,8 +138,8 @@ Receipts are decrypted with the AES 256 encryption algorithm, using the registry
 
 ## Rendering Receipts
 
-Once decrypted, the receiver can either store and render the receipt as you see fit, or you can use a Versa frontend library to render the object.
-If you use React, you can use the [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package.
+Once decrypted, you can store and render the receipt as you see fit. You can roll your own template, or you can use a Versa frontend library to render the receipt.
+We currently offer the React [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package.
 
 ```jsx
 import { ReceiptDisplay } from "@versaprotocol/react";
@@ -157,4 +159,4 @@ export const YourReceiptWrapper = ({
 
 ## Testing Your Integration
 
-(Coming soon!)
+(Todo: Coming soon!)
