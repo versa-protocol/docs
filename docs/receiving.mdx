@@ -74,7 +74,23 @@ Once your customers are registered with Versa, incoming receipts that match your
 
 If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store those receipts and [render them](#rendering-receipts) within your app.
 
-(Todo: high level example of the json)
+An example payload might look like this:
+
+```json
+{
+  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "receipt": {
+    ...
+  },
+  "sender": {
+    "name": "Platform Co.",
+    "brand_color": "f0C14B",
+    "logo": "https://static.platform.co/image_url.png",
+    "website": "platform.co"
+  }
+}
+```
 
 ### Self-hosted Configuration
 
@@ -91,8 +107,10 @@ An example payload that you will receive at your registered address, from the se
 ```json
 {
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "nonce": [...],
-  "encrypted": [...]
+  "envelope": {
+    "encrypted": [ ... ],
+    "nonce": [ ... ]
+  }
 }
 ```
 
@@ -121,6 +139,8 @@ Example response:
 ```json
 {
   "key": [...],
+  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
   "sender": {
     "name": "Platform Co.",
     "brand_color": "f0C14B",
