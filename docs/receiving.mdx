@@ -26,9 +26,11 @@ The custodial configuration is typically easier for developers to implement quic
 
 ## Customer Registration
 
-Before you can start receiving receipts, you'll need to register your customers who have granted you that permission. This matching is done via your customers' email domain.
+Before you can start receiving receipts, you'll need to register the customers who have authorized you as their receipt receiver.
 
-Typically, you’ll do a batch registration when onboarding onto Versa, and from that point onwards, you’ll manage your list of authorized customers, registering and de-registering handles as you add and remove customers.
+When you register a customer, you add their 'handle' — the identifier that Versa uses to know where to send receipts.
+
+Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
 
 Registering and de-registering handles is typically performed via API, but the Versa web app also includes a user interface for this action.
 
@@ -68,11 +70,11 @@ curl --request DELETE \
 
 ## Collecting Receipts
 
-Once your customers are registered with Versa, incoming receipts that match your customer handles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
+Once your customers are registered with Versa, incoming receipts that those customer profiles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
 
 ### Custodial Configuration
 
-If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store those receipts and [render them](#rendering-receipts) within your app.
+If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store and [render them](#rendering-receipts) these receipts within your product.
 
 An example payload might look like this:
 
@@ -94,7 +96,7 @@ An example payload might look like this:
 
 ### Self-hosted Configuration
 
-If your client is configured in 'self-hosted' mode, you'll recieve encrypted receipt objects. Your responsiblities will then include:
+If your client is configured in 'self-hosted' mode, you'll receive encrypted receipt objects. Your responsiblities will then include:
 
 1. **[Receive Encrypted Receipt](#1-receive-the-encrypted-receipt)**
 2. **[Get the Key](#2-get-the-key)**
@@ -116,7 +118,7 @@ An example payload that you will receive at your registered address, from the se
 
 #### 2. Get the Key
 
-Take the receipt id you received, and exchange it for the key, via the Versa Registry.
+Take the `receipt_id` you received, and exchange it for the matching `key`, via the Versa Registry.
 
 ```bash
 curl --request POST \
@@ -158,8 +160,8 @@ Receipts are decrypted with the AES 256 encryption algorithm, using the registry
 
 ## Rendering Receipts
 
-Once decrypted, you can store and render the receipt as you see fit. You can roll your own template, or you can use a Versa frontend library to render the receipt.
-We currently offer the React [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) package.
+Once decrypted, you can store and render the receipt as you see fit. You can roll your own renderer, or you can use a Versa frontend library to render the receipt.
+We currently offer a React [@versaprotocol/react](https://www.npmjs.com/package/@versaprotocol/react) renderer package.
 
 ```jsx
 import { ReceiptDisplay } from "@versaprotocol/react";
