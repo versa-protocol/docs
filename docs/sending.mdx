@@ -12,14 +12,14 @@ Before you can send your first receipt, you’ll need to [create an account](htt
 
 Then, as you make sales, you'll check if those customers are registered to receive your receipts. When Versa returns a positive customer match, you'll send them the itemized receipt object.
 
-The receipt object itself must conform to Versa's [Receipt Schema](/receipt-schema). The schema offers different types and options to match the goods and services you sell; you'll adapt your internal purchase data accordingly. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
+The receipt object itself must conform to Versa's [Receipt Schema](/receipt-schema). The schema offers different types and options to match the goods and services you sell; you'll map from your internal purchase data accordingly. Configure your merchant name, logo, and brand color on the [Profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [Studio](https://app.versa.org/studio).
 
 ## Sending Receipts
 
 When you're ready to send receipts, there are two configuration options to pick from:
 
 1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipt is as simple as a standard HTTP POST request, via a RESTful API. The sender makes a single call per receipt, passing up the receipt JSON to Versa.
-2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and handle the encryption and peer-to-peer receipt transfer directly.
+2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, they check Versa for registered customers, and manage the encryption and peer-to-peer receipt transfer directly.
 
 The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
