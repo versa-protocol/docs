@@ -65,8 +65,7 @@ Once you have an active cleint, there are three steps:
 
 Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
 
-> [!NOTE]
-> The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
+Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`.
 
 ```bash
 curl --request POST \
@@ -81,10 +80,19 @@ curl --request POST \
   }'
 ```
 
-| Field            | Type     | Description                                                                                 |
-| ---------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `schema_version` | `string` | The schema version of the receipt that you will send.                                       |
-| `handles`        | `object` | The customer identifier. For now the only supported handle type is `customer_email_domain`. |
+| Field                   | Type              | Description                                                                                                     |
+| ----------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                         |
+| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                |
+| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. |
+| `card_last_four`        | `nullable string` | The last four digits of a card number.                                                                          |
+
+#### Handle Object
+
+| Field            | Type     | Description                                           |
+| ---------------- | -------- | ----------------------------------------------------- |
+| `schema_version` | `string` | The schema version of the receipt that you will send. |
+| `handles`        | `object` | The customer [handle](#handle-object).                |
 
 Example response:
 
