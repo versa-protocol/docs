@@ -70,7 +70,7 @@ Upon completing a sale, you'll want to register the transaction with Versa. You'
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/register' \
+  --url 'https://registry.versa.org/http/register' \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -167,7 +167,7 @@ For example:
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/register' \
+  --url 'https://registry.versa.org/http/register' \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -196,7 +196,7 @@ For example, with a fully implemented self-hosted client:
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/register' \
+  --url 'https://registry.versa.org/http/register' \
   --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
   --header 'Content-Type: application/json' \
   --data '{
