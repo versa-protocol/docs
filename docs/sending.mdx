@@ -29,7 +29,7 @@ The custodial configuration is typically a faster implementation; the self-hoste
 
 When you [create your client](https://app.versa.org/client) in the Versa web app, select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Then copy your Client Secret and save it someplace safe.
 
-You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a Versa receipt object. For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain` and you can copy one of the sample receipts from the [receipt schema documentation](/receipt). Read the [testing section](#testing-your-connection) for more details.
+You're now ready to send your first receipt. Add your Client ID, Client Secret, the email domain of your customer, and a Versa receipt object.
 
 ```bash
 curl --request POST \
@@ -43,6 +43,8 @@ curl --request POST \
     "receipt": { ... }
   }'
 ```
+
+For test sending, you can use 'sandbox-firehose.versa.org' as the `customer_email_domain` and you can copy one of the sample receipts from the [receipt schema documentation](/receipt). Read the [testing section](#testing-your-connection) for more details.
 
 Congratulations! You've sent your first receipt.
 
