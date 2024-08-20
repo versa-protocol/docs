@@ -34,7 +34,7 @@ You're now ready to send your first receipt. Add your Client ID, Client Secret, 
 ```bash
 curl --request POST \
   --url 'https://custodial.versa.org/sender/target' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "handles": {
@@ -71,8 +71,8 @@ Versa supports four different handle types: `customer_email`, `customer_email_do
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/http/register' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/register' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "schema_version": "1.0.0",
@@ -177,8 +177,8 @@ For example:
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/http/register' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/register' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
@@ -206,8 +206,8 @@ For example, with a fully implemented self-hosted client:
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/http/register' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/register' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "schema_version": "1.0.0",
@@ -222,7 +222,7 @@ curl --request POST \
 ```bash
 curl --request POST \
   --url 'https://custodial.versa.org/sender/target' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
   "handles": {

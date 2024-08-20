@@ -38,8 +38,8 @@ To register a handle via API:
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/http/handle' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "handle_type": "customer_email_domain",
@@ -59,8 +59,8 @@ When you lose a customer, you will de-register them. To remove a registered prof
 
 ```bash
 curl --request DELETE \
-  --url 'https://registry.versa.org/http/handle' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "handle_type": "customer_email_domain",
@@ -122,8 +122,8 @@ Take the `receipt_id` you received, and exchange it for the matching `key`, via 
 
 ```bash
 curl --request POST \
-  --url 'https://registry.versa.org/http/checkout' \
-  --header 'Authorization: Basic <CLIENT_ID:CLIENT_SECRET>' \
+  --url 'https://registry.versa.org/checkout' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
     "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
