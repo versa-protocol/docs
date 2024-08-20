@@ -67,7 +67,7 @@ You'll first need an active sending [client](https://app.versa.org/client).
 
 Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
 
-Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`.
+Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`. You must sand at least one handle, and up to the full set of four. Versa will return matches for any of the handles, with the exception of `card_last_four` (as `card_last_four` is never unique).
 
 ```bash
 curl --request POST \
