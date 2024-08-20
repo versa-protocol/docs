@@ -87,14 +87,14 @@ curl --request POST \
 | `schema_version` | `string` | The schema version of the receipt that you will send. |
 | `handles`        | `object` | The customer [handle](#handle-object).                |
 
-#### Handle Object
+##### Handle Object
 
-| Field                   | Type              | Description                                                                                                     |
-| ----------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------- |
-| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                         |
-| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                |
-| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. |
-| `card_last_four`        | `nullable string` | The last four digits of a card number.                                                                          |
+| Field                   | Type              | Description                                                                                                                                                                              |
+| ----------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                                                                                                  |
+| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                                                                                         |
+| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. This is useful only when there is a 1:1 mapping of card bin to receiver. |
+| `card_last_four`        | `nullable string` | The last four digits of a card number. Unlike the other handles, 'last four' is only used as a supporting value, as it is not unique to a customer or platform.                          |
 
 Example response:
 
