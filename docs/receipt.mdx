@@ -458,24 +458,25 @@ Merchants have the option to provide useful next actions in the Actions section.
 ## Payments
 
 ```JSON
-"payments": [{
-  "paid_at": 1679609767,
-  "type": "card",
-  "amount": "234",
-  "card_payment": {
-    "last_four": 7806,
-    "network": "mastercard",
-    }
+"payments": [
+  {
+    "paid_at": 1679609767,
+    "payment_type": "card",
+    "amount": 234,
+    "card_payment": {
+      "last_four": "7806",
+      "network": "mastercard",
+    },
     "ach_payment": null
   }
-}]
+]
 ```
 
 | Field          | Type              | Description                               |
 | -------------- | ----------------- | ----------------------------------------- |
 | `amount`       | `int`             |                                           |
 | `paid_at`      | `int`             | Measured in seconds since the Unix epoch. |
-| `type`         | `enum`            | One of `card` or `ach`.                   |
+| `payment_type` | `enum`            | One of `card` or `ach`.                   |
 | `card_payment` | `nullable object` | [Card payment](#card-payment) object.     |
 | `ach_payment`  | `nullable object` | [ACH payment](#ach-payment) object.       |
 
