@@ -221,17 +221,19 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 
 #### Segments
 
-| Field                    | Type               | Description                                               |
-| ------------------------ | ------------------ | --------------------------------------------------------- |
-| `fare`                   | `integer`          |                                                           |
-| `departure_airport_code` | `string`           |                                                           |
-| `arrival_airport_code`   | `string`           |                                                           |
-| `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch. |
-| `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.   |
-| `flight_number`          | `nullable string`  |                                                           |
-| `class_of_service`       | `nullable string`  |                                                           |
-| `taxes`                  | `nullable object`  |                                                           |
-| `adjustments`            | `nullable array`   | Array of [adjustment](#adjustment) objects.               |
+| Field                    | Type               | Description                                                                                                          |
+| ------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `fare`                   | `integer`          |                                                                                                                      |
+| `departure_airport_code` | `string`           |                                                                                                                      |
+| `arrival_airport_code`   | `string`           |                                                                                                                      |
+| `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                            |
+| `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                              |
+| `departure_timezone`     | `nullable integer` | A list of possible time zone values is maintained at the (IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `arrival_timezone`       | `nullable integer` | A list of possible time zone values is maintained at the (IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `flight_number`          | `nullable string`  |                                                                                                                      |
+| `class_of_service`       | `nullable string`  |                                                                                                                      |
+| `taxes`                  | `nullable object`  |                                                                                                                      |
+| `adjustments`            | `nullable array`   | Array of [adjustment](#adjustment) objects.                                                                          |
 
 </article>
 </details>
