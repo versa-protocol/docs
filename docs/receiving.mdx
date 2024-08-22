@@ -47,13 +47,13 @@ curl --request POST \
   }'
 ```
 
-| Field         | Type     | Description                     |
-| ------------- | -------- | ------------------------------- |
-| `handle_type` | `enum`   | One of `customer_email_domain`. |
-| `handle`      | `string` | The handle value.               |
+| Field         | Type     | Description                                                                                |
+| ------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `handle_type` | `enum`   | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
+| `handle`      | `string` | The handle value.                                                                          |
 
 > [!NOTE]
-> The only valid customer handle type at the moment is a `customer_email_domain` — in the future, we will add others.
+> Versa also supports `card_bin` and `card_last_four` handles, but to enable those forms of matching, you will need to be opted in by the Versa support team.
 
 When you lose a customer, you will de-register them. To remove a registered profile:
 
@@ -70,13 +70,13 @@ curl --request DELETE \
 
 ## Collecting Receipts
 
-Once your customers are registered with Versa, incoming receipts that those customer profiles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
+Once your customers are registered with Versa, incoming receipts that match those customer profiles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
 
 ### Custodial Configuration
 
 If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store and [render them](#rendering-receipts) these receipts within your product.
 
-An example payload might look like this:
+The payload looks like this:
 
 ```json
 {
