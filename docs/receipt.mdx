@@ -300,6 +300,7 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
       "postal_code": "11205",
       "lat": 40.68266,
       "lon": -73.94237,
+      "timezone": "America/New_York"
     },
     "arrival_address": {
       "street_address": "141 Broadway",
@@ -309,6 +310,7 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
       "postal_code": "11205",
       "lat": 40.69954,
       "lon": -73.97064,
+      "timezone": "America/New_York"
     },
     "departure_at": 1713196492,
     "arrival_at": 1713197752,
@@ -319,7 +321,7 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
     "metadata": null,
     "adjustments": null
   }],
-  "invoice_level_adjustments": null,
+  "invoice_level_adjustments": null
 }
 ```
 
@@ -567,15 +569,16 @@ Describes a brick-and-mortar location.
 
 ### Address
 
-| Field            | Type              | Description                       |
-| ---------------- | ----------------- | --------------------------------- |
-| `street_address` | `nullable string` |                                   |
-| `city`           | `nullable string` |                                   |
-| `region`         | `nullable string` | Two letter region code.           |
-| `country`        | `string`          | Two letter ISO 3166 country code. |
-| `postal_code`    | `nullable string` |                                   |
-| `lat`            | `nullable int`    |                                   |
-| `lon`            | `nullable int`    |                                   |
+| Field            | Type              | Description                                                                                                          |
+| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `street_address` | `nullable string` |                                                                                                                      |
+| `city`           | `nullable string` |                                                                                                                      |
+| `region`         | `nullable string` | Two letter region code.                                                                                              |
+| `country`        | `string`          | Two letter ISO 3166 country code.                                                                                    |
+| `postal_code`    | `nullable string` |                                                                                                                      |
+| `lat`            | `nullable int`    |                                                                                                                      |
+| `lon`            | `nullable int`    |                                                                                                                      |
+| `timezone`       | `nullable string` | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
 
 </article>
 </details>
