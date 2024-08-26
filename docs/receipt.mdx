@@ -358,12 +358,12 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 For SaaS bills, phone bills, etc. View a complete [subscription receipt](https://versa.org/demo/interactive?sender=generic&receipt=subscription) example.
 
 > [!NOTE]
-> At least one subscription item within your subscription array must be type `recurring`.
+> At least one subscription item within your subscription array must be a `subscription_type` of `recurring`.
 
 ```JSON
 "subscription": {
   "subscription_items": [{
-    "type": "recurring",
+    "subscription_type": "recurring",
     "description": "Pro monthly plan",
     "total": 1000,
     "interval": "month",
@@ -389,7 +389,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 | Field                  | Type               | Description                                                                                                                                                         |
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`                 | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
 | `description`          | `string`           | Description of the good / service.                                                                                                                                  |
 | `total`                | `integer`          | Total for the line item (typically `quantity` × `unit_cost` - `adjustments` + `taxes`).                                                                             |
 | `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
