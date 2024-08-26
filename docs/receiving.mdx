@@ -30,6 +30,8 @@ Before you can start receiving receipts, you'll need to register the customers w
 
 When you register a customer, you add their 'handle' — the identifier that Versa uses to know where to send receipts.
 
+You are only able to receive receipts on behalf of customers who have explicitly granted you that permission. In 'test' mode, you will not receive 'production' receipts. In 'production' mode, you will only receive receipts from customers who you've registered, and who have been verified.
+
 Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
 
 Registering and de-registering handles is typically performed via API, but the Versa web app also includes a user interface for this action.
