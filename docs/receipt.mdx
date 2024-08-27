@@ -45,11 +45,11 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 
 ```json
 "header": {
-  "invoice_number": "1024",
   "currency": "USD",
   "total": 6332,
   "subtotal": 5928,
   "invoiced_at": 1713295619,
+  "invoice_number": "1024",
   "mcc": 3234,
   "third_party": null,
   "customer": null,
@@ -59,12 +59,12 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 
 | Field            | Type              | Description                                                                                                         |
 | ---------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `invoice_number` | `string`          | Unique identifier for the invoice / receipt.                                                                        |
 | `currency`       | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
 | `total`          | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `subtotal`       | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
 | `paid`           | `integer`         | Sum of all payments. Will equal the total if the invoice is paid in full.                                           |
 | `invoiced_at`    | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                                    |
+| `invoice_number` | `nullable string` | Unique identifier for the invoice / receipt.                                                                        |
 | `mcc`            | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party`    | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
 | `customer`       | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
