@@ -279,7 +279,7 @@ lodging: {
 | `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
 | `room`      | `nullable string` | Room number.                                                                                                 |
 | `guests`    | `nullable string` |                                                                                                              |
-| `metadata`  | `nullable array`  | Array of [metadata](#metadata) objects, for any additional info.                                             |
+| `metadata`  | `array`           | Array of [metadata](#metadata) objects, for any additional info.                                             |
 
 </article>
 </details>
@@ -402,7 +402,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | `quantity`             | `nullable float`   | Quantity of items.                                                                                                                                                  |
 | `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
 | `taxes`                | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
-| `metadata`             | `nullable array`   | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
+| `metadata`             | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
 | `adjustments`          | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
 
 </article>
@@ -628,7 +628,7 @@ A generic line item.
 | `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
 | `taxes`         | `array`            | Array of [tax](#tax) objects.                                                                                                |
-| `metadata`      | `nullable array`   | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
+| `metadata`      | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
 | `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                                      |
 | `group`         | `nullable string`  | Grouping of line items.                                                                                                      |
 | `url`           | `nullable string`  | URL to product page.                                                                                                         |
