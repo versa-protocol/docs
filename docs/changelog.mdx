@@ -4,6 +4,18 @@ title: "Changelog"
 
 # Changelog
 
+## 2024-08-27 - v1.2.0
+
+- Added 'metadata' object to customer in receipt header
+- Added 'tz' to address
+- Added 'vat_number' and 'address' to merchant
+- Fields that expect arrays no longer accept null
+- Renamed 'receipt_id' to 'invoice_number' for clarity
+- Renamed all itemized 'total' fields to 'subtotal' for clarity
+- Renamed 'departure_timezone' and 'arrival_timezone' to 'departure_tz' and 'arrival_tz' for consistency
+- Render percentages next to taxes in @versaprotocol/react
+- Render customer data in @versaprotocol/react
+
 ## 2024-08-21 - v1.1.0
 
 - Added optional timezone field for origin and destination on flight segments
@@ -14,7 +26,6 @@ title: "Changelog"
 
 The schema is considered finalized for production use. Core client specifications are stable.
 
-- 1.0 Schema Lock
 - Receiver target endpoint and handle registration API
 - AES-SIV encryption of receipts with registry-provided key, by sender
 - HMAC token generation for outgoing payloads by sender
