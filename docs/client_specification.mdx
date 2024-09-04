@@ -44,7 +44,7 @@ For each authorized receiver returned by the registry, generate a unique nonce, 
 then send the encrypted payload with nonce, hash, and receiptId to the receiver, including an HMAC Verification token in the X-Request-Signature header
 (you will generate this with the receiver secret returned by the registry)
 
-The encryption algorithm used by Versa is AES-SIV, which is a nonce-misuse resistant authenticated encryption algorithm. You can find implementations in various languages. See [Encryption](encryption) for more information.
+The encryption algorithm used by Versa is AES-GCM-SIV, which is a nonce-misuse resistant authenticated encryption algorithm. You can find implementations in various languages. See [Encryption](encryption) for more information.
 
 ## Receiver Specification
 

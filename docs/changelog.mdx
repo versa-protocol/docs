@@ -27,7 +27,7 @@ title: "Changelog"
 The schema is considered finalized for production use. Core client specifications are stable.
 
 - Receiver target endpoint and handle registration API
-- AES-SIV encryption of receipts with registry-provided key, by sender
+- AES-GCM-SIV encryption of receipts with registry-provided 32-byte key, by sender
 - HMAC token generation for outgoing payloads by sender
 - HMAC verification of incoming payloads for receiver
 - Reporting invalid payloads back to registry by receiver
