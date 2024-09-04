@@ -103,7 +103,7 @@ Example response:
 ```json
 {
   "env": "prod",
-  "encryption_key": [ ... ],
+  "encryption_key": "jZt54/mk2RjP4qtNekQQyamu4qoEaxCE/qk5fhi5LuQ=",
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
   "receivers": [
@@ -144,7 +144,7 @@ If there are no authorized receivers for the given handles, Versa will return an
 
 #### 2. Encrypt the Receipt
 
-Receipts are encrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
+Receipts are encrypted with the AES-GCM-SIV 256 bit encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
 
 #### 3. Send the Receipt
 
@@ -159,8 +159,8 @@ curl --request POST \
     "sender_client_id": "versa_cid_prod_3633863a5e5d417eb723124b387ec929",
     "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
     "envelope": {
-      "encrypted": [ ... ],
-      "nonce": [ ... ]
+      "encrypted": "ozAUXJFhNlJTlfTAi33J4K55HxonNg2CnbAIbUBornUbsS3WG+AAhdbhdFgyB/WmPXTNgFNDRX5CfAqhAnJoDITBN56rncpv",
+      "nonce": "okYVc6b9GOeGsaMe"
     }
   }'
 ```

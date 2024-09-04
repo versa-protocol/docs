@@ -112,8 +112,8 @@ An example payload that you will receive at your registered address, from the se
 {
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "envelope": {
-    "encrypted": [ ... ],
-    "nonce": [ ... ]
+    "encrypted": "ozAUXJFhNlJTlfTAi33J4K55HxonNg2CnbAIbUBornUbsS3WG+AAhdbhdFgyB/WmPXTNgFNDRX5CfAqhAnJoDITBN56rncpv",
+    "nonce": "okYVc6b9GOeGsaMe"
   }
 }
 ```
@@ -142,7 +142,7 @@ Example response:
 
 ```json
 {
-  "key": [ ... ],
+  "key": "jZt54/mk2RjP4qtNekQQyamu4qoEaxCE/qk5fhi5LuQ=",
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
   "handles": {
@@ -161,7 +161,7 @@ The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
 
 #### 3. Decrypt the Receipt
 
-Receipts are decrypted with the AES 256 encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
+Receipts are decrypted with the AES-GCM-SIV 256 bit encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
 
 ## Rendering Receipts
 
