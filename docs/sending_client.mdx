@@ -12,7 +12,7 @@ There are three steps:
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
 
-## Register the Transaction
+## 1. Register the Transaction
 
 Review the [registration specification](/sending#1-register-the-transaction).
 
@@ -33,7 +33,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
   </Tab>
 </TabGroup>
 
-## Encrypt the Receipt
+## 2. Encrypt the Receipt
 
 Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver must check out the key from the registry, confirming that they have up-to-date credentials and authorization for the delivery.
 
@@ -83,7 +83,7 @@ let serde_json = json!(data);
 
 }
 
-````
+    ```
 
   </Tab>
   <Tab title="Java">
@@ -132,9 +132,10 @@ public class Protocol {
   </Tab>
 </TabGroup>
 
-## Send the Receipt
+## 3. Send the Receipt
 
 Review the [sending specification](/sending#3-send-the-receipt).
+
 <TabGroup>
   <Tab title="Rust">
     ```rust
