@@ -387,7 +387,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
 | `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
-| `quantity`             | `nullable float`   | Quantity of items.                                                                                                                                                  |
+| `quantity`             | `nullable number`  | Quantity of items.                                                                                                                                                  |
 | `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
 | `taxes`                | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
 | `metadata`             | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
@@ -571,8 +571,8 @@ Describes a brick-and-mortar location.
 | `region`         | `nullable string` | Two letter region code.                                                                                              |
 | `country`        | `string`          | Two letter ISO 3166 country code.                                                                                    |
 | `postal_code`    | `nullable string` |                                                                                                                      |
-| `lat`            | `nullable int`    |                                                                                                                      |
-| `lon`            | `nullable int`    |                                                                                                                      |
+| `lat`            | `nullable number` |                                                                                                                      |
+| `lon`            | `nullable number` |                                                                                                                      |
 | `tz`             | `nullable string` | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
 
 </article>
@@ -612,7 +612,7 @@ A generic line item.
 | --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `description`   | `string`           | Description of the good / service.                                                                                           |
 | `subtotal`      | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                |
-| `quantity`      | `nullable float`   | Quantity of items.                                                                                                           |
+| `quantity`      | `nullable number`  | Quantity of items.                                                                                                           |
 | `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
 | `taxes`         | `array`            | Array of [tax](#tax) objects.                                                                                                |
@@ -647,11 +647,11 @@ Use line item metadata to track things not otherwise in the schema. E.g. SKU, Si
 
 ### Tax
 
-| Field    | Type             | Description                                                       |
-| -------- | ---------------- | ----------------------------------------------------------------- |
-| `amount` | `int`            | The total tax, in the [smallest currency unit](#currency-values). |
-| `rate`   | `nullable float` | The tax rate, e.g. 0.05 for 5%.                                   |
-| `name`   | `string`         | E.g. 'VAT' or 'GST'.                                              |
+| Field    | Type              | Description                                                       |
+| -------- | ----------------- | ----------------------------------------------------------------- |
+| `amount` | `int`             | The total tax, in the [smallest currency unit](#currency-values). |
+| `rate`   | `nullable number` | The tax rate, e.g. 0.05 for 5%.                                   |
+| `name`   | `string`          | E.g. 'VAT' or 'GST'.                                              |
 
 </article>
 </details>
@@ -669,7 +669,7 @@ To be used for discounts, tip, fees, surchages, tolls.
 | `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive for costs, negative for adjustments. |
 | `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                     |
 | `name`            | `nullable string` | The name of the adjustment.                                                                                                   |
-| `rate`            | `nullable float`  | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
+| `rate`            | `nullable number` | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
 
 </article>
 </details>
