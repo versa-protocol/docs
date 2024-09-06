@@ -15,13 +15,15 @@ Versa receipts are composed of four sections:
 3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 4. [**Payments**](#payments): Payment status of the receipt.
 
+A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versaprotocol/schema](https://www.npmjs.com/package/@versaprotocol/schema) package.
+
 ## Wrapper
 
 Receipts are wrapped in an object that includes the schema version. The overall Versa receipt structure looks like this:
 
 ```json
 {
-  "version": "1.2.0",
+  "schema_version": "1.2.0",
   "header": { ... },
   "itemization": { ... },
   "actions": [ ... ],
@@ -29,13 +31,13 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 }
 ```
 
-| Field         | Type             | Description                                                       |
-| ------------- | ---------------- | ----------------------------------------------------------------- |
-| `version`     | `string`         | Version of the receipt schema; useful for validating the receipt. |
-| `header`      | `object`         | Receipt [header](#header).                                        |
-| `itemization` | `object`         | Receipt [itemization](#itemization) object.                       |
-| `actions`     | `nullable array` | List of [actions](#actions).                                      |
-| `payments`    | `nullable array` | List of [payments](#payments).                                    |
+| Field            | Type             | Description                                                       |
+| ---------------- | ---------------- | ----------------------------------------------------------------- |
+| `schema_version` | `string`         | Version of the receipt schema; useful for validating the receipt. |
+| `header`         | `object`         | Receipt [header](#header).                                        |
+| `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
+| `actions`        | `nullable array` | List of [actions](#actions).                                      |
+| `payments`       | `nullable array` | List of [payments](#payments).                                    |
 
 Below we cover each of these four sections in detail.
 

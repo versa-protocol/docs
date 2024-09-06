@@ -10,7 +10,7 @@ To onboard as a receiver, you'll need to:
 
 1. **[Set up your client](#client-configuration)**
 2. **[Register your customers](#customer-registration)**
-3. **[Collect receipts](#collecting-receipts)**
+3. **[Collect incoming receipts](#collecting-incoming-receipts)**
 4. **[Render receipts](#rendering-receipts)**
 
 ## Client Configuration
@@ -19,7 +19,7 @@ First, you’ll need to [create an account](https://app.versa.org) on Versa.
 
 Just as on the sending end, receivers need to choose how they'd like to receive receipts:
 
-1. Via a **[custodial configuration](#custodial-configuration)**. With this arrangement, you'll receive webhook events containing the receipt JSON at the URL you specify. Versa handles the decryption.
+1. Via a **[custodial configuration](#custodial-configuration)**. With this arrangement, you'll receive webhook events containing the receipt JSON at the URL you specify. Versa performs the decryption.
 2. Via a **[self-hosted configuration](#self-hosted-configuration)**. With this arrangement, the receiver collects and decrypts receipts directly. You'll still receive webhook events, but the webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
 
 The custodial configuration is typically easier for developers to implement quicky. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
@@ -70,13 +70,13 @@ curl --request DELETE \
   }'
 ```
 
-## Collecting Receipts
+## Collecting Incoming Receipts
 
 Once your customers are registered with Versa, incoming receipts that match those customer profiles will start hitting the webhook address you've specified in your client. The contents of this webhook request body depend on whether you've configured a custodial or self-hosted client.
 
 ### Custodial Configuration
 
-If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store and [render them](#rendering-receipts) these receipts within your product.
+If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store and [render](#rendering-receipts) these receipts within your product.
 
 The payload looks like this:
 
@@ -84,9 +84,7 @@ The payload looks like this:
 {
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "receipt": {
-    ...
-  },
+  "receipt": { ... },
   "sender": {
     "name": "Platform Co.",
     "brand_color": "f0C14B",
