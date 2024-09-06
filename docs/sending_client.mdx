@@ -46,26 +46,26 @@ use serde_json::json;
 
 #[derive(Debug, Serialize)]
 pub struct Envelope {
-pub encrypted: String,
-pub nonce: String,
+  pub encrypted: String,
+  pub nonce: String,
 }
 
 /// Generates a 12 byte nonce, suitable for use with the AES-GCM-SIV algorithm
 /// The nonce will be sent to each receiver; while the key is not.
 /// You may choose to generate a new nonce for each receiver, or reuse a nonce for multiple receivers.
 fn generate_nonce() -> [u8; 12] {
-let mut rng = rand::thread_rng();
-let mut nonce = [0u8; 12];
-rng.fill(&mut nonce);
-nonce
+  let mut rng = rand::thread_rng();
+  let mut nonce = [0u8; 12];
+  rng.fill(&mut nonce);
+  nonce
 }
 
 /// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
 pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
-where
-T: Serialize,
+  where
+    T: Serialize,
 {
-let serde_json = json!(data);
+    let serde_json = json!(data);
 
     let nonce_bytes = generate_nonce();
     let nonce = Nonce::from_slice(&nonce_bytes); // unique to each receiver and included in message
@@ -132,14 +132,82 @@ public class Protocol {
 
 ## 3. Send the Receipt
 
-Review the [sending specification](/sending#3-send-the-receipt).
+Review the [sending specification](/sending#3-send-the-receipt). In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry).
 
 <TabGroup>
   <Tab title="Rust">
     ```rust
-    fn main() {
-      println!("Hello, Rust!");
+
+#[derive(Deserialize)]
+pub struct Receiver {
+    pub address: String,
+    pub client_id: String,
+    pub org_id: String,
+    pub secret: String,
+}
+
+#[derive(Serialize)]
+pub struct ReceiverPayload {
+    pub sender_client_id: String,
+    pub receipt_id: String,
+    pub envelope: Envelope,
+}
+
+/// Generate HMAC verification token using receiver secret
+async fn generate_token(body: bytes::Bytes, secret: String) -> String {
+    let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
+    mac.update(body.as_ref());
+    let code_bytes = mac.finalize().into_bytes();
+    let hexdigest = hex::encode(&code_bytes.to_vec());
+    hexdigest
+}
+
+/// Send the encrypted payload (with data and nonce) to a given receiver
+/// This should be repeated for each receiver returned by the registry
+pub fn send_encrypted_payload(
+    receiver: &Receiver,
+    sender_client_id: String,
+    receipt_id: String,
+    envelope: Envelope) -> Result<(),()> {
+
+    let payload = ReceiverPayload {
+        sender_client_id,
+        receipt_id,
+        envelope,
+    };
+
+    let payload_json = serde_json::to_string(&payload).unwrap();
+    let byte_body = bytes::Bytes::from(payload_json.clone());
+    let token = generate_token(byte_body, receiver.secret.clone()).await;
+    let client = reqwest::Client::new();
+    let response_result = client
+        .post(&receiver.address)
+        .header("Content-Type", "application/json")
+        .header("X-Request-Signature", token)
+        .body(payload_json)
+        .send()
+        .await;
+
+    let res = match response_result {
+        Ok(res) => res,
+        Err(e) => {
+            info!("Error placing request: {:?}", e);
+            return Err(());
+        }
+    };
+
+    if res.status().is_success() {
+        info!("Successfully sent data to receiver: {}", receiver.address);
+        return Ok(());
+    } else {
+        let status = res.status();
+        let text = res.text().await.unwrap_or_default();
+        info!("Received an error from the receiver: {} {}", status, text);
     }
+
+    return Err(());
+}
+
     ```
   </Tab>
   <Tab title="Java">
