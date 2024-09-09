@@ -158,8 +158,8 @@ async fn generate_token(body: bytes::Bytes, secret: String) -> String {
     let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
     mac.update(body.as_ref());
     let code_bytes = mac.finalize().into_bytes();
-    let hexdigest = hex::encode(&code_bytes.to_vec());
-    hexdigest
+    let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
+    encoded
 }
 
 /// Send the encrypted payload (with data and nonce) to a given receiver
@@ -212,8 +212,29 @@ pub fn send_encrypted_payload(
   </Tab>
   <Tab title="Java">
     ```java
-    fn main() {
-      println!("Hello, Java!");
+    import javax.crypto.Mac;
+    import javax.crypto.spec.SecretKeySpec;
+    import java.nio.charset.StandardCharsets;
+    import java.util.Base64;
+
+    /// Generate a base64 encoded HMAC verification token using the receiver secret provided by the registry
+    public class HmacUtil {
+        public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
+            String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
+            
+            // Create HMAC key using the provided secret
+            SecretKeySpec secretKeySpec = new SecretKeySpec(receiver_secret.getBytes(StandardCharsets.UTF_8), algorithm);
+
+            // Get an instance of the Mac with the HMAC algorithm
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(secretKeySpec);
+
+            // Generate the HMAC by hashing the payload
+            byte[] hmacBytes = mac.doFinal(payload);
+
+            // Encode the HMAC as a Base64 string (optional, depends on what format you need)
+            return Base64.getEncoder().encodeToString(hmacBytes);
+        }
     }
     ```
   </Tab>
