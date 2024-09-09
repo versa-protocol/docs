@@ -101,10 +101,48 @@ Review the [registration specification](/sending#1-register-the-transaction).
     ```
   </Tab>
   <Tab title="Java">
-    ```java
-    fn main() {
-      println!("Hello, Java!");
-    }
+    ```Java
+
+		// make post request to registry
+		RestTemplate restTemplate = new RestTemplate();
+
+    // Make the HTTP POST request
+    String url = versaRegistryUrl + "/register";
+
+		String credential = "Basic " + versaClientId + ":" + versaClientSecret;
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", "application/json");
+    headers.set("Authorization", credential);
+    headers.set("Content-Type", "application/json");
+
+    // Create the HTTP entity
+    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+
+			try {
+      // Make the HTTP POST request
+      ResponseEntity<String> response = restTemplate.exchange(
+          url,
+          HttpMethod.POST,
+          entity,
+          String.class
+      );
+      if (response.getStatusCode() == HttpStatus.OK) {
+          // Deserialize the response body into ReceiptRegistrationResponse
+          ReceiptRegistrationResponse data = objectMapper.readValue(
+              response.getBody(),
+              ReceiptRegistrationResponse.class
+          );
+					// Successfully deserialized a response from the registry with the receipt_id, transaction_id, env, and receivers
+					System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
+                } else {
+                    // Log the failure status
+                    System.out.println("Received error status from registry: " + response.getStatusCode());
+                }
+            } catch (Exception e) {
+                // Log the error (replace kirk! with a logger)
+                System.out.println("Error during registration: " + e.getMessage());
+            }    
     ```
   </Tab>
 </TabGroup>
