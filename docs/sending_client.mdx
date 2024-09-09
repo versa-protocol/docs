@@ -38,26 +38,26 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 <TabGroup>
   <Tab title="Rust">
     ```rust
-use aes_gcm_siv::{aead::Aead, Aes256GcmSiv, KeyInit, Nonce};
-use base64::prelude::*;
-use rand::Rng;
-use serde::Serialize;
-use serde_json::json;
+    use aes_gcm_siv::{aead::Aead, Aes256GcmSiv, KeyInit, Nonce};
+    use base64::prelude::*;
+    use rand::Rng;
+    use serde::Serialize;
+    use serde_json::json;
 
-#[derive(Debug, Serialize)]
-pub struct Envelope {
-  pub encrypted: String,
-  pub nonce: String,
-}
+    #[derive(Debug, Serialize)]
+    pub struct Envelope {
+        pub encrypted: String,
+        pub nonce: String,
+    }
 
 /// Generates a 12 byte nonce, suitable for use with the AES-GCM-SIV algorithm
 /// The nonce will be sent to each receiver; while the key is not.
 /// You may choose to generate a new nonce for each receiver, or reuse a nonce for multiple receivers.
 fn generate_nonce() -> [u8; 12] {
-  let mut rng = rand::thread_rng();
-  let mut nonce = [0u8; 12];
-  rng.fill(&mut nonce);
-  nonce
+    let mut rng = rand::thread_rng();
+    let mut nonce = [0u8; 12];
+    rng.fill(&mut nonce);
+    nonce
 }
 
 /// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
@@ -137,6 +137,9 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 <TabGroup>
   <Tab title="Rust">
     ```rust
+use base64::prelude::*;
+use hmac::Mac;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct Receiver {
@@ -212,6 +215,8 @@ pub fn send_encrypted_payload(
   </Tab>
   <Tab title="Java">
     ```java
+    package com.yourco.sender;
+
     import javax.crypto.Mac;
     import javax.crypto.spec.SecretKeySpec;
     import java.nio.charset.StandardCharsets;
@@ -221,18 +226,10 @@ pub fn send_encrypted_payload(
     public class HmacUtil {
         public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
             String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
-            
-            // Create HMAC key using the provided secret
             SecretKeySpec secretKeySpec = new SecretKeySpec(receiver_secret.getBytes(StandardCharsets.UTF_8), algorithm);
-
-            // Get an instance of the Mac with the HMAC algorithm
             Mac mac = Mac.getInstance(algorithm);
             mac.init(secretKeySpec);
-
-            // Generate the HMAC by hashing the payload
             byte[] hmacBytes = mac.doFinal(payload);
-
-            // Encode the HMAC as a Base64 string (optional, depends on what format you need)
             return Base64.getEncoder().encodeToString(hmacBytes);
         }
     }
