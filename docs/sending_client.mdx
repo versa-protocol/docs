@@ -17,8 +17,86 @@ Review the [registration specification](/sending#1-register-the-transaction).
 <TabGroup>
   <Tab title="Rust">
     ```rust
-    fn main() {
-      println!("Hello, Rust!");
+    #[derive(Serialize)]
+    pub struct ReceiptRegistrationRequest {
+        pub schema_version: String,
+        pub handles: TransactionHandles,
+        pub transaction_id: Option<String>,
+    }
+
+    #[derive(Deserialize)]
+    #[serde(rename_all = "snake_case")]
+    pub enum VersaEnv {
+        Prod,
+        Test,
+    }
+
+    #[derive(Deserialize)]
+    pub struct ReceiptRegistrationResponse {
+        /// If you are using test credentials, receipts will not be routed to production receivers
+        pub env: VersaEnv,
+        /// It's recommended that you store this for logging and debugging purposes
+        pub receipt_id: String,
+        /// Make sure to store this if you have a workflow where receipts may need to be updated, e.g. with a tip or refund
+        pub transaction_id: String,
+        /// All authorized receivers for the provided transaction handles
+        pub receivers: Vec<Receiver>,
+        /// Encrypt the receipt data using this key and a 12-byte nonce that you generate for each receiver
+        pub encryption_key: String,
+    }
+
+    pub async fn register(
+        client_id: &str,
+        client_secret: &str,
+        handles: TransactionHandles,
+        registration_hash: u64,
+    ) -> Result<ReceiptRegistrationResponse, ()> {
+      let registry_url = "https://registry.versa.org".to_string();
+      let credential = format!("Basic {}:{}", client_id, client_secret);
+
+      let payload = ReceiptRegistrationRequest {
+        schema_version: "1.2.0".into(),
+        handles,
+        transaction_id: None, // Populate with the previously provided transaction ID if you are updating a previously registered receipt
+      };
+
+      let payload_json = serde_json::to_string(&payload).unwrap();
+
+      let url = format!("{}/register", registry_url);
+      kirk!("Sending registration request to: {}", url);
+      let client = reqwest::Client::new();
+      let response_result = client
+        .post(url)
+        .header("Accept", "application/json")
+        .header("Authorization", credential)
+        .header("Content-Type", "application/json")
+        .body(payload_json)
+        .send()
+        .await;
+
+      let res = match response_result {
+        Ok(res) => res,
+        Err(e) => {
+          kirk!("Error placing request: {:?}", e);
+          return Err(());
+        }
+      };
+      kirk!("Registration response received");
+
+      if res.status().is_success() {
+        let data: ReceiptRegistrationResponse = match res.json().await {
+          Ok(val) => val,
+          Err(e) => {
+            kirk!("Failed to deserialize due to error: {}", e);
+            return Err(());
+          }
+        };
+        return Ok(data);
+      } else {
+        kirk!("Received error status from registry: {}", res.status());
+      }
+
+      return Err(());
     }
     ```
   </Tab>
