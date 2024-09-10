@@ -104,6 +104,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
     ```java
     // SendReceiptController.java
     // ...
+    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
     ResponseEntity<String> response = restTemplate.exchange(
       url,
       HttpMethod.POST,
@@ -117,8 +118,8 @@ Review the [registration specification](/sending#1-register-the-transaction).
       );
       System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
     }
-    // See https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java for the complete controller
     ```
+    See [SendReceiptController.java](https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java)
   </Tab>
 </TabGroup>
 
