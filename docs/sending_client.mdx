@@ -104,42 +104,19 @@ Review the [registration specification](/sending#1-register-the-transaction).
     ```java
     // SendReceiptController.java
     // ...
-
-    // POST transaction handles and receipt metadata to registry
-    RestTemplate restTemplate = new RestTemplate();
-
-    String url = versaRegistryUrl + "/register";
-
-    String credential = "Basic " + versaClientId + ":" + versaClientSecret;
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Accept", "application/json");
-    headers.set("Authorization", credential);
-    headers.set("Content-Type", "application/json");
-
-    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
-
-      try {
-      ResponseEntity<String> response = restTemplate.exchange(
-          url,
-          HttpMethod.POST,
-          entity,
-          String.class
+    ResponseEntity<String> response = restTemplate.exchange(
+      url,
+      HttpMethod.POST,
+      entity,
+      String.class
+    );
+    if (response.getStatusCode() == HttpStatus.OK) {
+      ReceiptRegistrationResponse data = objectMapper.readValue(
+          response.getBody(),
+          ReceiptRegistrationResponse.class
       );
-      if (response.getStatusCode() == HttpStatus.OK) {
-          // Deserialize the response body into ReceiptRegistrationResponse
-          ReceiptRegistrationResponse data = objectMapper.readValue(
-              response.getBody(),
-              ReceiptRegistrationResponse.class
-          );
-          // Successfully deserialized a response from the registry with the receipt_id, transaction_id, env, and receivers
-          System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
-                } else {
-                    System.out.println("Received error status from registry: " + response.getStatusCode());
-                }
-            } catch (Exception e) {
-                System.out.println("Error during registration: " + e.getMessage());
-            }    
+      System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
+    }
     ```
   </Tab>
 </TabGroup>
