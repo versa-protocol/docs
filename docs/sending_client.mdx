@@ -214,11 +214,11 @@ public class Protocol {
     /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
     /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
     public static byte[] encrypt(
-        byte[]      keyBytes,
-        byte[]      nonce,
-        String      input)
+        byte[] keyBytes,
+        byte[] nonce,
+        String input)
     {
-        Key                     key;
+        Key key;
 
         key = new SecretKeySpec(keyBytes, "AES");
 
@@ -235,7 +235,6 @@ public class Protocol {
             return new ByteArrayOutputStream( ).toByteArray();
         }
     }
-
 }
 
     ```
@@ -320,7 +319,6 @@ pub fn send_encrypted_payload(
         let text = res.text().await.unwrap_or_default();
         info!("Received an error from the receiver: {} {}", status, text);
     }
-
     return Err(());
 }
 
