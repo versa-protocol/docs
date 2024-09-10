@@ -348,59 +348,38 @@ pub fn send_encrypted_payload(
 
     // SendReceiptController.java
     // ...
-    
-                // The below snippet invokes the encryption step from above and generateHmac to send receipts to each receiver
-                ReceiptRegistrationResponse data = objectMapper.readValue(
-                        response.getBody(),
-                        ReceiptRegistrationResponse.class);
-                // Log the success status
-                System.out.println("Successfully registered receipt with registry: " + data.receipt_id + "\nReceived "
-                        + data.receivers.size() + " receivers");
 
-                for (Receiver receiver : data.receivers) {
-                    byte[] nonce = Nonce.generate();
-                    byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce,
-                            payload.receipt_json);
-                    Envelope envelope = new Envelope(nonce, encrypted_data);
-                    ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id,
-                            data.transaction_id, envelope);
+    // The below snippet invokes the encryption step from above and generateHmac to send receipts to each receiver
+    ReceiptRegistrationResponse data = objectMapper.readValue(
+            response.getBody(),
+            ReceiptRegistrationResponse.class);
 
-                    /// Post to the receiver address with an HMAC verification token from HMACUtil
-                    // Make the HTTP POST request
-                    String receiverUrl = receiver.address;
-                    String hmac = HmacUtil.generateHmac(receiver.secret,
-                            objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
+    for (Receiver receiver : data.receivers) {
+        byte[] nonce = Nonce.generate(); // any 12-byte nonce
+        byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce,
+                payload.receipt_json);
+        Envelope envelope = new Envelope(nonce, encrypted_data);
+        ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id, data.transaction_id, envelope);
 
-                    // Set headers
-                    HttpHeaders receiverHeaders = new HttpHeaders();
-                    receiverHeaders.set("Accept", "application/json");
-                    receiverHeaders.set("Content-Type", "application/json");
-                    receiverHeaders.set("X-Request-Signature", hmac);
+        /// Post to the receiver address with an HMAC verification token from HmacUtil
+        String receiverUrl = receiver.address;
+        String hmac = HmacUtil.generateHmac(receiver.secret,
+                objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
 
-                    // Create the HTTP entity
-                    HttpEntity<ReceiverPayload> receiverEntity = new HttpEntity<>(receiverPayload, receiverHeaders);
+        HttpHeaders receiverHeaders = new HttpHeaders();
+        receiverHeaders.set("Accept", "application/json");
+        receiverHeaders.set("Content-Type", "application/json");
+        receiverHeaders.set("X-Request-Signature", hmac);
 
-                    try {
-                        // Make the HTTP POST request
-                        ResponseEntity<String> receiverResponse = restTemplate.exchange(
-                                receiverUrl,
-                                HttpMethod.POST,
-                                receiverEntity,
-                                String.class);
-                        // Check for successful response status
-                        if (receiverResponse.getStatusCode() == HttpStatus.OK) {
-                            // Log the success status
-                            System.out.println("Successfully sent receipt to receiver: " + receiver.address);
-                        } else {
-                            // Log the failure status
-                            System.out.println(
-                                    "Received error status from receiver: " + receiverResponse.getStatusCode());
-                        }
-                    } catch (Exception e) {
-                        // Log the error (replace kirk! with a logger)
-                        System.out.println("Error during sending receipt to receiver: " + e.getMessage());
-                    }
-                }
+        HttpEntity<ReceiverPayload> receiverEntity = new HttpEntity<>(receiverPayload, receiverHeaders);
+
+        ResponseEntity<String> receiverResponse = restTemplate.exchange(
+          receiverUrl,
+          HttpMethod.POST,
+          receiverEntity,
+          String.class
+        );
+      }
 
     ```
   </Tab>
