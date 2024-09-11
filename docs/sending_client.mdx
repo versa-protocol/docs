@@ -17,41 +17,12 @@ Review the [registration specification](/sending#1-register-the-transaction).
 <TabGroup>
   <Tab title="Rust">
     ```rust
-    #[derive(Serialize)]
-    pub struct ReceiptRegistrationRequest {
-        pub schema_version: String,
-        pub handles: TransactionHandles,
-        pub transaction_id: Option<String>,
-    }
-
-    #[derive(Deserialize)]
-    #[serde(rename_all = "snake_case")]
-    pub enum VersaEnv {
-        Prod,
-        Test,
-    }
-
-    #[derive(Deserialize)]
-    pub struct ReceiptRegistrationResponse {
-        /// If you are using test credentials, receipts will not be routed to production receivers
-        pub env: VersaEnv,
-        /// It's recommended that you store this for logging and debugging purposes
-        pub receipt_id: String,
-        /// Make sure to store this if you have a workflow where receipts may need to be updated, e.g. with a tip or refund
-        pub transaction_id: String,
-        /// All authorized receivers for the provided transaction handles
-        pub receivers: Vec<Receiver>,
-        /// Encrypt the receipt data using this key and a 12-byte nonce that you generate for each receiver
-        pub encryption_key: String,
-    }
 
     pub async fn register(
         client_id: &str,
         client_secret: &str,
         handles: TransactionHandles,
-        registration_hash: u64,
-    ) -> Result<ReceiptRegistrationResponse, ()> {
-      let registry_url = "https://registry.versa.org".to_string();
+    ) -> () {
       let credential = format!("Basic {}:{}", client_id, client_secret);
 
       let payload = ReceiptRegistrationRequest {
@@ -62,44 +33,18 @@ Review the [registration specification](/sending#1-register-the-transaction).
 
       let payload_json = serde_json::to_string(&payload).unwrap();
 
-      let url = format!("{}/register", registry_url);
       kirk!("Sending registration request to: {}", url);
       let client = reqwest::Client::new();
       let response_result = client
-        .post(url)
+        .post("https://registry.versa.org/register")
         .header("Accept", "application/json")
         .header("Authorization", credential)
         .header("Content-Type", "application/json")
         .body(payload_json)
         .send()
         .await;
-
-      let res = match response_result {
-        Ok(res) => res,
-        Err(e) => {
-          kirk!("Error placing request: {:?}", e);
-          return Err(());
-        }
-      };
-      kirk!("Registration response received");
-
-      if res.status().is_success() {
-        let data: ReceiptRegistrationResponse = match res.json().await {
-          Ok(val) => val,
-          Err(e) => {
-            kirk!("Failed to deserialize due to error: {}", e);
-            return Err(());
-          }
-        };
-        return Ok(data);
-      } else {
-        kirk!("Received error status from registry: {}", res.status());
-      }
-
-      return Err(());
     }
     ```
-
   </Tab>
   <Tab title="Java">
   <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
@@ -136,89 +81,56 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
     use serde::Serialize;
     use serde_json::json;
 
-    #[derive(Debug, Serialize)]
-    pub struct Envelope {
-        pub encrypted: String,
-        pub nonce: String,
-    }
-
-/// Generates a 12 byte nonce, suitable for use with the AES-GCM-SIV algorithm
-/// The nonce will be sent to each receiver; while the key is not.
-/// You may choose to generate a new nonce for each receiver, or reuse a nonce for multiple receivers.
-fn generate_nonce() -> [u8; 12] {
-let mut rng = rand::thread_rng();
-let mut nonce = [0u8; 12];
-rng.fill(&mut nonce);
-nonce
-}
-
-/// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
-pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
-where
-T: Serialize,
-{
-let serde_json = json!(data);
-
-    let nonce_bytes = generate_nonce();
-    let nonce = Nonce::from_slice(&nonce_bytes); // unique to each receiver and included in message
-    let cipher = Aes256GcmSiv::new(key[..].into());
-    let encrypted = match cipher.encrypt(nonce, canonicalized.as_bytes()) {
-        Ok(ciphertext) => BASE64_STANDARD.encode(ciphertext),
-        Err(e) => panic!("Error encrypting data: {}", e),
-    };
-    Envelope {
-        encrypted,
-        nonce: BASE64_STANDARD.encode(nonce_bytes),
-    }
-
-}
-
+    /// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
+    pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
+    where
+    T: Serialize,
+    {
+      let serde_json = json!(data);
+      let nonce_bytes = generate_nonce();
+      let nonce = Nonce::from_slice(&nonce_bytes); // unique to each receiver and included in message
+      let cipher = Aes256GcmSiv::new(key[..].into());
+      let encrypted = match cipher.encrypt(nonce, canonicalized.as_bytes()) {
+          Ok(ciphertext) => BASE64_STANDARD.encode(ciphertext),
+          Err(e) => panic!("Error encrypting data: {}", e),
+      };
+      Envelope {
+          encrypted,
+          nonce: BASE64_STANDARD.encode(nonce_bytes),
+      }
+  }
     ```
 
   </Tab>
   <Tab title="Java">
     ```java
-package com.yourco.sender;
+    package com.yourco.sender;
 
-import java.io.ByteArrayOutputStream;
-import java.security.Key;
+    import java.io.ByteArrayOutputStream;
+    import java.security.Key;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
+    import javax.crypto.Cipher;
+    import javax.crypto.spec.GCMParameterSpec;
+    import javax.crypto.spec.SecretKeySpec;
+    import java.nio.charset.StandardCharsets;
 
-public class Protocol {
-
-    /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
-    /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
-    public static byte[] encrypt(
-        byte[] keyBytes,
-        byte[] nonce,
-        String input)
-    {
-        Key key;
-
-        key = new SecretKeySpec(keyBytes, "AES");
-
-        try {
+    public class Protocol {
+        /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
+        /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
+        public static byte[] encrypt(
+            byte[] keyBytes,
+            byte[] nonce,
+            String input) throws Exception 
+        {
+            Key key = new SecretKeySpec(keyBytes, "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM-SIV/NoPadding", "BC");
-            // GCMParameterSpec for AES-GCM-SIV with IV and tag length
-            // Note that the tag (or nonce) should always be of length 12
             GCMParameterSpec gcmSpec = new GCMParameterSpec(12 * 8, nonce);
             cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
             byte[] encrypted =  cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
-            return encrypted;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ByteArrayOutputStream( ).toByteArray();
+            return encrypted
         }
     }
-
-}
-
     ```
-
   </Tab>
 </TabGroup>
 
@@ -229,79 +141,46 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 <TabGroup>
   <Tab title="Rust">
     ```rust
-use base64::prelude::*;
-use hmac::Mac;
-use serde::{Deserialize, Serialize};
+    use base64::prelude::*;
+    use hmac::Mac;
+    use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
-pub struct Receiver {
-pub address: String,
-pub client_id: String,
-pub org_id: String,
-pub secret: String,
-}
-
-#[derive(Serialize)]
-pub struct ReceiverPayload {
-pub sender_client_id: String,
-pub receipt_id: String,
-pub envelope: Envelope,
-}
-
-/// Generate HMAC verification token using receiver secret
-async fn generate_token(body: bytes::Bytes, secret: String) -> String {
-let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
-mac.update(body.as_ref());
-let code_bytes = mac.finalize().into_bytes();
-let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
-encoded
-}
-
-/// Send the encrypted payload (with data and nonce) to a given receiver
-/// This should be repeated for each receiver returned by the registry
-pub fn send_encrypted_payload(
-receiver: &Receiver,
-sender_client_id: String,
-receipt_id: String,
-envelope: Envelope) -> Result<(),()> {
-
-    let payload = ReceiverPayload {
-        sender_client_id,
-        receipt_id,
-        envelope,
-    };
-
-    let payload_json = serde_json::to_string(&payload).unwrap();
-    let byte_body = bytes::Bytes::from(payload_json.clone());
-    let token = generate_token(byte_body, receiver.secret.clone()).await;
-    let client = reqwest::Client::new();
-    let response_result = client
-        .post(&receiver.address)
-        .header("Content-Type", "application/json")
-        .header("X-Request-Signature", token)
-        .body(payload_json)
-        .send()
-        .await;
-
-    let res = match response_result {
-        Ok(res) => res,
-        Err(e) => {
-            info!("Error placing request: {:?}", e);
-            return Err(());
-        }
-    };
-
-    if res.status().is_success() {
-        info!("Successfully sent data to receiver: {}", receiver.address);
-        return Ok(());
-    } else {
-        let status = res.status();
-        let text = res.text().await.unwrap_or_default();
-        info!("Received an error from the receiver: {} {}", status, text);
+    /// Generate HMAC verification token using receiver secret
+    async fn generate_token(body: bytes::Bytes, secret: String) -> String {
+      let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
+      mac.update(body.as_ref());
+      let code_bytes = mac.finalize().into_bytes();
+      let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
+      encoded
     }
-    return Err(());
 
-}
+    /// Send the encrypted payload (with data and nonce) to a given receiver
+    /// This should be repeated for each receiver returned by the registry
+    pub fn send_encrypted_payload(
+      receiver: &Receiver,
+      sender_client_id: String,
+      receipt_id: String,
+      envelope: Envelope
+    ) -> () {
+
+      let payload = ReceiverPayload {
+          sender_client_id,
+          receipt_id,
+          envelope,
+      };
+
+      let payload_json = serde_json::to_string(&payload).unwrap();
+      let byte_body = bytes::Bytes::from(payload_json.clone());
+      let token = generate_token(byte_body, receiver.secret.clone()).await;
+      let client = reqwest::Client::new();
+      let response_result = client
+          .post(&receiver.address)
+          .header("Content-Type", "application/json")
+          .header("X-Request-Signature", token)
+          .body(payload_json)
+          .send()
+          .await;
+    }
 
     ```
 
@@ -309,14 +188,7 @@ envelope: Envelope) -> Result<(),()> {
   <Tab title="Java">
     ```java
     // HmacUtil.java
-    package com.yourco.sender;
 
-    import javax.crypto.Mac;
-    import javax.crypto.spec.SecretKeySpec;
-    import java.nio.charset.StandardCharsets;
-    import java.util.Base64;
-
-    /// Generate a base64 encoded HMAC verification token using the receiver secret provided by the registry
     public class HmacUtil {
         public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
             String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
@@ -331,7 +203,6 @@ envelope: Envelope) -> Result<(),()> {
     // SendReceiptController.java
     // ...
 
-    // The below snippet invokes the encryption step from above and generateHmac to send receipts to each receiver
     ReceiptRegistrationResponse data = objectMapper.readValue(
             response.getBody(),
             ReceiptRegistrationResponse.class);
@@ -362,8 +233,6 @@ envelope: Envelope) -> Result<(),()> {
           String.class
         );
       }
-
     ```
-
   </Tab>
 </TabGroup>
