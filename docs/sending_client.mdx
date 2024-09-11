@@ -48,23 +48,23 @@ Review the [registration specification](/sending#1-register-the-transaction).
 
   </Tab>
   <Tab title="Java">
-  <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
-    ```java
-    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
-    ResponseEntity<String> response = restTemplate.exchange(
-      url,
-      HttpMethod.POST,
-      entity,
-      String.class
-    );
-    if (response.getStatusCode() == HttpStatus.OK) {
-      ReceiptRegistrationResponse data = objectMapper.readValue(
-          response.getBody(),
-          ReceiptRegistrationResponse.class
+    <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+      ```java
+      HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+      ResponseEntity<String> response = restTemplate.exchange(
+        url,
+        HttpMethod.POST,
+        entity,
+        String.class
       );
-      System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
-    }
-    ```
+      if (response.getStatusCode() == HttpStatus.OK) {
+        ReceiptRegistrationResponse data = objectMapper.readValue(
+            response.getBody(),
+            ReceiptRegistrationResponse.class
+        );
+        System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
+      }
+      ```
     </CodeWrap>
   </Tab>
 </TabGroup>
@@ -99,10 +99,8 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
           encrypted,
           nonce: BASE64_STANDARD.encode(nonce_bytes),
       }
-
-}
-
-````
+    }
+    ```
 
   </Tab>
   <Tab title="Java">
@@ -190,9 +188,9 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 
   </Tab>
   <Tab title="Java">
-    ```java
-    // HmacUtil.java
+    <CodeWrap fileName="HmacUtil.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
 
+    ```java
     public class HmacUtil {
         public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
             String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
@@ -203,10 +201,10 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
             return Base64.getEncoder().encodeToString(hmacBytes);
         }
     }
-
-    // SendReceiptController.java
-    // ...
-
+    ```
+    </CodeWrap>
+    <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+    ```java
     ReceiptRegistrationResponse data = objectMapper.readValue(
             response.getBody(),
             ReceiptRegistrationResponse.class);
@@ -238,7 +236,7 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
         );
       }
     ```
+    </CodeWrap>
 
   </Tab>
 </TabGroup>
-````
