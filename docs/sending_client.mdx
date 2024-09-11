@@ -45,6 +45,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
         .await;
     }
     ```
+
   </Tab>
   <Tab title="Java">
   <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
@@ -98,8 +99,10 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
           encrypted,
           nonce: BASE64_STANDARD.encode(nonce_bytes),
       }
-  }
-    ```
+
+}
+
+````
 
   </Tab>
   <Tab title="Java">
@@ -120,7 +123,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
         public static byte[] encrypt(
             byte[] keyBytes,
             byte[] nonce,
-            String input) throws Exception 
+            String input) throws Exception
         {
             Key key = new SecretKeySpec(keyBytes, "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM-SIV/NoPadding", "BC");
@@ -131,6 +134,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
         }
     }
     ```
+
   </Tab>
 </TabGroup>
 
@@ -234,5 +238,7 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
         );
       }
     ```
+
   </Tab>
 </TabGroup>
+````
