@@ -12,7 +12,7 @@ Developer documentation for implementing a Versa sender client on your stack. Th
 
 ## 1. Register the Transaction
 
-Review the [registration specification](/sending#1-register-the-transaction).
+Upon completing a sale, you'll want to register the transaction with Versa. Review the [registration specification](/sending#1-register-the-transaction) for details. You'll pass the relevant customer handles to the '/register' endpoint:
 
 <TabGroup>
   <Tab title="Rust">
@@ -74,6 +74,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
     );
     ```
     </CodeWrap>
+
   </Tab>
 </TabGroup>
 
@@ -112,6 +113,8 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 
   </Tab>
   <Tab title="Java">
+      <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/Protocol.java">
+
     ```java
     package com.yourco.sender;
 
@@ -140,6 +143,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
         }
     }
     ```
+    </CodeWrap>
 
   </Tab>
 </TabGroup>
