@@ -150,7 +150,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 
 ## 3. Send the Receipt
 
-Review the [sending specification](/sending#3-send-the-receipt). In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry).
+Review the [sending specification](/sending#3-send-the-receipt). In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data.
 
 <TabGroup>
   <Tab title="Rust">
@@ -217,11 +217,6 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
     </CodeWrap>
     <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
     ```java
-    ReceiptRegistrationResponse data = objectMapper.readValue(
-            response.getBody(),
-            ReceiptRegistrationResponse.class);
-
-    for (Receiver receiver : data.receivers) {
         byte[] nonce = Nonce.generate(); // any 12-byte nonce
         byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce,
                 payload.receipt_json);
@@ -246,7 +241,6 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
           receiverEntity,
           String.class
         );
-      }
     ```
     </CodeWrap>
 
