@@ -49,22 +49,30 @@ Review the [registration specification](/sending#1-register-the-transaction).
   </Tab>
   <Tab title="Java">
     <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
-      ```java
-      HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
-      ResponseEntity<String> response = restTemplate.exchange(
-        url,
-        HttpMethod.POST,
-        entity,
-        String.class
-      );
-      if (response.getStatusCode() == HttpStatus.OK) {
-        ReceiptRegistrationResponse data = objectMapper.readValue(
-            response.getBody(),
-            ReceiptRegistrationResponse.class
-        );
-        System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
-      }
-      ```
+    ```java
+    ReceiptRegistrationRequest registrationPayload = new ReceiptRegistrationRequest(
+      schema_version,
+      transaction_handles,
+      transaction_id
+    );
+
+    String credential = "Basic " + versaClientId + ":" + versaClientSecret;
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", "application/json");
+    headers.set("Authorization", credential);
+    headers.set("Content-Type", "application/json");
+
+    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> response = restTemplate.exchange(
+      "https://registry.versa.org/register",
+      HttpMethod.POST,
+      entity,
+      String.class
+    );
+    ```
     </CodeWrap>
   </Tab>
 </TabGroup>
