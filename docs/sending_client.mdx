@@ -99,11 +99,11 @@ Review the [registration specification](/sending#1-register-the-transaction).
       return Err(());
     }
     ```
+
   </Tab>
   <Tab title="Java">
+  <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
     ```java
-    // SendReceiptController.java
-    // ...
     HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
     ResponseEntity<String> response = restTemplate.exchange(
       url,
@@ -119,7 +119,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
       System.out.println("Successfully registered receipt with registry: " + data.receipt_id);
     }
     ```
-    See [SendReceiptController.java](https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java)
+    </CodeWrap>
   </Tab>
 </TabGroup>
 
@@ -146,18 +146,18 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 /// The nonce will be sent to each receiver; while the key is not.
 /// You may choose to generate a new nonce for each receiver, or reuse a nonce for multiple receivers.
 fn generate_nonce() -> [u8; 12] {
-    let mut rng = rand::thread_rng();
-    let mut nonce = [0u8; 12];
-    rng.fill(&mut nonce);
-    nonce
+let mut rng = rand::thread_rng();
+let mut nonce = [0u8; 12];
+rng.fill(&mut nonce);
+nonce
 }
 
 /// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
 pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
-  where
-    T: Serialize,
+where
+T: Serialize,
 {
-    let serde_json = json!(data);
+let serde_json = json!(data);
 
     let nonce_bytes = generate_nonce();
     let nonce = Nonce::from_slice(&nonce_bytes); // unique to each receiver and included in message
@@ -214,6 +214,7 @@ public class Protocol {
             return new ByteArrayOutputStream( ).toByteArray();
         }
     }
+
 }
 
     ```
@@ -234,35 +235,35 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct Receiver {
-    pub address: String,
-    pub client_id: String,
-    pub org_id: String,
-    pub secret: String,
+pub address: String,
+pub client_id: String,
+pub org_id: String,
+pub secret: String,
 }
 
 #[derive(Serialize)]
 pub struct ReceiverPayload {
-    pub sender_client_id: String,
-    pub receipt_id: String,
-    pub envelope: Envelope,
+pub sender_client_id: String,
+pub receipt_id: String,
+pub envelope: Envelope,
 }
 
 /// Generate HMAC verification token using receiver secret
 async fn generate_token(body: bytes::Bytes, secret: String) -> String {
-    let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
-    mac.update(body.as_ref());
-    let code_bytes = mac.finalize().into_bytes();
-    let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
-    encoded
+let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
+mac.update(body.as_ref());
+let code_bytes = mac.finalize().into_bytes();
+let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
+encoded
 }
 
 /// Send the encrypted payload (with data and nonce) to a given receiver
 /// This should be repeated for each receiver returned by the registry
 pub fn send_encrypted_payload(
-    receiver: &Receiver,
-    sender_client_id: String,
-    receipt_id: String,
-    envelope: Envelope) -> Result<(),()> {
+receiver: &Receiver,
+sender_client_id: String,
+receipt_id: String,
+envelope: Envelope) -> Result<(),()> {
 
     let payload = ReceiverPayload {
         sender_client_id,
@@ -299,9 +300,11 @@ pub fn send_encrypted_payload(
         info!("Received an error from the receiver: {} {}", status, text);
     }
     return Err(());
+
 }
 
     ```
+
   </Tab>
   <Tab title="Java">
     ```java
@@ -361,5 +364,6 @@ pub fn send_encrypted_payload(
       }
 
     ```
+
   </Tab>
 </TabGroup>
