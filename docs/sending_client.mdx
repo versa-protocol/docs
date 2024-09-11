@@ -48,7 +48,7 @@ Review the [registration specification](/sending#1-register-the-transaction).
 
   </Tab>
   <Tab title="Java">
-    <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
       ```java
       HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
       ResponseEntity<String> response = restTemplate.exchange(
@@ -188,7 +188,7 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 
   </Tab>
   <Tab title="Java">
-    <CodeWrap fileName="HmacUtil.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
+    <CodeWrap title="HmacUtil.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
 
     ```java
     public class HmacUtil {
@@ -203,7 +203,7 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
     }
     ```
     </CodeWrap>
-    <CodeWrap fileName="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
     ```java
     ReceiptRegistrationResponse data = objectMapper.readValue(
             response.getBody(),
