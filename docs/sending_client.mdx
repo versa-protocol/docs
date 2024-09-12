@@ -4,7 +4,10 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently offer client libraries for Rust and [Java](https://github.com/versa-protocol/sender-java).
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for Rust and [Java](https://github.com/versa-protocol/sender-java). Contact us if you'd like assistance with another language.
+
+> [!TIP]
+> Looking for a quicker start? You can use our [custodial configuration](/sending#custodial-configuration) for faster onboarding.
 
 There are three actions a Versa sender client performs:
 
@@ -12,12 +15,9 @@ There are three actions a Versa sender client performs:
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
 
-> [!TIP]
-> Not a developer? You can use our [custodial configuration](/sending#custodial-configuration) to get started.
-
 ## 1. Register the Transaction
 
-Upon completing a sale, you'll register the transaction with Versa. You'll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URL indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
+Upon completing a sale, you'll register the transaction with Versa. You'll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URLs indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
 
 <TabGroup>
   <Tab title="Rust">
@@ -151,7 +151,7 @@ Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symm
 
 ## 3. Send the Receipt
 
-In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data. Review the [sending specification](/sending#3-send-the-receipt) for details.
+In this final step, the client makes a `POST` request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data. Review the [sending specification](/sending#3-send-the-receipt) for details.
 
 <TabGroup>
   <Tab title="Rust">
