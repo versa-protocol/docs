@@ -32,7 +32,6 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
     let payload_json = serde_json::to_string(&payload).unwrap();
 
-    kirk!("Sending registration request to: {}", url);
     let client = reqwest::Client::new();
     let response_result = client
       .post("https://registry.versa.org/register")
