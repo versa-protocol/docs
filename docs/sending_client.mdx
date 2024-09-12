@@ -4,7 +4,7 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently offer client libraries for Rust and [Java](https://github.com/versa-protocol/sender-java) Not a developer? You can use our [custodial configuration](/sending#custodial-configuration) to get started.
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently offer client libraries for Rust and [Java](https://github.com/versa-protocol/sender-java).
 
 There are three actions a Versa sender client performs:
 
@@ -12,9 +12,12 @@ There are three actions a Versa sender client performs:
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
 
+> [!TIP]
+> Not a developer? You can use our [custodial configuration](/sending#custodial-configuration) to get started.
+
 ## 1. Register the Transaction
 
-Upon completing a sale, you'll want to register the transaction with Versa. You'll pass the relevant customer handles, via a standard POST request, to the '/register' endpoint. If there are matched receivers, Versa will return the URL indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
+Upon completing a sale, you'll register the transaction with Versa. You'll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URL indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
 
 <TabGroup>
   <Tab title="Rust">
