@@ -67,7 +67,7 @@ You'll first need an active sending [client](https://app.versa.org/client).
 
 #### 1. Register the Transaction
 
-Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the url indicating where to post the receipt.
+Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the URL indicating where to post the receipt.
 
 Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`. You must send at least one handle, and up to the full set of four. Versa will return matches for any of the handles independently, with the exception of `card_last_four` (as `card_last_four` is never unique).
 
@@ -135,7 +135,7 @@ Example response:
 
 | Field       | Type     | Description                                                   |
 | ----------- | -------- | ------------------------------------------------------------- |
-| `address`   | `string` | The url where you'll post the encrypted receipt.              |
+| `address`   | `string` | The URL where you'll post the encrypted receipt.              |
 | `client_id` | `string` | The id of the receiving client.                               |
 | `org_id`    | `string` | The id of the receiving org (orgs can have multiple clients). |
 | `secret`    | `string` | Used for HMAC verification.                                   |

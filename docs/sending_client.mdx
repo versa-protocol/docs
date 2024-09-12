@@ -4,7 +4,9 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a Versa sender client on your stack. There are three steps:
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently offer client libraries for Rust and [Java](https://github.com/versa-protocol/sender-java) Not a developer? You can use our [custodial configuration](/sending#custodial-configuration) to get started.
+
+There are three actions a Versa sender client performs:
 
 1. **[Register the Transaction](#1-register-the-transaction)**
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
@@ -12,38 +14,30 @@ Developer documentation for implementing a Versa sender client on your stack. Th
 
 ## 1. Register the Transaction
 
-Upon completing a sale, you'll want to register the transaction with Versa. Review the [registration specification](/sending#1-register-the-transaction) for details. You'll pass the relevant customer handles to the '/register' endpoint:
+Upon completing a sale, you'll want to register the transaction with Versa. You'll pass the relevant customer handles, via a standard POST request, to the '/register' endpoint. If there are matched receivers, Versa will return the URL indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
 
 <TabGroup>
   <Tab title="Rust">
 
     ```rust
-    pub async fn register(
-      client_id: &str,
-      client_secret: &str,
-      handles: TransactionHandles,
-    ) -> () {
-      let credential = format!("Basic {}:{}", client_id, client_secret);
+    let payload = ReceiptRegistrationRequest {
+      schema_version: "1.2.0".into(),
+      handles,
+      transaction_id: None,
+    };
 
-      let payload = ReceiptRegistrationRequest {
-        schema_version: "1.2.0".into(),
-        handles,
-        transaction_id: None, // Populate with the previously provided transaction ID if you are updating a previously registered receipt
-      };
+    let payload_json = serde_json::to_string(&payload).unwrap();
 
-      let payload_json = serde_json::to_string(&payload).unwrap();
-
-      kirk!("Sending registration request to: {}", url);
-      let client = reqwest::Client::new();
-      let response_result = client
-        .post("https://registry.versa.org/register")
-        .header("Accept", "application/json")
-        .header("Authorization", credential)
-        .header("Content-Type", "application/json")
-        .body(payload_json)
-        .send()
-        .await;
-    }
+    kirk!("Sending registration request to: {}", url);
+    let client = reqwest::Client::new();
+    let response_result = client
+      .post("https://registry.versa.org/register")
+      .header("Accept", "application/json")
+      .header("Authorization", credential)
+      .header("Content-Type", "application/json")
+      .body(payload_json)
+      .send()
+      .await;
     ```
 
   </Tab>
@@ -83,7 +77,7 @@ Upon completing a sale, you'll want to register the transaction with Versa. Revi
 
 ## 2. Encrypt the Receipt
 
-Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver must check out the key from the registry, confirming that they have up-to-date credentials and authorization for the delivery.
+Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symmetric encryption of receipts. The receiver must check out the key from the registry, confirming that they have up-to-date credentials and authorization for the delivery.
 
 <TabGroup>
   <Tab title="Rust">
@@ -154,7 +148,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 
 ## 3. Send the Receipt
 
-Review the [sending specification](/sending#3-send-the-receipt). In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data.
+In this final step, the client makes a POST request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data. Review the [sending specification](/sending#3-send-the-receipt) for details.
 
 <TabGroup>
   <Tab title="Rust">
@@ -200,7 +194,6 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
           .send()
           .await;
     }
-
     ```
 
   </Tab>
