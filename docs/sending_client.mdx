@@ -16,12 +16,12 @@ Upon completing a sale, you'll want to register the transaction with Versa. Revi
 
 <TabGroup>
   <Tab title="Rust">
-    ```rust
 
+    ```rust
     pub async fn register(
-        client_id: &str,
-        client_secret: &str,
-        handles: TransactionHandles,
+      client_id: &str,
+      client_secret: &str,
+      handles: TransactionHandles,
     ) -> () {
       let credential = format!("Basic {}:{}", client_id, client_secret);
 
@@ -47,32 +47,35 @@ Upon completing a sale, you'll want to register the transaction with Versa. Revi
     ```
 
   </Tab>
+
   <Tab title="Java">
     <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
-    ```java
-    ReceiptRegistrationRequest registrationPayload = new ReceiptRegistrationRequest(
-      schema_version,
-      transaction_handles,
-      transaction_id
-    );
 
-    String credential = "Basic " + versaClientId + ":" + versaClientSecret;
+      ```java
+      ReceiptRegistrationRequest registrationPayload = new ReceiptRegistrationRequest(
+        schema_version,
+        transaction_handles,
+        transaction_id
+      );
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Accept", "application/json");
-    headers.set("Authorization", credential);
-    headers.set("Content-Type", "application/json");
+      String credential = "Basic " + versaClientId + ":" + versaClientSecret;
 
-    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Accept", "application/json");
+      headers.set("Authorization", credential);
+      headers.set("Content-Type", "application/json");
 
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> response = restTemplate.exchange(
-      "https://registry.versa.org/register",
-      HttpMethod.POST,
-      entity,
-      String.class
-    );
-    ```
+      HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+
+      RestTemplate restTemplate = new RestTemplate();
+      ResponseEntity<String> response = restTemplate.exchange(
+        "https://registry.versa.org/register",
+        HttpMethod.POST,
+        entity,
+        String.class
+      );
+      ```
+
     </CodeWrap>
 
   </Tab>
@@ -84,6 +87,7 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
 
 <TabGroup>
   <Tab title="Rust">
+
     ```rust
     use aes_gcm_siv::{aead::Aead, Aes256GcmSiv, KeyInit, Nonce};
     use base64::prelude::*;
@@ -101,19 +105,19 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
       let nonce = Nonce::from_slice(&nonce_bytes); // unique to each receiver and included in message
       let cipher = Aes256GcmSiv::new(key[..].into());
       let encrypted = match cipher.encrypt(nonce, canonicalized.as_bytes()) {
-          Ok(ciphertext) => BASE64_STANDARD.encode(ciphertext),
-          Err(e) => panic!("Error encrypting data: {}", e),
+        Ok(ciphertext) => BASE64_STANDARD.encode(ciphertext),
+        Err(e) => panic!("Error encrypting data: {}", e),
       };
       Envelope {
-          encrypted,
-          nonce: BASE64_STANDARD.encode(nonce_bytes),
+        encrypted,
+        nonce: BASE64_STANDARD.encode(nonce_bytes),
       }
     }
     ```
 
   </Tab>
   <Tab title="Java">
-      <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/Protocol.java">
+    <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/Protocol.java">
 
     ```java
     package com.yourco.sender;
@@ -127,20 +131,20 @@ Versa uses AES-GCM-SIV for the symmetric encryption of receipts. The receiver mu
     import java.nio.charset.StandardCharsets;
 
     public class Protocol {
-        /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
-        /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
-        public static byte[] encrypt(
-            byte[] keyBytes,
-            byte[] nonce,
-            String input) throws Exception
-        {
-            Key key = new SecretKeySpec(keyBytes, "AES");
-            Cipher cipher = Cipher.getInstance("AES/GCM-SIV/NoPadding", "BC");
-            GCMParameterSpec gcmSpec = new GCMParameterSpec(12 * 8, nonce);
-            cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
-            byte[] encrypted =  cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
-            return encrypted
-        }
+      /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
+      /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
+      public static byte[] encrypt(
+        byte[] keyBytes,
+        byte[] nonce,
+        String input) throws Exception
+      {
+        Key key = new SecretKeySpec(keyBytes, "AES");
+        Cipher cipher = Cipher.getInstance("AES/GCM-SIV/NoPadding", "BC");
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(12 * 8, nonce);
+        cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
+        byte[] encrypted =  cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
+        return encrypted
+      }
     }
     ```
     </CodeWrap>
@@ -154,6 +158,7 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 
 <TabGroup>
   <Tab title="Rust">
+
     ```rust
     use base64::prelude::*;
     use hmac::Mac;
@@ -178,9 +183,9 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
     ) -> () {
 
       let payload = ReceiverPayload {
-          sender_client_id,
-          receipt_id,
-          envelope,
+        sender_client_id,
+        receipt_id,
+        envelope,
       };
 
       let payload_json = serde_json::to_string(&payload).unwrap();
@@ -204,43 +209,43 @@ Review the [sending specification](/sending#3-send-the-receipt). In this final s
 
     ```java
     public class HmacUtil {
-        public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
-            String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
-            SecretKeySpec secretKeySpec = new SecretKeySpec(receiver_secret.getBytes(StandardCharsets.UTF_8), algorithm);
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(secretKeySpec);
-            byte[] hmacBytes = mac.doFinal(payload);
-            return Base64.getEncoder().encodeToString(hmacBytes);
-        }
+      public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
+        String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
+        SecretKeySpec secretKeySpec = new SecretKeySpec(receiver_secret.getBytes(StandardCharsets.UTF_8), algorithm);
+        Mac mac = Mac.getInstance(algorithm);
+        mac.init(secretKeySpec);
+        byte[] hmacBytes = mac.doFinal(payload);
+        return Base64.getEncoder().encodeToString(hmacBytes);
+      }
     }
     ```
+
     </CodeWrap>
     <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
     ```java
-        byte[] nonce = Nonce.generate(); // any 12-byte nonce
-        byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce,
-                payload.receipt_json);
-        Envelope envelope = new Envelope(nonce, encrypted_data);
-        ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id, data.transaction_id, envelope);
+    byte[] nonce = Nonce.generate(); // any 12-byte nonce
+    byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce, payload.receipt_json);
+    Envelope envelope = new Envelope(nonce, encrypted_data);
+    ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id, data.transaction_id, envelope);
 
-        /// Post to the receiver address with an HMAC verification token from HmacUtil
-        String receiverUrl = receiver.address;
-        String hmac = HmacUtil.generateHmac(receiver.secret,
-                objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
+    /// Post to the receiver address with an HMAC verification token from HmacUtil
+    String receiverUrl = receiver.address;
+    String hmac = HmacUtil.generateHmac(receiver.secret,
+      objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
 
-        HttpHeaders receiverHeaders = new HttpHeaders();
-        receiverHeaders.set("Accept", "application/json");
-        receiverHeaders.set("Content-Type", "application/json");
-        receiverHeaders.set("X-Request-Signature", hmac);
+    HttpHeaders receiverHeaders = new HttpHeaders();
+    receiverHeaders.set("Accept", "application/json");
+    receiverHeaders.set("Content-Type", "application/json");
+    receiverHeaders.set("X-Request-Signature", hmac);
 
-        HttpEntity<ReceiverPayload> receiverEntity = new HttpEntity<>(receiverPayload, receiverHeaders);
+    HttpEntity<ReceiverPayload> receiverEntity = new HttpEntity<>(receiverPayload, receiverHeaders);
 
-        ResponseEntity<String> receiverResponse = restTemplate.exchange(
-          receiverUrl,
-          HttpMethod.POST,
-          receiverEntity,
-          String.class
-        );
+    ResponseEntity<String> receiverResponse = restTemplate.exchange(
+      receiverUrl,
+      HttpMethod.POST,
+      receiverEntity,
+      String.class
+    );
     ```
     </CodeWrap>
 
