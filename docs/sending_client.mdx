@@ -4,7 +4,7 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for Rust and [Java](https://github.com/versa-protocol/sender-java). Contact us if you'd like assistance with another language.
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for Rust and [Java](https://github.com/versa-protocol/java-sender). Contact us if you'd like assistance with another language.
 
 > [!TIP]
 > Looking for a quicker start? You can use our [custodial configuration](/sending#custodial-configuration) for faster onboarding.
@@ -46,7 +46,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
   </Tab>
 
   <Tab title="Java">
-    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
 
       ```java
       ReceiptRegistrationRequest registrationPayload = new ReceiptRegistrationRequest(
@@ -114,7 +114,7 @@ Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symm
 
   </Tab>
   <Tab title="Java">
-    <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/Protocol.java">
+    <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/Protocol.java">
 
     ```java
     package com.yourco.sender;
@@ -201,7 +201,7 @@ In this final step, the client makes a `POST` request to each receiver, with an 
 
   </Tab>
   <Tab title="Java">
-    <CodeWrap title="HmacUtil.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
+    <CodeWrap title="HmacUtil.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
 
     ```java
     public class HmacUtil {
@@ -217,7 +217,7 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     ```
 
     </CodeWrap>
-    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/sender-java/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
+    <CodeWrap title="SendReceiptController.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/SendReceiptController.java">
     ```java
     byte[] nonce = Nonce.generate(); // any 12-byte nonce
     byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce, payload.receipt_json);
