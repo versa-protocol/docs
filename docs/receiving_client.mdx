@@ -4,54 +4,120 @@ title: "Receiving Client Implementation"
 
 # Receiving Client Implementation
 
-Coming Soon!
+Developer documentation for implementing a self-hosted Versa receiver client, using the [Versa REST API](/receiver). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client). Contact us if you'd like assistance with another language.
 
+> [!TIP]
+> Looking for a quick start? You can use our [custodial configuration](/receiving#custodial-configuration) for faster onboarding.
+
+There are three actions a Versa receiver client performs:
+
+1. **[Receive the encrypted receipt](#1-receive-the-encrypted-receipt)**
+2. **[Get the key](#2-get-the-key)**
+3. **[Decrypt the receipt](#3-decrypt-the-receipt)**
+
+## 1. Receive the encrypted receipt
+
+When a sender forwards a receipt to you, they will verify their request with an HMAC verification token using your receiver secret.
+The first step in handling incoming events is verifying this token.
 <TabGroup>
   <Tab title="Rust">
+      <CodeWrap title="hmac_verify.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/hmac_verify.rs">
+
     ```rust
-    fn main() {
-      println!("Hello, Rust!");
+    async fn verify_with_secret(
+      body: axum::body::Body,
+      secret: String,
+      token: &str,
+    ) -> (bool, hyper::body::Bytes) {
+      let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
+      let body_bytes = axum::body::to_bytes(body, 512_000_000).await.unwrap();
+      mac.update(body_bytes.as_ref());
+      let code_bytes = mac.finalize().into_bytes();
+      let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
+      (encoded == token, body_bytes)
     }
     ```
-  </Tab>
-  <Tab title="Java">
-    ```java
-    public class Main {
-      public static void main(String[] args) {
-        System.out.println("Hello, Java!");
+    </CodeWrap>
+
+    <CodeWrap title="api_receiver/routes.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/routes.rs">
+    ```rust  
+    pub async fn target(headers: HeaderMap, raw_body: axum::body::Body) -> ()
+    {
+      let request_token = headers.get("X-Request-Signature").unwrap().to_str().unwrap();
+      let (verified, body_bytes) =
+        crate::hmac_verify::verify_with_secret(raw_body, receiver_secret, request_token).await;
+      if !verified {
+        return ();
       }
+      // ...
     }
     ```
-  </Tab>
-  <Tab title="Python">
-    ```python
-    print("Hello, Python!")
-    ```
+    </CodeWrap>
   </Tab>
 </TabGroup>
 
-## Example Two!
+This ensures you are only receiving events from legitimate Versa senders.
+
+## 2. Get the key
+
+Once the request signature is verified, you can check out the key from the registry
 
 <TabGroup>
   <Tab title="Rust">
+    <CodeWrap title="r_protocol.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/r_protocol.rs">
+
     ```rust
-    fn main() {
-      println!("Hello, Two Rust!");
+
+    pub async fn checkout_key(
+      client_id: &str,
+      client_secret: &str,
+      receipt_id: String,
+    ) -> () {
+      let credential = format!("Basic {}:{}", client_id, client_secret);
+      let payload = CheckoutRequest { receipt_id };
+      let payload_json = serde_json::to_string(&payload).unwrap();
+
+      reqwest::Client::new()
+        .post(format!("{}/checkout", registry_url))
+        .header("Accept", "application/json")
+        .header("Authorization", credential)
+        .header("Content-Type", "application/json")
+        .body(payload_json)
+        .send()
+        .await;
+    }
+
+    ```
+    </CodeWrap>
+  </Tab>
+
+The registry will record the receipt as delivered and return the key for decryption.
+
+## 3. Decrypt the receipt
+
+Using the key from the registry and the nonce provided in the received envelope, decrypt the receipt. Deserialize to an object compatible with the receipt's schema version.
+
+<TabGroup>
+  <Tab title="Rust">
+      <CodeWrap title="decryption.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/decryption.rs">
+
+    ```rust
+    pub fn decrypt_envelope<T>(envelope: Envelope, key: &String) -> T
+    where
+      T: for<'a> Deserialize<'a>,
+    {
+      let encrypted_data = BASE64_STANDARD.decode(envelope.encrypted).unwrap();
+      let nonce = BASE64_STANDARD.decode(envelope.nonce).unwrap();
+      let key = BASE64_STANDARD.decode(key).unwrap();
+      let cipher = Aes256GcmSiv::new(key[..].into());
+      let decrypted = match cipher.decrypt(nonce[..].into(), Payload::from(&encrypted_data[..])).unwrap();
+      let canonical_json = String::from_utf8(decrypted).unwrap();
+      serde_json::from_str::<T>(&canonical_json).unwrap()
     }
     ```
-  </Tab>
-  <Tab title="Java">
-    ```java
-    public class Main {
-      public static void main(String[] args) {
-        System.out.println("Hello, Two Java!");
-      }
-    }
-    ```
-  </Tab>
-  <Tab title="Python">
-    ```python
-    print("Hello, Two Python!")
-    ```
+
+    </CodeWrap>
   </Tab>
 </TabGroup>
+
+You can now store the decrypted data, forward it to an internal service, or display it to your customer using our React library.
