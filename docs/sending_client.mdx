@@ -21,6 +21,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
 <TabGroup>
   <Tab title="Rust">
+    <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
 
     ```rust
     let payload = ReceiptRegistrationRequest {
@@ -42,7 +43,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
       .send()
       .await;
     ```
-
+    </CodeWrap>
   </Tab>
 
   <Tab title="Java">
@@ -81,18 +82,12 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 ## 2. Encrypt the Receipt
 
 Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symmetric encryption of receipts. The receiver must check out the key from the registry, confirming that they have up-to-date credentials and authorization for the delivery.
+The 32-byte key is provided by the registry. Generate as 12-byte nonce for each receiver and send the nonce with the encrypted data to each receiver.
 
 <TabGroup>
   <Tab title="Rust">
-
+    <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
     ```rust
-    use aes_gcm_siv::{aead::Aead, Aes256GcmSiv, KeyInit, Nonce};
-    use base64::prelude::*;
-    use rand::Rng;
-    use serde::Serialize;
-    use serde_json::json;
-
-    /// Encrypts the receipt data using the 32-byte key, which is provided by the registry when you register a receipt
     pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
     where
     T: Serialize,
@@ -111,24 +106,13 @@ Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symm
       }
     }
     ```
-
+    </CodeWrap>
   </Tab>
   <Tab title="Java">
     <CodeWrap title="Protocol.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/Protocol.java">
 
     ```java
-    package com.yourco.sender;
-
-    import java.io.ByteArrayOutputStream;
-    import java.security.Key;
-
-    import javax.crypto.Cipher;
-    import javax.crypto.spec.GCMParameterSpec;
-    import javax.crypto.spec.SecretKeySpec;
-    import java.nio.charset.StandardCharsets;
-
     public class Protocol {
-      /// Encrypts the input using the 32-byte key, which is provided by the registry when you register a receipt, and a 12-byte nonce
       /// `input` is a JSON-serialized String of the receipt data using a valid Versa schema
       public static byte[] encrypt(
         byte[] keyBytes,
@@ -155,13 +139,9 @@ In this final step, the client makes a `POST` request to each receiver, with an 
 
 <TabGroup>
   <Tab title="Rust">
+    <CodeWrap title="hmac_util.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/hmac_util.rs">
 
     ```rust
-    use base64::prelude::*;
-    use hmac::Mac;
-    use serde::{Deserialize, Serialize};
-
-    /// Generate HMAC verification token using receiver secret
     async fn generate_token(body: bytes::Bytes, secret: String) -> String {
       let mut mac = hmac::Hmac::<sha1::Sha1>::new_from_slice(&secret.as_bytes()).unwrap();
       mac.update(body.as_ref());
@@ -169,9 +149,12 @@ In this final step, the client makes a `POST` request to each receiver, with an 
       let encoded = BASE64_STANDARD.encode(&code_bytes.to_vec());
       encoded
     }
+    ```
+    </CodeWrap>
 
-    /// Send the encrypted payload (with data and nonce) to a given receiver
-    /// This should be repeated for each receiver returned by the registry
+    <CodeWrap title="lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
+
+    ```rust
     pub fn send_encrypted_payload(
       receiver: &Receiver,
       sender_client_id: String,
@@ -199,6 +182,7 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     }
     ```
 
+    </CodeWrap>
   </Tab>
   <Tab title="Java">
     <CodeWrap title="HmacUtil.java" fileUrl="https://github.com/versa-protocol/java-sender/blob/main/src/main/java/org/versa/sender/HmacUtil.java">
@@ -206,7 +190,7 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     ```java
     public class HmacUtil {
       public static String generateHmac(String receiver_secret, byte[] payload) throws Exception {
-        String algorithm = "HmacSHA1"; // For the purpose of webhook verification, SHA1 is perfectly sufficient
+        String algorithm = "HmacSHA1";
         SecretKeySpec secretKeySpec = new SecretKeySpec(receiver_secret.getBytes(StandardCharsets.UTF_8), algorithm);
         Mac mac = Mac.getInstance(algorithm);
         mac.init(secretKeySpec);
@@ -224,7 +208,6 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     Envelope envelope = new Envelope(nonce, encrypted_data);
     ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id, data.transaction_id, envelope);
 
-    /// Post to the receiver address with an HMAC verification token from HmacUtil
     String receiverUrl = receiver.address;
     String hmac = HmacUtil.generateHmac(receiver.secret,
       objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
