@@ -4,10 +4,10 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for Rust and [Java](https://github.com/versa-protocol/java-sender). Contact us if you'd like assistance with another language.
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client) and [Java](https://github.com/versa-protocol/java-sender). Contact us if you'd like assistance with another language.
 
 > [!TIP]
-> Looking for a quick start? You can use our [custodial configuration](/sending#custodial-configuration) for fast onboarding.
+> Looking for a quick-start? You can use our [custodial configuration](/sending#custodial-configuration) for faster onboarding.
 
 There are three actions a Versa sender client performs:
 
@@ -78,18 +78,20 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
   </Tab>
 </TabGroup>
 
+If there are no matches, the registry will return an empty list of receivers. If there are authorized receivers, continue to step 2: encrypting the data for each receiver.
+
 ## 2. Encrypt the Receipt
 
 Versa uses [AES-GCM-SIV](https://en.wikipedia.org/wiki/AES-GCM-SIV) for the symmetric encryption of receipts. The receiver must check out the key from the registry, confirming that they have up-to-date credentials and authorization for the delivery.
-The 32-byte key is provided by the registry. Generate as 12-byte nonce for each receiver and send the nonce with the encrypted data to each receiver.
+The 32-byte key is provided by the registry. Generate a 12-byte nonce for each receiver and send the nonce with the encrypted data to each receiver.
 
 <TabGroup>
   <Tab title="Rust">
     <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
     ```rust
     pub fn encrypt_envelope<T>(data: &T, key: &Vec<u8>) -> Envelope
-    where
-    T: Serialize,
+      where
+        T: Serialize,
     {
       let serde_json = json!(data);
       let nonce_bytes = generate_nonce();
@@ -131,6 +133,8 @@ The 32-byte key is provided by the registry. Generate as 12-byte nonce for each 
 
   </Tab>
 </TabGroup>
+
+Once you have an envelope with the encrypted data and nonce, you're ready to send a payload to the receiver.
 
 ## 3. Send the Receipt
 
@@ -226,6 +230,9 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     );
     ```
     </CodeWrap>
+
+    Congratulations! You've successfully sent a secure receipt to an authorized receiver on the Versa network.
+    They will complete the process by checking out the key from the registry and decrypting the data on behalf of your customer.
 
   </Tab>
 </TabGroup>
