@@ -6,14 +6,14 @@ title: "Receipt Schema"
 
 Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
 
-Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain AP / AR scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
+Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain pre-purchase scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
 
 Versa receipts are composed of four sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
 2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, subscription.
 3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
-4. [**Payments**](#payments): Payment status of the receipt.
+4. [**Payments**](#payments): Payment status and details of the receipt.
 
 ![Rough diagram of receipt elements.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/receipt_structure.png)
 
@@ -41,7 +41,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 | `actions`        | `nullable array` | List of [actions](#actions).                                      |
 | `payments`       | `nullable array` | List of [payments](#payments).                                    |
 
-Below we cover each of these four sections in detail.
+Below we cover each of these sections in detail.
 
 ## Header
 
@@ -57,7 +57,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the �
   "mcc": 3234,
   "third_party": null,
   "customer": null,
-  "location": null,
+  "location": null
 }
 ```
 
@@ -66,7 +66,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the �
 | `currency`       | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
 | `total`          | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `subtotal`       | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
-| `paid`           | `integer`         | Sum of all payments. Will equal the total if the invoice is paid in full.                                           |
+| `paid`           | `integer`         | Sum of all payments. Will equal `total` if the invoice is paid in full.                                             |
 | `invoiced_at`    | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                                    |
 | `invoice_number` | `nullable string` | Unique identifier for the invoice / receipt.                                                                        |
 | `mcc`            | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
@@ -432,7 +432,7 @@ For online orders, with shipping info. If items have not been assigned to a ship
 Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant’s website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions per receipt.
 
 > [!NOTE]
-> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Action URLs that don’t share a domain with the sending merchant may be filtered out by the receiver.
+> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Action URLs that don’t share a domain with the sending merchant may be filtered by the receiver.
 
 ```JSON
 "actions": [

@@ -19,6 +19,7 @@ There are three actions a Versa receiver client performs:
 
 When a sender forwards a receipt to you, they will verify their request with an HMAC verification token using your receiver secret.
 The first step in handling incoming events is verifying this token.
+
 <TabGroup>
   <Tab title="Rust">
       <CodeWrap title="hmac_verify.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/hmac_verify.rs">
@@ -40,7 +41,7 @@ The first step in handling incoming events is verifying this token.
     </CodeWrap>
 
     <CodeWrap title="api_receiver/routes.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_receiver/src/routes.rs">
-    ```rust  
+    ```rust
     pub async fn target(headers: HeaderMap, raw_body: axum::body::Body) -> ()
     {
       let request_token = headers.get("X-Request-Signature").unwrap().to_str().unwrap();
@@ -53,14 +54,14 @@ The first step in handling incoming events is verifying this token.
     }
     ```
     </CodeWrap>
+
   </Tab>
 </TabGroup>
-
 This ensures you are only receiving events from legitimate Versa senders.
 
 ## 2. Get the key
 
-Once the request signature is verified, you can check out the key from the registry
+Once the request signature is verified, you can check out the key from the registry.
 
 <TabGroup>
   <Tab title="Rust">
@@ -87,9 +88,9 @@ Once the request signature is verified, you can check out the key from the regis
     }
     ```
     </CodeWrap>
+
   </Tab>
 </TabGroup>
-
 The registry will record the receipt as delivered and return the key for decryption.
 
 ## 3. Decrypt the receipt
@@ -114,9 +115,8 @@ Using the key from the registry and the nonce provided in the received envelope,
       serde_json::from_str::<T>(&canonical_json).unwrap()
     }
     ```
-
     </CodeWrap>
+
   </Tab>
 </TabGroup>
-
 You can now store the decrypted data, forward it to an internal service, or display it to your customer using our React library.

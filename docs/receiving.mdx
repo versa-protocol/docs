@@ -19,7 +19,7 @@ First, you’ll need to [create an account](https://app.versa.org) on Versa.
 
 Just as on the sending end, receivers need to choose how they'd like to receive receipts:
 
-1. Via a **[custodial configuration](#custodial-configuration)**. With this arrangement, you'll receive webhook events containing the receipt JSON at the URL you specify. Versa performs the decryption.
+1. Via a **[custodial configuration](#custodial-configuration)**. With this arrangement, you'll receive webhook events containing the receipt JSON at the URL you specify. Versa takes care of the decryption for you.
 2. Via a **[self-hosted configuration](#self-hosted-configuration)**. With this arrangement, the receiver collects and decrypts receipts directly. You'll still receive webhook events, but the webhook body will include an encrypted receipt and nonce, and you will be responsible for checking out the key from the Versa Registry and decrypting the receipt.
 
 The custodial configuration is typically easier for developers to implement quicky. The self-hosted configuration, on the other hand, removes the need to trust a third-party (Versa) with the receipt data. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
@@ -34,7 +34,7 @@ You are only able to receive receipts on behalf of customers who have explicitly
 
 Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
 
-Registering and de-registering handles is typically performed via API, but the Versa web app also includes a user interface for this action.
+Registering and de-registering handles is typically performed via API, but the Versa web app also includes a user interface to perform this action.
 
 To register a handle via API:
 
@@ -76,7 +76,7 @@ Once your customers are registered with Versa, incoming receipts that match thos
 
 ### Custodial Configuration
 
-If you've set up a custodial client, you will receive decrypted receipt objects at your webhook address. You're free to store and [render](#rendering-receipts) these receipts within your product.
+If you've set up a custodial client, you'll receive decrypted receipt objects at your webhook address. You're free to store and [render](#rendering-receipts) these receipts within your product.
 
 The payload looks like this:
 
@@ -101,6 +101,8 @@ If your client is configured in 'self-hosted' mode, you'll receive encrypted rec
 1. **[Receive Encrypted Receipt](#1-receive-the-encrypted-receipt)**
 2. **[Get the Key](#2-get-the-key)**
 3. **[Decrypt Receipt](#3-decrypt-the-receipt)**
+
+For a language-specific example client implementations, see the [Receiving Client Implementation](/receiving_client) doc.
 
 #### 1. Receive the Encrypted Receipt
 
@@ -155,11 +157,11 @@ Example response:
 }
 ```
 
-The `sender` is a [merchant object](https://docs.versa.org/receipt#merchant).
+The `sender` is a Versa [merchant object](https://docs.versa.org/receipt#merchant).
 
 #### 3. Decrypt the Receipt
 
-Receipts are decrypted with the AES-GCM-SIV 256 bit encryption algorithm, using the registry-provided key and a unique nonce provided by the sender.
+Receipts are decrypted with the AES-GCM-SIV 256 bit encryption algorithm, using the registry-provided key and a unique nonce provided by the sender. See the [Receiving Client Implementation](/receiving_client) doc for language-specific examples.
 
 ## Rendering Receipts
 
@@ -184,8 +186,8 @@ export const YourReceiptWrapper = ({
 
 ## Testing Your Integration
 
-Once you've set up your client, you can test your integration by sending a test receipt from the Versa web app. This will send a simple receipt to your webhook address, allowing you to verify that your client is correctly receiving and processing receipts.
+Once you've set up your client, you can test your integration by sending a test receipt from the Versa web app. Look for the 'Test Receipt' button on your [Client](https://app.versa.org/client) page.This will send a simple receipt to your webhook address, allowing you to verify that you're correctly receiving and processing receipts.
 
-If you've opted for custodial hosting, you'll be able to view the sent receipt in your [Logs](https://app.versa.org/logs).
+If you've opted for custodial hosting, you'll be able to view the test receipt in your [Logs](https://app.versa.org/logs).
 
 The test receipt is sent by a sandbox merchant maintained by Versa. It will be clearly marked as "[TEST]" in the sender data.
