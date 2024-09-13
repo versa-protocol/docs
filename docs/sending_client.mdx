@@ -77,6 +77,27 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
     </CodeWrap>
 
   </Tab>
+  <Tab title="NodeJS">
+    <CodeWrap title="register.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/register.ts">
+
+    ```ts
+      const payload = {
+        schema_version: "1.2.0",
+        handles,
+      };
+      const response = await fetch("https://registry.versa.org/register", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${clientId}:${clientSecret}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      ```
+
+    </CodeWrap>
+  </Tab>
 </TabGroup>
 
 If there are no matches, the registry will return an empty list of receivers. If there are authorized receivers, continue to step 2: encrypting the data for each receiver.
@@ -132,6 +153,22 @@ The 32-byte key is provided by the registry. Generate a 12-byte nonce for each r
     ```
     </CodeWrap>
 
+  </Tab>
+  <Tab title="NodeJS">
+    <CodeWrap title="encrypt.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/encrypt.ts">
+
+    ```ts
+    export function encrypt(plaintext: Uint8Array, key: Uint8Array): Envelope {
+      const iv = randomBytes(12);
+      const stream = siv(key, iv);
+      const ciphertext = stream.encrypt(plaintext);
+      const encrypted = Buffer.from(ciphertext).toString("base64");
+      const nonce = Buffer.from(iv).toString("base64");
+      return { encrypted, nonce };
+    }
+    ```
+
+    </CodeWrap>
   </Tab>
 </TabGroup>
 
@@ -233,6 +270,44 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     ```
     </CodeWrap>
 
+  </Tab>
+  <Tab title="NodeJS">
+    <CodeWrap title="hmac_util.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/hmac_util.ts">
+
+    ```ts
+    export function generateToken(body: Buffer, secret: string) {
+      const hmac = crypto.createHmac("sha1", secret);
+      hmac.update(body);
+      const codeBytes = hmac.digest();
+      return codeBytes.toString("base64");
+    }
+    ```
+
+    </CodeWrap>
+    <CodeWrap title="encrypt_and_send.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/encrypt_and_send.ts">
+
+    ```ts
+    const payload: ReceiverPayload = {
+      sender_client_id,
+      receipt_id,
+      envelope,
+    };
+
+    const payloadJson = JSON.stringify(payload);
+
+    const hmacToken = generateToken(Buffer.from(payloadJson), receiver.secret);
+
+    return await fetch(receiver.address, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Request-Signature": hmacToken,
+      },
+      body: payloadJson,
+    });
+    ```
+
+    </CodeWrap>
   </Tab>
 </TabGroup>
 
