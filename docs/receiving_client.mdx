@@ -56,6 +56,36 @@ The first step in handling incoming events is verifying this token.
     </CodeWrap>
 
   </Tab>
+  <Tab title="NodeJS">
+      <CodeWrap title="hmac_verify.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/hmac_verify.ts">
+
+    ```ts
+    export function verifyWithSecret(body: Buffer, secret: string, token: string) {
+      const hmac = crypto.createHmac("sha1", secret);
+
+      hmac.update(body);
+
+      const codeBytes = hmac.digest();
+      const encoded = codeBytes.toString("base64");
+
+      return encoded === token;
+    }
+    ```
+    </CodeWrap>
+    <CodeWrap title="receiver_routes.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/routes/receiver_routes.ts">
+
+    ```ts
+    app.post("/target", async (req: Request, res: Response) => {
+      const requestToken = req.headers["X-Request-Signature"];
+      const verified = verifyWithSecret(req.body, receiverSecret, requestToken);
+      if (!verified) {
+        res.status(401).send("Failed to verify request signature");
+        return;
+      }
+    })
+    ```
+    </CodeWrap>
+    </Tab>
 </TabGroup>
 This ensures you are only receiving events from legitimate Versa senders.
 
@@ -90,6 +120,34 @@ Once the request signature is verified, you can check out the key from the regis
     </CodeWrap>
 
   </Tab>
+  <Tab title="NodeJS">
+    <CodeWrap title="checkout.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/checkout.ts">
+
+    ```ts
+    export async function checkout(
+      clientId: string,
+      clientSecret: string,
+      receipt_id: string,
+    ) {
+      const credential = `Basic ${clientId}:${clientSecret}`;
+      const payload: CheckoutRequest = {
+        receipt_id,
+      };
+
+      return fetch("https://registry.versa.org/checkout", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: credential,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+    }
+    ```
+
+    </CodeWrap>
+  </Tab>
 </TabGroup>
 The registry will record the receipt as delivered and return the key for decryption.
 
@@ -117,6 +175,21 @@ Using the key from the registry and the nonce provided in the received envelope,
     ```
     </CodeWrap>
 
+  </Tab>
+  <Tab title="NodeJS">
+    <CodeWrap title="decrypt.ts" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/src/lib/decrypt.ts">
+
+    ```ts
+    export function decrypt(envelope: Envelope, key: string): string {
+      const bytekey = Buffer.from(key, "base64");
+      const iv = Buffer.from(envelope.nonce, "base64");
+      const stream = siv(bytekey, iv);
+      const decrypted = stream.decrypt(Buffer.from(envelope.encrypted, "base64"));
+      return new TextDecoder("utf-8").decode(decrypted);
+    }
+    ```
+
+    </CodeWrap>
   </Tab>
 </TabGroup>
 You can now store the decrypted data, forward it to an internal service, or display it to your customer using our React library.
