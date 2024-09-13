@@ -229,11 +229,11 @@ curl --request POST \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
-  "handles": {
-    "customer_email_domain": "sandbox-firehose.versa.org"
-  },
-  "receipt": { ... }
-}'
+    "handles": {
+      "customer_email_domain": "sandbox-firehose.versa.org"
+    },
+    "receipt": { ... }
+  }'
 ```
 
 After registering your test receipt (and sending the encrypted payload to the matched receiver), you can view the receipt on the[Sandbox Firehose](https://app.versa.org/sandbox-firehose) page.
