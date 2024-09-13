@@ -4,7 +4,7 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client) and [Java](https://github.com/versa-protocol/java-sender). Contact us if you'd like assistance with another language.
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client), [Java](https://github.com/versa-protocol/java-sender), and [NodeJS](https://github.com/versa-protocol/nodejs-client). Contact us if you'd like assistance with another language.
 
 > [!TIP]
 > Looking for a quick start? You can use our [custodial configuration](/sending#custodial-configuration) for faster onboarding.
@@ -80,21 +80,21 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
   <Tab title="NodeJS">
     <CodeWrap title="register.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/register.ts">
 
-    ```ts
-    const payload = {
-      schema_version: "1.2.0",
-      handles,
-    };
-    const response = await fetch("https://registry.versa.org/register", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Basic ${clientId}:${clientSecret}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    ```
+      ```ts
+      const payload = {
+        schema_version: "1.2.0",
+        handles,
+      };
+      const response = await fetch("https://registry.versa.org/register", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${clientId}:${clientSecret}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      ```
 
     </CodeWrap>
 
