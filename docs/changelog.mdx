@@ -4,6 +4,14 @@ title: "Changelog"
 
 # Changelog
 
+## 2024-08-27 - v1.3.0
+
+- Fields 'actions' and 'payments' no longer accept null
+- Changed 'merchant' schema definition name to 'org'
+- Added 'date' and 'unspsc' to 'line item'
+- Added 'legal_name' to 'org'
+- Collapsed 'lodging_items' up a level to the 'lodging' itemization, meaning the schema no longer supports multiple rooms per receipt
+
 ## 2024-08-27 - v1.2.0
 
 - Added 'metadata' object to customer in receipt header

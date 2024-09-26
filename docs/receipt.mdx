@@ -25,7 +25,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "header": { ... },
   "itemization": { ... },
   "actions": [ ... ],
@@ -509,15 +509,15 @@ Merchants have the option to provide useful next actions in the Actions section.
 Foundational objects used in a variety of locations within the receipt schema.
 
 <details>
-<summary>Merchant Primitive</summary>
+<summary>Org Primitive</summary>
 <article>
 
-### Merchant
+### Org
 
-A merchant profile.
+A merchant, third party, or employer profile.
 
 > [!TIP]
-> The merchant object is used to describe both a sending merchant and a third party merchant. In the former case, the merchant object is expanded implicitly via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, via the header `third_party` object.
+> The org object is used to describe both a sending merchant and a third party merchant. In the former case, the merchant object is expanded implicitly via the Versa Registry, whereas in the latter case, the merchant object is explicitly encoded into the receipt, via the header `third_party` object.
 
 ```JSON
 "merchant": {
@@ -526,18 +526,20 @@ A merchant profile.
   "logo": "https://static.platform.co/image_url.png",
   "website": "platform.co",
   "vat_number": null,
-  "address": null
+  "address": null,
+  "legal_name": "Platform Co."
 }
 ```
 
 | Field         | Type              | Description                                                        |
 | ------------- | ----------------- | ------------------------------------------------------------------ |
-| `name`        | `string`          | Merchant name.                                                     |
+| `name`        | `string`          | Common name.                                                     |
 | `brand_color` | `nullable string` | Hex color.                                                         |
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
-| `website`     | `nullable string` | Merchant’s primary website url.                                    |
+| `website`     | `nullable string` | Organization's primary website url.                                    |
 | `vat_number`  | `nullable string` |                                                                    |
 | `address`     | `nullable object` | An [address](#address) object.                                     |
+| `legal_name`     | `nullable string` | The organization's legal name                           |
 
 </article>
 </details>
@@ -592,6 +594,7 @@ A generic line item.
 
 ```json
 {
+  "date": null,
   "description": "Blue Cheese Crumbles",
   "subtotal": 1780,
   "quantity": 10,
@@ -614,6 +617,7 @@ A generic line item.
 
 | Field           | Type               | Description                                                                                                                  |
 | --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `date       `   | `nullable string`  | Date corresponding to the given line item, in YYYY-MM-DD format                                                              |
 | `description`   | `string`           | Description of the good / service.                                                                                           |
 | `subtotal`      | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                |
 | `quantity`      | `nullable number`  | Quantity of items.                                                                                                           |
@@ -623,6 +627,7 @@ A generic line item.
 | `metadata`      | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
 | `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                                      |
 | `group`         | `nullable string`  | Grouping of line items.                                                                                                      |
+| `unspsc`           | `nullable string`  | The 8-digit UNSPSC code for this item                                                                                                     |
 | `url`           | `nullable string`  | URL to product page.                                                                                                         |
 | `adjustments`   | `array`            | Array of [adjustment](#adjustment) objects.                                                                                  |
 
