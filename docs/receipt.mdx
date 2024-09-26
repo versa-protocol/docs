@@ -527,13 +527,13 @@ A merchant, third party, or employer profile.
 
 | Field         | Type              | Description                                                        |
 | ------------- | ----------------- | ------------------------------------------------------------------ |
-| `name`        | `string`          | Common name.                                                       |
+| `name`        | `string`          | The organization's common name.                                    |
 | `brand_color` | `nullable string` | Hex color.                                                         |
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
 | `website`     | `nullable string` | Organization's primary website url.                                |
 | `vat_number`  | `nullable string` |                                                                    |
 | `address`     | `nullable object` | An [address](#address) object.                                     |
-| `legal_name`  | `nullable string` | The organization's legal name                                      |
+| `legal_name`  | `nullable string` | The organization's legal name.                                     |
 
 </article>
 </details>
@@ -611,7 +611,7 @@ A generic line item.
 
 | Field           | Type               | Description                                                                                                                  |
 | --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `date       `   | `nullable string`  | Date corresponding to the given line item, in YYYY-MM-DD format                                                              |
+| `date       `   | `nullable string`  | Date corresponding to the given line item, in YYYY-MM-DD format.                                                             |
 | `description`   | `string`           | Description of the good / service.                                                                                           |
 | `subtotal`      | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                |
 | `quantity`      | `nullable number`  | Quantity of items.                                                                                                           |
