@@ -611,7 +611,7 @@ A generic line item.
 
 | Field           | Type               | Description                                                                                                                  |
 | --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `date       `   | `nullable string`  | Date corresponding to the given line item, in YYYY-MM-DD format.                                                             |
+| `date       `   | `nullable string`  | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
 | `description`   | `string`           | Description of the good / service.                                                                                           |
 | `subtotal`      | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                |
 | `quantity`      | `nullable number`  | Quantity of items.                                                                                                           |
