@@ -243,35 +243,29 @@ View a complete [lodging receipt](https://versa.org/demo/interactive?sender=gene
 
 ```JSON
 lodging: {
-  "lodging_items": [{
-    "check_in": 1713196492,
-    "check_out": 1713473361,
-    "location": { ... },
-    "items": [ ... ],
-    "room": "806",
-    "guests": "Sue Shmoe",
-    "metadata": [],
-  }],
+  "check_in": 1713196492,
+  "check_out": 1713473361,
+  "location": { ... },
+  "items": [ ... ],
+  "room": "806",
+  "guests": "Sue Shmoe",
+  "items": [{ ... }],
+  "metadata": [],
   "invoice_level_adjustments": []
 }
 ```
 
-| Field                       | Type    | Description                                                                                                                                                     |
-| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lodging_items`             | `array` | An array of [lodging item](#lodging-item) objects.                                                                                                              |
-| `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
-
-#### Lodging Item
-
-| Field       | Type              | Description                                                                                                  |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
-| `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
-| `location`  | `object`          | A [place](#place) object describing the hotel / lodging.                                                     |
-| `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
-| `room`      | `nullable string` | Room number.                                                                                                 |
-| `guests`    | `nullable string` |                                                                                                              |
-| `metadata`  | `array`           | Array of [metadata](#metadata) objects, for any additional info.                                             |
+| Field                       | Type              | Description                                                                                                                                                     |
+| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
+| `guests`                    | `nullable string` |                                                                                                                                                                 |
+| `invoice_level_adjustments` | `array`           | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+| `items`                     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                                    |
+| `location`                  | `object`          | A [place](#place) object describing the hotel / lodging.                                                                                                        |
+| `items`                     | `array`           | An array of [line item](#item) objects.                                                                                                                         |
+| `metadata`                  | `array`           | Array of [metadata](#metadata) objects, for any additional info.                                                                                                |
+| `room`                      | `nullable string` | Room number.                                                                                                                                                    |
 
 </article>
 </details>
