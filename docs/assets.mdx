@@ -8,7 +8,7 @@ title: "Assets"
 
 Efficiently store and deliver images and PDFs, for attachment to Versa receipts.
 
-## Post an asset (senders)
+## Upload an asset (as a sender)
 
 Supported asset types include:
 
@@ -17,25 +17,37 @@ Supported asset types include:
 - JPEG
 - WEBP
 
-Assets have a 100 megabyte (MB) size limit.
+Assets have a 50 megabyte (MB) size limit.
 
 ```bash
-curl --request POST \
-  --url 'https://registry.versa.org/asset' \
+  curl -F "file=@/path/to/your/invoice.pdf;filename=invoice.pdf" \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  -F "file=@/path/to/your/file"
+  https://registry.versa.org/asset
 ```
 
 Success response:
 
 ```
 {
-  "asset_id": "asset_5ed073abbf3a4b49a8c03191f87d8ffe"
+  "asset_id": "asset_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "asset_type": "pdf"
 }
 ```
 
-## Fetch an asset (receiver)
+## Including assets in a receipt (as a sender)
 
-Go to 'www.url.com/asset_5ed073abbf3a4b49a8c03191f87d8ffe' to fetch the asset.
+Any asset in the [Receipt schema](/docs/receipts) can be populated with the "asset_id" of the file you uploaded, e.g.
 
-We encourage receivers to store copies of assets themselves. The hosted images should be treated as a cache.
+```json
+{
+  "original_receipt_asset_id": "asset_5ed073abbf3a4b49a8c03191f87d8ffe"
+}
+```
+
+## Fetch an asset (as a receiver)
+
+Go to 'https://registry.versa.org/asset/asset_5ed073abbf3a4b49a8c03191f87d8ffe' to fetch the asset.
+
+Any "asset_id" field in the schema corresponds to a file that can be retrieved in this way.
+
+We encourage receivers to store copies of assets themselves. The hosted images should be treated as a cache. We regularly purge old assets.
