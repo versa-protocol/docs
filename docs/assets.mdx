@@ -1,0 +1,41 @@
+---
+title: "Assets"
+---
+
+# Assets
+
+**_WIP_**
+
+Efficiently store and deliver images and PDFs, for attachment to Versa receipts.
+
+## Post an asset (senders)
+
+Supported asset types include:
+
+- PDF
+- PNG
+- JPEG
+- WEBP
+
+Assets have a 100 megabyte (MB) size limit.
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/asset' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -F "file=@/path/to/your/file"
+```
+
+Success response:
+
+```
+{
+  "asset_id": "asset_5ed073abbf3a4b49a8c03191f87d8ffe"
+}
+```
+
+## Fetch an asset (receiver)
+
+Go to 'www.url.com/asset_5ed073abbf3a4b49a8c03191f87d8ffe' to fetch the asset.
+
+We encourage receivers to store copies of assets themselves. The hosted images should be treated as a cache.
