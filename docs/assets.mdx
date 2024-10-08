@@ -4,8 +4,6 @@ title: "Assets"
 
 # Assets
 
-**_WIP_**
-
 Efficiently store and deliver images and PDFs, for attachment to Versa receipts.
 
 ## Upload an asset (as a sender)
@@ -20,14 +18,14 @@ Supported asset types include:
 Assets have a 50 megabyte (MB) size limit.
 
 ```bash
-  curl -F "file=@/path/to/your/invoice.pdf;filename=invoice.pdf" \
-    --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-    https://registry.versa.org/asset
+curl -F "file=@/path/to/your/invoice.pdf;filename=invoice.pdf" \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  https://registry.versa.org/asset
 ```
 
 Success response:
 
-```
+```json
 {
   "asset_id": "asset_5ed073abbf3a4b49a8c03191f87d8ffe"
 }
