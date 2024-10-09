@@ -4,11 +4,7 @@ title: "Misuse Reporting"
 
 # Misuse Reporting
 
-Part of the receiver client specification is the logging of unexpected or undesirable behavior back to the registry.
-Since Versa does not handle the receipt data directly, it relies upon network receivers to report misuse.
-This process should be automated and should not require human intervention on the receiver's part—
-rather the automated reports from the receiver will be handled by humans on the Versa team.
-If necessary, we will reach out to the partner on the sending side to resolve the issue.
+Part of the receiver client specification is the logging of unexpected or undesirable behavior back to the registry. Since Versa does not handle the receipt data directly, it relies upon network receivers to report misuse. This process should be automated and should not require human intervention on the receiver's part — rather the automated reports from the receiver will be handled by humans on the Versa team. If necessary, we will reach out to the partner on the sending side to resolve the issue.
 
 ## Types of Misuse
 
@@ -20,9 +16,7 @@ There are three broad categories of misuse that a receiver should report:
 
 ## Reporting Misuse
 
-When implementing your client, reporting misuse should be baked into the error handling process.
-After [checking out the key](/receiving#2-get-the-key) for a given receipt,
-any error falling into one of the above categories should be identified and posted back to the registry.
+When implementing your client, reporting misuse should be baked into the error handling process. After [checking out the key](/receiving#2-get-the-key) for a given receipt, any error falling into one of the above categories should be identified and posted back to the registry.
 
 Take the `receipt_id` you received, and post it along with the proper misuse code.
 
@@ -41,15 +35,15 @@ curl --request POST \
 
 The following is a list of misuse codes that can be reported back to the registry:
 
-- `protocol_decryption_failed`: Decrypting the received receipt JSON failed
-- `protocol_deserialization_failed`: Decryption succeeded, but the payload was not valid JSON
-- `schema_validation_failed`: Schema validation of the receipt based on its provided schema version failed
-- `flag_subtotals_do_not_sum`: The sum of the subtotals in the receipt does not match the total
+| Misuse Code                       | Misuse Description                                                                      |
+| --------------------------------- | --------------------------------------------------------------------------------------- |
+| `protocol_decryption_failed`      | Decrypting the received receipt JSON failed.                                            |
+| `protocol_deserialization_failed` | Decryption succeeded, but the payload was not valid JSON.                               |
+| `schema_validation_failed`        | Schema validation of the receipt based on the receipt's provided schema version failed. |
+| `flag_subtotals_do_not_sum`       | The sum of the subtotals in the receipt does not match the total.                       |
 
 ## Best Practices
 
-It is recommended best practice that all misuse be reported back to the registry.
-We also recommend that senders implement this validation logic before sending receipt data, but flaws in implementation can still occur.
-Due to the semi-decentralized nature of the protocol, misuse reporting helps us maintain the integrity of the network.
+It is recommended best practice that all misuse be reported back to the registry. We also recommend that senders implement this validation logic before sending receipt data, but flaws in implementation can still occur. Due to the semi-decentralized nature of the protocol, misuse reporting helps us maintain the integrity of the network.
 
 Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
