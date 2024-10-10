@@ -4,7 +4,7 @@ title: "Sending a Receipt"
 
 # Sending a Receipt
 
-Receipt senders are merchants (E-commerce websites, online booking tools, hotel chains, etc.) who wish to pass receipts through to their customers.
+Receipt senders are merchants (E-commerce websites, online booking tools, hotel chains, airlines, etc.) who wish to pass receipts through to their customers.
 
 ## Getting Started
 
@@ -20,16 +20,16 @@ The receipt object itself must conform to Versa's [Receipt Schema](/receipt). Th
 
 When you're ready to send receipts, there are two configuration options to pick from:
 
-1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipt is as simple as a standard HTTP `POST` request, via a RESTful API. You make a single call per receipt, passing up the receipt JSON to Versa.
+1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipt is as simple as a standard HTTP `POST` request. You make a single call per receipt, passing up the receipt JSON to Versa.
 2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, you check Versa for registered customers, and manage the encryption and peer-to-peer receipt transfer directly.
 
 The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
 
 ### Custodial Configuration
 
-[Create your client](https://app.versa.org/client) in the Versa web app, and select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Then copy your Client Secret and save it someplace safe.
+[Create your client](https://app.versa.org/client) in the Versa web app, and select that you are a 'Sender' and that you'd like to enable the 'Custodial' mode. Then copy your Client Secret and save it somewhere safe.
 
-You're now ready to send your first receipt. Add your `CLIENT_ID`, `CLIENT_SECRET`, a customer 'handle' (e.g. their email address), and a Versa receipt object.
+You're now ready to send your first receipt. Add your `CLIENT_ID`, `CLIENT_SECRET`, a customer 'handle' (e.g. your customer's work email address), and a Versa receipt object.
 
 ```bash
 curl --request POST \
@@ -44,7 +44,7 @@ curl --request POST \
   }'
 ```
 
-Versa routes receipts according to the customer handles you provide. Customers must explicitly authorize 'receivers' to receive their receipts (see the [Receiving](/receiving) docs for details). When you complete a sale, you check if there are any matching authorized receivers. The receipt is only sent in the case that there is a positive match.
+Versa uses the customer handles you provide to determine if the receipt should be sent, and if so, where. Customers must explicitly authorize 'receivers' (e.g. the expense management app they use) to receive their receipts (see the [Receiving](/receiving) docs for details). When you complete a sale, you check if there are any matching authorized receivers. The receipt is only sent in the case that there is a positive match.
 
 For test sending, you can provide 'sandbox-firehose.versa.org' as the `customer_email_domain` handle, or provide a full `customer_email` with any username, e.g. 'jshmoe@sandbox-firehose.versa.org'. For the receipt, any valid Versa receipt will do; you can copy an example receipt from the [Receipt Schema](/receipt) documentation. Read the [testing](#testing-your-integration) section below for more details.
 
@@ -52,7 +52,7 @@ Congratulations! You've sent your first receipt. 💥
 
 ### Self-Hosted Configuration
 
-Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you handle the encryption and sending on your own.
+Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you directly handle the encryption and sending.
 
 There are three steps:
 
@@ -60,16 +60,14 @@ There are three steps:
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
 
-You'll first need an active sending [client](https://app.versa.org/client).
-
 > [!TIP]
-> If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration.
+> If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration. Or [create a new sending client](https://app.versa.org/client).
 
 #### 1. Register the Transaction
 
-Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the URL indicating where to post the receipt.
+Upon completing a sale, you'll want to register the transaction with Versa. You'll pass up a customer handle (e.g. the customer's work email address), and Versa will match that handle with any authorized receivers. If there are matched receivers, Versa will return the URL indicating where to post the receipt.
 
-Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`. You must send at least one handle, and you can include multiple. Versa will return matches for any of the handles independently, with the exception of `card_last_four` (`card_last_four` is never unique).
+Versa supports four different handle types: `customer_email`, `customer_email_domain`, `card_bin`, `card_last_four`. You must send at least one handle, and you can include multiple. Versa will return matches for any of the handles independently, with the exception of `card_last_four` (as `card_last_four` is not unique).
 
 ```bash
 curl --request POST \
@@ -77,7 +75,7 @@ curl --request POST \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
-    "schema_version": "1.3.0",
+    "schema_version": "1.4.0",
     "handles": {
       "customer_email_domain": "acme.com"
     }
@@ -91,12 +89,12 @@ curl --request POST \
 
 ##### Handle Object
 
-| Field                   | Type              | Description                                                                                                                                                                              |
-| ----------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                                                                                                  |
-| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                                                                                         |
-| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. This is useful only when there is a 1:1 mapping of card bin to receiver. |
-| `card_last_four`        | `nullable string` | The last four digits of a card number. Unlike the other handles, 'last four' is only used as a supporting value, as it is not unique to a customer or platform.                          |
+| Field                   | Type              | Description                                                                                                                                                                                                                                  |
+| ----------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                                                                                                                                                      |
+| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                                                                                                                                             |
+| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. This is useful only when there is a 1:1 mapping of card bin to receiver. Requires special authorization from the Versa team. |
+| `card_last_four`        | `nullable string` | The last four digits of a card number. Unlike the other handles, 'last four' is only used as a supporting value, as it is not unique to a customer or platform. Requires special authorization from the Versa team.                          |
 
 Example response:
 
@@ -140,7 +138,7 @@ Example response:
 | `org_id`    | `string` | The id of the receiving org (orgs can have multiple clients). |
 | `secret`    | `string` | Used for HMAC verification.                                   |
 
-If there are no authorized receivers for the given handles, Versa will return an empty array.
+If there are no authorized receivers for the given handles, Versa will return an empty array, and the process ends.
 
 #### 2. Encrypt the Receipt
 
@@ -186,7 +184,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
-    "schema_version": "1.3.0",
+    "schema_version": "1.4.0",
     "handles": {
       "customer_email_domain": "acme.com"
     }
@@ -214,7 +212,7 @@ curl --request POST \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
-    "schema_version": "1.3.0",
+    "schema_version": "1.4.0",
     "handles": {
       "customer_email_domain": "sandbox-firehose.versa.org"
     }
@@ -236,4 +234,4 @@ curl --request POST \
   }'
 ```
 
-After registering your test receipt (and sending the encrypted payload to the matched receiver), you can view the receipt on the[Sandbox Firehose](https://app.versa.org/sandbox-firehose) page.
+After registering your test receipt (and sending the encrypted payload to the matched receiver), you can view the receipt on the [Sandbox Firehose](https://app.versa.org/sandbox-firehose) page.

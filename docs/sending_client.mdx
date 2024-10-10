@@ -25,7 +25,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
     ```rust
     let payload = ReceiptRegistrationRequest {
-      schema_version: "1.3.0".into(),
+      schema_version: "1.4.0".into(),
       handles,
       transaction_id: None,
     };
@@ -82,7 +82,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
       ```ts
       const payload: ReceiptRegistrationRequest = {
-        schema_version: "1.3.0",
+        schema_version: "1.4.0",
         handles,
         transaction_id,
       };

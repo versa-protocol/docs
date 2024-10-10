@@ -8,16 +8,16 @@ Itemized receipts are the core data model of Versa. They include both “header�
 
 Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain pre-purchase scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
 
+A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versaprotocol/schema](https://www.npmjs.com/package/@versaprotocol/schema) package.
+
 Versa receipts are composed of four sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
 2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, subscription.
 3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
-4. [**Payments**](#payments): Payment status and details of the receipt.
+4. [**Payments**](#payments): Payment status and details.
 
 ![Rough diagram of receipt elements.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/receipt_structure.png)
-
-A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versaprotocol/schema](https://www.npmjs.com/package/@versaprotocol/schema) package.
 
 ## Wrapper
 
@@ -25,7 +25,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.3.0",
+  "schema_version": "1.4.0",
   "header": { ... },
   "itemization": { ... },
   "actions": [ ... ],
