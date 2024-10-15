@@ -1,0 +1,45 @@
+---
+title: "Sender Customer Registration"
+---
+
+# Sender Customer Registration
+
+Someitmes, senders (E-commerce websites, online booking tools, hotel chains, airlines, etc.) may wish to _push_ receipts to a specific receiver. This is optional functionality, intended for sophisticated senders who wish to manage customer enrollment directly.
+
+## How it works
+
+Register the handle, along with the `client_id` of the intended receiver.
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "handle_type": "customer_email_domain",
+    "handle": "acme.com",
+    "receiver_client_id": "versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba"
+  }'
+```
+
+| Field                | Type     | Description                                                                                |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `handle_type`        | `enum`   | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
+| `handle`             | `string` | The handle value.                                                                          |
+| `receiver_client_id` | `string` | The `client_id` of the intended receiver.                                                  |
+
+Once configured, receipts will get pushed to the enabled receiver(s).
+
+When a customer disables the connection, you will de-register them (the `receiver_client_id` is required):
+
+```bash
+curl --request DELETE \
+  --url 'https://registry.versa.org/handle' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "handle_type": "customer_email_domain",
+    "handle": "acme.com",
+    "receiver_client_id": "versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba"
+  }'
+```
