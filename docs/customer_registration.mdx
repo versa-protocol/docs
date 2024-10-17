@@ -30,7 +30,7 @@ curl --request POST \
 | -------------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
 | `handle_type`        | `enum`            | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com).          |
 | `handle`             | `string`          | The handle value.                                                                                   |
-| `receiver_client_id` | `nullable string` | The client id of the intended Receiver. Required for sender clients, optional for Receiver clients. |
+| `receiver_client_id` | `nullable string` | The client id of the intended Receiver. Required for Sender Clients, optional for Receiver Clients. |
 
 > [!NOTE]
 > Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you'll need to be opted in by the Versa support team.
