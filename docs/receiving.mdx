@@ -26,15 +26,9 @@ The custodial configuration is typically easier for developers to implement. The
 
 ## Customer Registration
 
-Before you can start receiving receipts, you'll need to register the customers who have authorized you as their receipt receiver.
+Before you can start receiving receipts, you'll need to register the customers who have authorized you as their receipt receiver. When you register a customer, you add their 'handle' — the identifier that Versa uses to know if and where to send receipts.
 
-When you register a customer, you add their 'handle' — the identifier that Versa uses to know if and where to send receipts.
-
-You are only able to receive receipts on behalf of customers who have explicitly granted you that permission. In 'test' mode, you will not receive 'production' receipts. In 'production' mode, you will only receive receipts from customers who you've registered, and who have been verified.
-
-Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
-
-Registering and de-registering handles is typically performed via API. The Versa web app also includes a user interface to perform this action.
+You are only able to receive receipts on behalf of customers who have explicitly granted you that permission.
 
 To register a handle via API:
 
@@ -54,23 +48,7 @@ curl --request POST \
 | `handle_type` | `enum`   | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
 | `handle`      | `string` | The handle value.                                                                          |
 
-> [!NOTE]
-> Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you'll need to be opted in by the Versa support team.
-
-You are responsible for collecting the necessary permissions when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
-
-When you lose a customer, you will de-register them. To remove a registered profile:
-
-```bash
-curl --request DELETE \
-  --url 'https://registry.versa.org/handle' \
-  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "handle_type": "customer_email_domain",
-    "handle": "acme.com"
-  }'
-```
+See [Customer Registration](/customer_registration) for details on syncing your customer roster.
 
 ## Collecting Incoming Receipts
 
