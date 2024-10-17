@@ -4,7 +4,7 @@ title: "Customer Registration"
 
 # Customer Registration
 
-The Versa Protocol directs receipts by matching against registered customers. Every time a sender (e.g. an airline, an E-commerce merchant, etc.) makes a sale, they check to see if any clients (e.g. expense management apps) are authorized to pull down receipts for that customer. The matching is done on the basis of registered customer handles — the identifiers that Versa uses to know if and where to send receipts. For example: if Supplier A completes a sale to 'jshmoe@acme.com', and if Expense Management App B has registered that they are an authorized Receiver of all 'acme.com' receipts, then Versa will direct Supplier A to forward the encrypted receipt to Expense Management App B.
+The Versa Protocol routes receipts by matching against registered customers. Every time a sender (e.g. an airline, an E-commerce merchant) makes a sale, they check to see if one or more clients (e.g. an expense management app) are authorized to pull down receipts for that customer. Versa matches against customer 'handles' — the domain of the customer’s work email, a bank routing number, or a card identifier. For example: if Supplier A completes a sale to 'jshmoe@acme.com', and if Expense Management App B has registered that they are an authorized receiver of all 'acme.com' receipts, then Versa will direct Supplier A to forward the encrypted receipt to Expense Management App B.
 
 ## How It Works
 
@@ -53,14 +53,14 @@ curl --request DELETE \
 
 Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
 
-In 'test' mode, 'production' receipts will not be sent — your client will need to be in 'production' mode to send or receive production receipts.
+In 'test' mode, 'production' receipts will not be sent. Your client will need to be in 'production' mode to send or receive production receipts. Contact Versa Support for details.
 
 ## Receiver vs. Sender Customer Registration
 
 Both Receivers and Senders can register customers, however these two types of registrations have different constraints.
 
-Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from any participating sending merchant.
+Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from _any_ participating sender merchants.
 
-Senders, on the other hand, can only register customers to receive _their_ receipts. For example, if an airline supports the ability to optionally push receipts into various expense management apps, and they support that configuration on the airline website, they are of course only able to enable that connection for that specific airline.
+Senders, on the other hand, can only register customers to receive _their_ receipts. For example, if an airline supports the ability to optionally push receipts into various expense management apps, and they support that configuration on their airline website, that connection is limited to that specific sending merchant. E.g. a travel manager admin could opt in to push their American Airlines receipts to their expense management app on the American Airlines website, but they could not opt in to push their Delta Airlines receipts to their expense management app on the American Airlines website.
 
-Technically speaking, this is achieved via the `receiver_client_id` parameter on the /handle endpoint. Receivers do not need to specificy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id`. Senders attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active Receiver client. If they exclude this parameter, the registration attempt will error.
+Technically speaking, these Receiver vs. Sender registration constraints are configured via the `receiver_client_id` parameter on the /handle endpoint. Receiver Clients do not need to specificy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender Clients attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active Receiver Client. If they exclude this parameter, the registration attempt will error.
