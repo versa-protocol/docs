@@ -4,7 +4,7 @@ title: "Customer Registration"
 
 # Customer Registration
 
-The Versa Protocol routes receipts by matching against registered customers. Every time a sender (e.g. an airline, an E-commerce merchant) makes a sale, they check to see if one or more clients (e.g. an expense management app) are authorized to pull down receipts for that customer. Versa matches against customer 'handles' — the domain of the customer’s work email, a bank routing number, or a card identifier. For example: if Supplier A completes a sale to 'jshmoe@acme.com', and if Expense Management App B has registered that they are an authorized receiver of all 'acme.com' receipts, then Versa will direct Supplier A to forward the encrypted receipt to Expense Management App B.
+Versa routes receipts by matching against registered customers. Every time a sender (e.g. an airline, an E-commerce merchant) makes a sale, they check to see if one or more clients (e.g. an expense management app) are authorized to pull down receipts for that customer. For example: if Supplier A completes a sale to 'jshmoe@acme.com', and if Expense Management App B has registered that they’re an authorized receiver of all 'acme.com' receipts, then Versa will direct Supplier A to forward the encrypted receipt to Expense Management App B.
 
 ## How It Works
 
@@ -35,7 +35,7 @@ curl --request POST \
 > [!NOTE]
 > Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you'll need to be opted in by the Versa support team.
 
-You are responsible for collecting the necessary permissions when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
+You’re responsible for collecting the necessary permission when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
 
 When you lose a customer, you will de-register them. To remove a registered profile:
 
@@ -59,10 +59,10 @@ In 'test' mode, 'production' receipts will not be sent. Your client will need to
 
 Both receivers and senders can register customers, however these two types of registrations have different scopes.
 
-Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from _any_ participating sender merchants.
+Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from all participating sender merchants.
 
-Senders, on the other hand, can only register customers to receive _their_ receipts. E.g. a travel manager admin could opt to push their American Airlines receipts to their expense management app on the American Airlines website (via their AA company settings screen), but they would not be able to push their Delta Airlines receipts to their expense management app via the American Airlines website.
+Senders, on the other hand, can only register customers to receive _their_ receipts. E.g. a travel manager admin could opt to push their American Airlines receipts to their expense management app on the American Airlines website (via their AA company settings screen), but they would not be able to turn on universal receipt sync from within the American Airlines website.
 
-Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_client_id` parameter on the /handle endpoint. Receiver clients do not need to specificy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active Receiver Client. If they exclude this parameter, the registration attempt will error.
+Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_client_id` parameter on the /handle endpoint. Receiver clients do not need to specificy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active Receiver Client. If a sender cleint exclude this parameter, the registration attempt will error.
 
 Sender and receiver registrations are not mutually exclusive. For instance: if Sender A registers a customer for Receiver B, and Receiver B also registers that same customer, Versa will match against both registrations, and return a single reference to Receiver B.
