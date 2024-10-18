@@ -61,7 +61,7 @@ Both receivers and senders can register customers, however these two types of re
 
 Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from all participating sender merchants.
 
-Senders, on the other hand, can only register customers to receive _their_ receipts. E.g. a travel manager admin could opt to push their American Airlines receipts to their expense management app on the American Airlines website (via their AA company settings screen), but they would not be able to turn on universal receipt sync from within the American Airlines website.
+Senders, on the other hand, can only register customers to receive _their_ receipts. E.g. a travel manager admin who is logged in to the company settings screen on the American Airlines website could opt to push their American Airlines receipts to their expense management app, but they would not be able to turn on universal receipt sync from within the American Airlines website.
 
 Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_client_id` parameter on the /handle endpoint. Receiver clients do not need to specificy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active Receiver Client. If a sender cleint exclude this parameter, the registration attempt will error.
 
