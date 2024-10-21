@@ -324,19 +324,19 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 
 #### Transit Route Item
 
-| Field                | Type              | Description                                                                                                       |
-| -------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `departure_location` | `object`          | The origin [place](#place) object.                                                                                |
-| `arrival_location`   | `object`          | The destination [place](#place) object.                                                                           |
-| `departure_at`       | `integer`         | Departure time. Measured in seconds since the Unix epoch.                                                         |
-| `arrival_at`         | `integer`         | Arrival time. Measured in seconds since the Unix epoch.                                                           |
-| `fare`               | `integer`         | Ride amount, typically the same as the header subtotal.                                                           |
-| `mode`               | `nullable enum`   | One of `car`, `taxi`, `rail`, `bus`, `ferry`, `other`.                                                            |
-| `passenger`          | `nullable string` | For ticketed local transit, the passenger name.                                                                   |
-| `polyline`           | `nullable string` | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
-| `taxes`              | `array`           | Array of [tax](#tax) objects.                                                                                     |
-| `metadata`           | `array`           | Array of key/value [metadata pairs](#metadata).                                                                   |
-| `adjustments`        | `array`           | Array of [adjustment](#adjustment) objects.                                                                       |
+| Field                | Type               | Description                                                                                                       |
+| -------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_location` | `object`           | The origin [place](#place) object.                                                                                |
+| `arrival_location`   | `object`           | The destination [place](#place) object.                                                                           |
+| `departure_at`       | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_at`         | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `fare`               | `integer`          | Ride amount, typically the same as the header subtotal.                                                           |
+| `mode`               | `nullable enum`    | One of `car`, `taxi`, `rail`, `bus`, `ferry`, `other`.                                                            |
+| `passenger`          | `nullable string`  | For ticketed local transit, the passenger name.                                                                   |
+| `polyline`           | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `taxes`              | `array`            | Array of [tax](#tax) objects.                                                                                     |
+| `metadata`           | `array`            | Array of key/value [metadata pairs](#metadata).                                                                   |
+| `adjustments`        | `array`            | Array of [adjustment](#adjustment) objects.                                                                       |
 
 </article>
 </details>
