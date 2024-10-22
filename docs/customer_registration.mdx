@@ -33,7 +33,7 @@ curl --request POST \
 | `receiver_client_id` | `nullable string` | The client id of the intended receiver. Required for sender clients, optional for receiver clients. |
 
 > [!NOTE]
-> Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you'll need to be opted in by the Versa support team.
+> Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
 
 You’re responsible for collecting the necessary permission when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
 
@@ -61,7 +61,7 @@ Both receivers and senders can register customers, however these two types of re
 
 Receivers register customers to receive receipts from _any_ sender. For example, when an expense management app gets permission from a customer to collect receipts on their behalf, they will receive receipts from all participating sender merchants.
 
-Senders, on the other hand, can only register customers to receive the receipts from their direct sales. E.g. a travel manager admin who is logged in to the company settings screen on the American Airlines website could opt to push their American Airlines receipts to their expense management app, but they would not be able to turn on universal receipt sync from within the American Airlines website.
+Senders, on the other hand, can only register customers to receive the receipts from their direct sales. E.g. a travel manager admin who is logged in to the company settings screen on the 'Nimbus Airlines' website could opt to push their Nimbus Airlines receipts to their expense management app, but they would not be able to turn on universal receipt sync from within the Nimbus Airlines website.
 
 Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_client_id` parameter on the /handle endpoint. Receiver clients do not need to specifiy a `receiver_client_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers, on the other hand, must include a `receiver_client_id`, and that `receiver_client_id` must reference an active receiver client. If a sender client excludes the `receiver_client_id` parameter, the registration attempt will error.
 
