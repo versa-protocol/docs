@@ -15,10 +15,6 @@ There are three actions a Versa sender client performs:
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
 
-Optionally, if a sender knows the receiver's client ID, they may register their customers to forward receipts to that receiver.
-
-- **[Customer Registration](#customer-registration)**
-
 ## 1. Register the Transaction
 
 Upon completing a sale, you'll register the transaction with Versa. You'll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URLs indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
@@ -321,9 +317,6 @@ In this final step, the client makes a `POST` request to each receiver, with an 
 
 Congratulations! You've successfully sent a receipt to an authorized receiver on the Versa network. The receiver will complete the process by checking out the key from the registry and decrypting the data on behalf of your customer.
 
-## Customer Registration
+## Customer Registration (Optional)
 
-Receipts are routed by customer "handles" — such as email address and domain.
-To send receipts for a customer to a specific receiver, use the handle registration API and provide the receiver's client ID.
-Future receipts matching that customer will be forwarded appropriately.
-[Learn more](/customer_registration)
+In certain cases, senders may wish to proactively push their receipts to specific receivers. See the [Customer Registration](/customer_registration) overview and the section on [sender registration](/customer_registration#receiver-vs-sender-customer-registration) for details.
