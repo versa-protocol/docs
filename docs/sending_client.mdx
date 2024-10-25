@@ -353,7 +353,7 @@ In certain cases, senders may wish to proactively push their receipts to specifi
     headers.set("Authorization", credential);
     headers.set("Content-Type", "application/json");
 
-    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+    HttpEntity<CustomerRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
 
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<String> response = restTemplate.exchange(
