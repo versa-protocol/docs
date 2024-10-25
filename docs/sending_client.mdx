@@ -21,26 +21,16 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
 <TabGroup>
   <Tab title="Rust">
-    <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
+    <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_sender/src/routes/mod.rs">
 
     ```rust
-    let payload = ReceiptRegistrationRequest {
-      schema_version: "1.5.1".into(),
-      handles,
-      transaction_id: None,
-    };
+    let schema_version = "1.5.1";
 
-    let payload_json = serde_json::to_string(&payload).unwrap();
+    // Initialize a Sending Client from the versa crate
+    let versa_client = versa::client::VersaClient::new(registry_url, client_id, client_secret).sending_client(schema_version.into()).unwrap()
 
-    let client = reqwest::Client::new();
-    let response_result = client
-      .post("https://registry.versa.org/register")
-      .header("Accept", "application/json")
-      .header("Authorization", credential)
-      .header("Content-Type", "application/json")
-      .body(payload_json)
-      .send()
-      .await;
+    // 1. Register the receipt with Versa registry
+    let registration_response = versa_client.register_receipt(handles, transaction_id)
     ```
     </CodeWrap>
 
@@ -326,25 +316,16 @@ In certain cases, senders may wish to proactively push their receipts to specifi
     <CodeWrap title="customer_registration.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/customer_registration.rs">
 
     ```rust
-    let payload = CustomerRegistrationRequest {
-        handle: "acme.com".into(),
-        handle_type: "customer_email_domain".into(),
-        receiver_client_id: Some("versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba".into())
-    };
 
-    let payload_json = serde_json::to_string(&payload).unwrap();
+let customer_reference = CustomerReference {
+handle,
+handle_type,
+receiver_client_id,
+};
 
-    let client = reqwest::Client::new();
-    let response_result = client
-      .post("https://registry.versa.org/handle")
-      .header("Accept", "application/json")
-      .header("Authorization", credential)
-      .header("Content-Type", "application/json")
-      .body(payload_json)
-      .send()
-      .await;
-    ```
-    </CodeWrap>
+versa_client.register_customer_reference(customer_reference).await
+```
+</CodeWrap>
 
   </Tab>
   <Tab title="Java">
