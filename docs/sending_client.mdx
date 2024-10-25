@@ -324,19 +324,16 @@ In certain cases, senders may wish to proactively push their receipts to specifi
 <TabGroup>
   <Tab title="Rust">
     <CodeWrap title="customer_registration.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/customer_registration.rs">
-
     ```rust
+    let customer_reference = CustomerReference {
+      handle,
+      handle_type,
+      receiver_client_id,
+    };
 
-let customer_reference = CustomerReference {
-handle,
-handle_type,
-receiver_client_id,
-};
-
-versa_client.register_customer_reference(customer_reference).await
-
-````
-</CodeWrap>
+    versa_client.register_customer_reference(customer_reference).await
+    ```
+    </CodeWrap>
 
   </Tab>
   <Tab title="Java">
@@ -344,27 +341,27 @@ versa_client.register_customer_reference(customer_reference).await
 
     ```java
     CustomerRegistrationRequest registrationPayload = new CustomerRegistrationRequest(
-        handle,
-        handle_type,
-        receiver_client_id
-      );
+      handle,
+      handle_type,
+      receiver_client_id
+    );
 
-      String credential = "Basic " + versaClientId + ":" + versaClientSecret;
+    String credential = "Basic " + versaClientId + ":" + versaClientSecret;
 
-      HttpHeaders headers = new HttpHeaders();
-      headers.set("Accept", "application/json");
-      headers.set("Authorization", credential);
-      headers.set("Content-Type", "application/json");
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", "application/json");
+    headers.set("Authorization", credential);
+    headers.set("Content-Type", "application/json");
 
-      HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
+    HttpEntity<ReceiptRegistrationRequest> entity = new HttpEntity<>(registrationPayload, headers);
 
-      RestTemplate restTemplate = new RestTemplate();
-      ResponseEntity<String> response = restTemplate.exchange(
-        "https://registry.versa.org/handle",
-        HttpMethod.POST,
-        entity,
-        String.class
-      );
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> response = restTemplate.exchange(
+      "https://registry.versa.org/handle",
+      HttpMethod.POST,
+      entity,
+      String.class
+    );
     ```
 
     </CodeWrap>
@@ -375,19 +372,19 @@ versa_client.register_customer_reference(customer_reference).await
 
     ```ts
     const payload: CustomerRegistrationRequest = {
-        handle: "acme.com",
-        handle_type: "customer_email_domain",
-        receiver_client_id: "versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba"
-      };
-      const response = await fetch("https://registry.versa.org/handle", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${clientId}:${clientSecret}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      handle: "acme.com",
+      handle_type: "customer_email_domain",
+      receiver_client_id: "versa_cid_prod_5410222b17fa4a4e865e19aebcd77cba"
+    };
+    const response = await fetch("https://registry.versa.org/handle", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Basic ${clientId}:${clientSecret}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
     ```
 
     </CodeWrap>
