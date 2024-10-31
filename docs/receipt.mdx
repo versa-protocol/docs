@@ -25,7 +25,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.5.1",
+  "schema_version": "1.6.0",
   "header": { ... },
   "itemization": { ... },
   "actions": [ ... ],
@@ -211,12 +211,13 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 
 #### Tickets
 
-| Field            | Type              | Description                     |
-| ---------------- | ----------------- | ------------------------------- |
-| `segments`       | `array`           | Array of [segments](#segments). |
-| `number`         | `nullable string` |                                 |
-| `record_locator` | `nullable string` |                                 |
-| `passenger`      | `nullable string` |                                 |
+| Field            | Type              | Description                                                      |
+| ---------------- | ----------------- | ---------------------------------------------------------------- |
+| `segments`       | `array`           | Array of [segments](#segments).                                  |
+| `number`         | `nullable string` |                                                                  |
+| `record_locator` | `nullable string` |                                                                  |
+| `passenger`      | `nullable string` |                                                                  |
+| `metadata`       | `array`           | Array of [metadata](#metadata) objects, for any additional info. |
 
 #### Segments
 
@@ -231,7 +232,9 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 | `arrival_tz`             | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
 | `flight_number`          | `nullable string`  |                                                                                                                      |
 | `class_of_service`       | `nullable string`  |                                                                                                                      |
+| `seat`                   | `nullable string`  |                                                                                                                      |
 | `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                        |
+| `metadata`               | `array`            | Array of [metadata](#metadata) objects, for any additional info.                                                     |
 | `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                          |
 
 </article>
@@ -357,7 +360,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
   "subscription_items": [{
     "subscription_type": "recurring",
     "description": "Pro monthly plan",
-    "subtotal": 1000,
+    "amount": 1000,
     "interval": "month",
     "interval_count": 1,
     "current_period_start": 1679609767,
@@ -383,7 +386,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
 | `description`          | `string`           | Description of the good / service.                                                                                                                                  |
-| `subtotal`             | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                                                       |
+| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost`).                                                                                                    |
 | `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
 | `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
@@ -572,7 +575,7 @@ Describes a brick-and-mortar location.
 | `street_address` | `nullable string` |                                                                                                                      |
 | `city`           | `nullable string` |                                                                                                                      |
 | `region`         | `nullable string` | Two letter region code.                                                                                              |
-| `country`        | `string`          | Two letter ISO 3166 country code.                                                                                    |
+| `country`        | `nullable string` | Two letter ISO 3166 country code.                                                                                    |
 | `postal_code`    | `nullable string` |                                                                                                                      |
 | `lat`            | `nullable number` |                                                                                                                      |
 | `lon`            | `nullable number` |                                                                                                                      |
@@ -593,7 +596,7 @@ A generic line item.
 {
   "date": null,
   "description": "Blue Cheese Crumbles",
-  "subtotal": 1780,
+  "amount": 1780,
   "quantity": 10,
   "unit_cost": 178,
   "unit": null,
@@ -605,28 +608,28 @@ A generic line item.
     }
   ],
   "metadata": [{ "key": "SKU", "value": "524959" }],
-  "product_image": null,
+  "product_image_asset_id": null,
   "group": null,
   "url": null,
   "adjustments": []
 }
 ```
 
-| Field           | Type               | Description                                                                                                                  |
-| --------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `date       `   | `nullable string`  | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
-| `description`   | `string`           | Description of the good / service.                                                                                           |
-| `subtotal`      | `integer`          | Total for the line item (typically `quantity` × `unit_cost`).                                                                |
-| `quantity`      | `nullable number`  | Quantity of items.                                                                                                           |
-| `unit_cost`     | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
-| `unit`          | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
-| `taxes`         | `array`            | Array of [tax](#tax) objects.                                                                                                |
-| `metadata`      | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
-| `product_image` | `nullable string`  | Product image url, square aspect ratio.                                                                                      |
-| `group`         | `nullable string`  | Grouping of line items.                                                                                                      |
-| `unspsc`        | `nullable string`  | The 8-digit [UNSPSC code](https://www.unspsc.org/) for this item.                                                            |
-| `url`           | `nullable string`  | URL to product page.                                                                                                         |
-| `adjustments`   | `array`            | Array of [adjustment](#adjustment) objects.                                                                                  |
+| Field                    | Type               | Description                                                                                                                  |
+| ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `date       `            | `nullable string`  | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
+| `description`            | `string`           | Description of the good / service.                                                                                           |
+| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost`).                                                             |
+| `quantity`               | `nullable number`  | Quantity of items.                                                                                                           |
+| `unit_cost`              | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
+| `unit`                   | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
+| `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                                |
+| `metadata`               | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
+| `product_image_asset_id` | `nullable string`  | [Asset](/assets) id of uploaded product image.                                                                               |
+| `group`                  | `nullable string`  | Grouping of line items.                                                                                                      |
+| `unspsc`                 | `nullable string`  | The 8-digit [UNSPSC code](https://www.unspsc.org/) for this item.                                                            |
+| `url`                    | `nullable string`  | URL to product page.                                                                                                         |
+| `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                                  |
 
 </article>
 </details>

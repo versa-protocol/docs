@@ -4,6 +4,17 @@ title: "Changelog"
 
 # Changelog
 
+## 2024-10-31 - v1.6.0
+
+- Changed 'product_image_url' to 'product_image_asset_id'
+- Changed General itemization 'line_items' to 'items'
+- Added 'metadata' to car_rental
+- Added optional 'seat' string to flight segments
+- Added optional 'metadata' to tickets (for rewards #)
+- Added optional 'metadata' for flight segments (for e.g. meals)
+- Made all 'address' fields optional
+- Change itemized 'subtotal' field to 'amount'—so 'total' and 'subtotal' should appear only in the receipt header
+
 ## 2024-10-18 - v1.5.0
 
 - Omitting optional keys is now allowed and considered equivalent to setting said keys to null
