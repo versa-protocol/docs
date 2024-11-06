@@ -345,7 +345,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
 | `description`          | `string`           | Description of the good / service.                                                                                                                                  |
-| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost`).                                                                                                    |
+| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
 | `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
 | `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
@@ -619,7 +619,7 @@ A generic line item.
 | Field                    | Type               | Description                                                                                                                  |
 | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `description`            | `string`           | Description of the good / service.                                                                                           |
-| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost`).                                                             |
+| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                   |
 | `quantity`               | `nullable number`  | Quantity of items.                                                                                                           |
 | `unit_cost`              | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`                   | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
@@ -674,12 +674,12 @@ Use line item metadata to track things not otherwise in the schema. E.g. SKU, Si
 
 To be used for discounts, tip, fees, surchages, tolls.
 
-| Field             | Type              | Description                                                                                                                   |
-| ----------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive for costs, negative for adjustments. |
-| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                     |
-| `name`            | `nullable string` | The name of the adjustment.                                                                                                   |
-| `rate`            | `nullable number` | The adjustment rate, e.g. 0.1 for 10%. Null for fixed adjustment.                                                             |
+| Field             | Type              | Description                                                                                                                                |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive value for tip / fee, negative value for discount. |
+| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                                  |
+| `name`            | `nullable string` | The name of the adjustment.                                                                                                                |
+| `rate`            | `nullable number` | The adjustment rate, e.g. -0.1 for 10% discount, or 0.2 for 20% tip. Null for fixed adjustment.                                            |
 
 </article>
 </details>
