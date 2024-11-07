@@ -28,8 +28,8 @@ Receipts are wrapped in an object that includes the schema version. The overall 
   "schema_version": "1.7.0",
   "header": { ... },
   "itemization": { ... },
-  "footer": { ... },
-  "payments": [ ... ]
+  "payments": [ ... ],
+  "footer": { ... }
 }
 ```
 
@@ -38,8 +38,8 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 | `schema_version` | `string`         | Version of the receipt schema; useful for validating the receipt. |
 | `header`         | `object`         | Receipt [header](#header).                                        |
 | `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
-| `footer`         | `object`         | Auxiliary details, including http actions and supplemental text   |
 | `payments`       | `nullable array` | List of [payments](#payments).                                    |
+| `footer`         | `object`         | Auxiliary details, including http actions and supplemental text   |
 
 Below we cover each of these sections in detail.
 
