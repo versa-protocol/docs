@@ -25,10 +25,10 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.6.0",
+  "schema_version": "1.7.0",
   "header": { ... },
   "itemization": { ... },
-  "actions": [ ... ],
+  "footer": { ... },
   "payments": [ ... ]
 }
 ```
@@ -38,7 +38,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 | `schema_version` | `string`         | Version of the receipt schema; useful for validating the receipt. |
 | `header`         | `object`         | Receipt [header](#header).                                        |
 | `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
-| `actions`        | `nullable array` | List of [actions](#actions).                                      |
+| `footer`         | `object`         | Auxiliary details, including http actions and supplemental text   |
 | `payments`       | `nullable array` | List of [payments](#payments).                                    |
 
 Below we cover each of these sections in detail.
@@ -426,6 +426,13 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 
 </article>
 </details>
+
+## Footer
+
+| Field               | Type              | Description                                            |
+| ------------------- | ----------------- | ------------------------------------------------------ |
+| `actions`           | `array`           | List of [actions](#actions).                           |
+| `supplemental_text` | `nullable string` | Terms and conditions or other info. Supports Markdown. |
 
 ## Actions
 
