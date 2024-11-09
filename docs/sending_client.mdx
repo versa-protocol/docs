@@ -21,26 +21,13 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
 <TabGroup>
   <Tab title="Rust">
-    <CodeWrap title="protocol/lib.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/protocol/src/lib.rs">
+    <CodeWrap title="api_sender/mod.rs" fileUrl="https://github.com/versa-protocol/rust-client/blob/main/api_sender/src/routes/mod.rs">
 
     ```rust
-    let payload = ReceiptRegistrationRequest {
-      schema_version: "1.6.0".into(),
-      handles,
-      transaction_id: None,
-    };
-
-    let payload_json = serde_json::to_string(&payload).unwrap();
-
-    let client = reqwest::Client::new();
-    let response_result = client
-      .post("https://registry.versa.org/register")
-      .header("Accept", "application/json")
-      .header("Authorization", credential)
-      .header("Content-Type", "application/json")
-      .body(payload_json)
-      .send()
-      .await;
+    let versa_client =
+      versa::client::VersaClient::new(client_id, client_secret).sending_client("1.7.0".into());
+    let transaction_id: Option<String> = None;
+    versa_client.register_receipt(handles, None).await;
     ```
     </CodeWrap>
 
@@ -82,7 +69,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
       ```ts
       const payload: ReceiptRegistrationRequest = {
-        schema_version: "1.6.0",
+        schema_version: "1.7.0",
         handles,
         transaction_id,
       };
@@ -212,7 +199,13 @@ In this final step, the client makes a `POST` request to each receiver, with an 
         envelope,
       };
 
-      let payload_json = serde_json::to_string(&payload).unwrap();
+      let event = WebhookEvent<ReceiverPayload> {
+        data: payload,
+        event_id: None,
+        event: Event::Receipt,
+      };
+
+      let payload_json = serde_json::to_string(&event).unwrap();
       let byte_body = bytes::Bytes::from(payload_json.clone());
       let token = generate_token(byte_body, receiver.secret.clone()).await;
       let client = reqwest::Client::new();
@@ -290,10 +283,15 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     <CodeWrap title="encrypt_and_send.ts" fileUrl="https://github.com/versa-protocol/nodejs-client/blob/main/src/lib/encrypt_and_send.ts">
 
     ```ts
-    const payload: ReceiverPayload = {
+    const data: ReceiverPayload = {
       sender_client_id,
       receipt_id,
       envelope,
+    };
+
+    const event: WebhookEvent<ReceiverPayload> = {
+      event: "receipt",
+      data,
     };
 
     const payloadJson = JSON.stringify(payload);
