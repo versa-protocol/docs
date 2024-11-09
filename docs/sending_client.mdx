@@ -245,17 +245,18 @@ In this final step, the client makes a `POST` request to each receiver, with an 
     byte[] encrypted_data = Protocol.encrypt(Base64.getDecoder().decode(data.encryption_key), nonce, payload.receipt_json);
     Envelope envelope = new Envelope(nonce, encrypted_data);
     ReceiverPayload receiverPayload = new ReceiverPayload(versaClientId, data.receipt_id, data.transaction_id, envelope);
+    WebhookEvent webhookEvent = new WebhookEvent(receiverPayload);
 
     String receiverUrl = receiver.address;
     String hmac = HmacUtil.generateHmac(receiver.secret,
-      objectMapper.writeValueAsString(receiverPayload).getBytes(StandardCharsets.UTF_8));
+      objectMapper.writeValueAsString(webhookEvent).getBytes(StandardCharsets.UTF_8));
 
     HttpHeaders receiverHeaders = new HttpHeaders();
     receiverHeaders.set("Accept", "application/json");
     receiverHeaders.set("Content-Type", "application/json");
     receiverHeaders.set("X-Request-Signature", hmac);
 
-    HttpEntity<ReceiverPayload> receiverEntity = new HttpEntity<>(receiverPayload, receiverHeaders);
+    HttpEntity<WebhookEvent> receiverEntity = new HttpEntity<>(webhookEvent, receiverHeaders);
 
     ResponseEntity<String> receiverResponse = restTemplate.exchange(
       receiverUrl,
