@@ -50,6 +50,14 @@ For test sending, you can provide 'sandbox-firehose.versa.org' as the `customer_
 
 Congratulations! You've sent your first receipt. 💥
 
+### Self-Hosted Configuration (With Docker)
+
+The fastest way to get started with a self-hosted sender client is to use the official Versa [Docker image](https://hub.docker.com/r/versaprotocol/client-sender).
+This image includes a simple sender client that you can run on your own infrastructure.
+You'll need to provide your `CLIENT_ID` and `CLIENT_SECRET` as environment variables.
+You'll still need to do the work of mapping your schema to ours before posting receipts to the service,
+but the Dockerized service will automatically handle all the remaining steps (see below).
+
 ### Self-Hosted Configuration
 
 Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you directly handle the encryption and sending.
