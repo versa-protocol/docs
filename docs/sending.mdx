@@ -54,13 +54,13 @@ Congratulations! You've sent your first receipt. 💥
 
 Ready to implement a full 'self-hosted' Versa sender client? This configuration is similar to the [custodial](#custodial-configuration) approach, but rather than sending your receipts to Versa, the Versa Registry tells you where to send the receipts, and you directly handle the encryption and sending.
 
+The fastest way to get started with a self-hosted sender client is to use the official Versa [Docker image](https://hub.docker.com/r/versa/client-sender). This image includes a simple sender client that you can run on your own infrastructure. You'll need to provide your `CLIENT_ID` and `CLIENT_SECRET` as environment variables. You'll still need to do the work of mapping your schema to ours before posting receipts to the service, but the Dockerized service will automatically handle all the remaining steps (see below). Or, if you prefer, you can implement a client from scratch in your language of choice, as outlined in the [Sender Implementation Guide](/sending_client).
+
 There are three steps:
 
 1. **[Register the Transaction](#1-register-the-transaction)**
 2. **[Encrypt the Receipt](#2-encrypt-the-receipt)**
 3. **[Send the Receipt](#3-send-the-receipt)**
-
-The fastest way to get started with a self-hosted sender client is to use the official Versa [Docker image](https://hub.docker.com/r/versa/client-sender). This image includes a simple sender client that you can run on your own infrastructure. You'll need to provide your `CLIENT_ID` and `CLIENT_SECRET` as environment variables. You'll still need to do the work of mapping your schema to ours before posting receipts to the service, but the Dockerized service will automatically handle all the remaining steps (see below). Or, if you prefer, you can implement a client from scratch in your language of choice, as outlined in the [Sender Implementation Guide](/sending_client).
 
 > [!TIP]
 > If you already have an active client that you've been using in a custodial configuration, you can continue to use those same keys in a self-hosted configuration. Or [create a new sending client](https://app.versa.org/client).
