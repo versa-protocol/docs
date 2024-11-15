@@ -356,7 +356,7 @@ In certain cases, senders may wish to proactively push their receipts to specifi
 
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<String> response = restTemplate.exchange(
-      "https://registry.versa.org/handle",
+      "https://registry.versa.org/customer",
       HttpMethod.POST,
       entity,
       String.class
@@ -375,7 +375,7 @@ In certain cases, senders may wish to proactively push their receipts to specifi
       handle_type: "customer_email_domain",
       receiver_client_id: "versa_cid_5410222b17fa4a4e865e19aebcd77cba"
     };
-    const response = await fetch("https://registry.versa.org/handle", {
+    const response = await fetch("https://registry.versa.org/customer", {
       method: "POST",
       headers: {
         Accept: "application/json",
