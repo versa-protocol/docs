@@ -77,6 +77,8 @@ The payload looks like this:
 }
 ```
 
+You may also retreive PDFs in a custodial client configuration. [Learn more](#retrieve-pdfs-custodial-client).
+
 ### Self-Hosted Configuration
 
 If your client is configured in 'self-hosted' mode, you’ll receive encrypted data, and then you’ll manage the decryption directly.
@@ -170,6 +172,16 @@ export const YourReceiptWrapper = ({
     />
   );
 };
+```
+
+### Retrieve PDFs (Custodial Client)
+
+If you are using a custodial configuration, you have the option to retrieve PDFs instead of rendering the structured receipt data. All you need is the `receipt_id`.
+
+```bash
+curl --request GET \
+  --url 'https://custodial.versa.org/pdf/RECEIPT_ID' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
 
 ## Testing Your Integration
