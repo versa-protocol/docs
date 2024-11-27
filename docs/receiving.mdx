@@ -64,16 +64,16 @@ The payload looks like this:
 {
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "receipt": { ... },
+  "handles": {
+    "customer_email": "jshmoe@acme.com"
+  },
   "sender": {
     "name": "Supplier Co.",
     "brand_color": "f0C14B",
     "logo": "https://imagedelivery.net/image_url.png",
     "website": "supplier.com"
   },
-  "handles": {
-    "customer_email": "jshmoe@acme.com"
-  }
+  "receipt": { ... }
 }
 ```
 
@@ -135,10 +135,10 @@ Example response:
     "customer_email_domain": "acme.com"
   },
   "sender": {
-    "name": "Platform Co.",
+    "name": "Supplier Co.",
     "brand_color": "f0C14B",
     "logo": "https://static.platform.co/image_url.png",
-    "website": "platform.co"
+    "website": "supplier.com"
   }
 }
 ```
