@@ -239,30 +239,32 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 
 #### Tickets
 
-| Field            | Type              | Description                                                      |
-| ---------------- | ----------------- | ---------------------------------------------------------------- |
-| `segments`       | `array`           | Array of [segments](#segments).                                  |
-| `number`         | `nullable string` |                                                                  |
-| `record_locator` | `nullable string` |                                                                  |
-| `passenger`      | `nullable string` |                                                                  |
-| `metadata`       | `array`           | Array of [metadata](#metadata) objects, for any additional info. |
+| Field            | Type               | Description                                                                |
+| ---------------- | ------------------ | -------------------------------------------------------------------------- |
+| `segments`       | `array`            | Array of [segments](#segments).                                            |
+| `number`         | `nullable string`  |                                                                            |
+| `record_locator` | `nullable string`  |                                                                            |
+| `passenger`      | `nullable string`  |                                                                            |
+| `metadata`       | `array`            | Array of [metadata](#metadata) objects, for any additional info.           |
+| `fare`           | `nullable integer` | Optional, only needed if fares are not included on the contained segments. |
+| `taxes`          | `array`            | Optional, only needed if taxes are not included on the contained segments. |
 
 #### Segments
 
 | Field                    | Type               | Description                                                                                                          |
 | ------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `fare`                   | `integer`          |                                                                                                                      |
 | `departure_airport_code` | `string`           | The three-letter IATA airport code that the flight departed from.                                                    |
 | `arrival_airport_code`   | `string`           | The three-letter IATA airport code of the flight’s destination.                                                      |
+| `fare`                   | `nullable integer` | Should be included, unless `fare` is on the parent ticket object instead.                                            |
+| `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                        |
 | `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                            |
 | `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                              |
 | `departure_tz`           | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
 | `arrival_tz`             | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
-| `flight_number`          | `nullable string`  |                                                                                                                      |
+| `flight_number`          | `nullable string`  | The two-letter IATA airline designator followed by a one to four digit number (e.g. 'DL123')                         |
 | `class_of_service`       | `nullable string`  |                                                                                                                      |
 | `seat`                   | `nullable string`  |                                                                                                                      |
 | `aircraft_type`          | `nullable string`  | The ICAO code of the aircraft                                                                                        |
-| `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                        |
 | `metadata`               | `array`            | Array of [metadata](#metadata) objects, for any additional info.                                                     |
 | `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                          |
 
