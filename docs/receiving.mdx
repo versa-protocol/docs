@@ -153,6 +153,15 @@ Receipts are decrypted with the AES-GCM-SIV 256 bit encryption algorithm, using 
 
 If decryption fails, or the resulting data is malformed or invalid, this misuse of the protocol should be reported back to the registry. See [Misuse Reporting](/misuse_reporting) for more information.
 
+### Verifying Inbound Receipts
+
+Whether you are using a self-hosted or custodial client, you should verify incoming requests at your receiving endpoint.
+This is especially true in custodial mode, where you are not completing the handshake yourself by checking out the key from the Versa registry.
+In either case, use your receiver secret to produce an HMAC verification token from the request body and compare it to the `X-Request-Signature` header.
+The token should be generated with the HMAC-SHA1 algorithm, and base64 encoded.
+
+You can review example code in our [client implementation doc](/receiving_client#1-receive-the-encrypted-receipt).
+
 ## Rendering Receipts
 
 Once decrypted, you can store and render the receipt as you see fit. You can roll your own renderer, or you can use a Versa frontend library to render the receipt.
