@@ -42,7 +42,7 @@ In the default custodial configuration, decrypted receipt data is sent to your "
   "sender": {
     "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
     "name": "Supplier Co.",
-    "brand_color": "f0C14B",
+    "brand_color": "#f0C14B",
     "logo": "https://imagedelivery.net/image_url.png",
     "website": "supplier.com"
   },
@@ -59,13 +59,12 @@ When you migrate to Webhooks, you'll subscribe to the `receipt.decrypted` event,
   "data": {
     "receipt": { ... },
     "checkout": {
-      "key": "PlkzzmAhUwkdDme//TEKok7M934kX9REHdNyxNvj6Tk=",
       "sender": {
-        "logo": null,
-        "name": "[TEST] Sender",
-        "org_id": "org_c1cd03fa4eab477cad07458b29774802",
-        "website": "test-sender.versa.org",
-        "brand_color": "#802365"
+        "logo": "https://imagedelivery.net/image_url.png",
+        "name": "Supplier Co.",
+        "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
+        "website": "supplier.com",
+        "brand_color": "#f0C14B"
       },
       "handles": {
         "customer_email": "john.smith@example.com", 
