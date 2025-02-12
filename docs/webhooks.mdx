@@ -89,7 +89,11 @@ When you migrate to Webhooks, you'll subscribe to the `receipt.decrypted` event,
 
 ### Steps to Migrate
 
-1. Create a new webhook subscribed to the `receipt.decrypted` event.
+At the time of this writing, migration is only supported via API:
+
+#### 1. Create a Webhook
+
+Create a new webhook subscribed to the `receipt.decrypted` event.
 
 ```bash
 curl -X POST https://registry.versa.org/webhook \
@@ -101,10 +105,45 @@ curl -X POST https://registry.versa.org/webhook \
    }'
 ```
 
-2. Handle the new event structure in your webhook endpoint, using the `secret` returned by the registry.
+The response will contain the new webhook record:
 
-3. Test that you are receiving data at the new endpoint.
+```json
+{
+  "id": "whk_f162da3d06a74a7d92d4b65d5e0957be",
+  "org_id": "org_4b07578e38e6414383ed0cbbb72e5315",
+  "client_id": "versa_cid_xxxxxxxxx",
+  "secret": "versa_whsec_test_72762a2cad9ea7859aaba59e8c4ed3bb",
+  "endpoint_url": "https://my-service.com/versa-webhook-endpoint",
+  "version": "v2",
+  "event_types": [
+    "receipt.decrypted"
+  ],
+  "created": 1739314457,
+  "last_used": 0,
+  "disabled": null
+}
+```
 
-4. (Optional) Unsubscribe from the 'legacy' webhook for your custodial receiver.
+#### 2. Handle the WebhookEvent
 
-Let us know when your migration is complete and we'll disable the legacy delivery system.
+Deserialize the new structure in your webhook endpoint, and verify the event using the `secret` returned in the previous step.
+
+#### 3. Test your Endpoint
+
+Ensure that you are receiving data at the new endpoint, using our existing tools.
+
+#### 4. (Optional) Unsubscribe from the 'legacy' webhook
+
+Let us know when your migration is complete and we'll disable the v1 delivery system for your custodial client.
+
+## API Reference
+
+You can create, list, update, and delete your webhooks. As with rotating your v1 receiver_secret, you can also rotate your webhook secret at any time.
+
+All webhook endpoints require Basic Authentication with your client credentials.
+
+* POST `/webhook` - Create a new webhook
+* GET `/webhook` - List all webhooks for your client
+* PUT `/webhook/:id` - Update the endpoint_url or events for a specific webhook
+* PUT `/webhook/:id/rotate` - Rotate the secret for a specific webhook
+* DELETE `/webhook/:id` - Delete a specific webhook
