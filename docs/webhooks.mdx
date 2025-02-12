@@ -1,0 +1,142 @@
+---
+title: "Webhooks"
+---
+
+# Webhooks
+
+Webhooks are a more flexible way to consume Versa events.
+Migrating to Webhooks is not necessary.
+You can use Webhooks alongside your existing custodial implementation, or in place of it—or not at all.
+
+## Supported events
+
+| Event                             | Description                                                                             |
+| --------------------------------- | --------------------------------------------------------------------------------------- |
+| `receipt`                         | The original encrypted payload. Existing senders use this event at the protocol level   |
+| `receipt.decrypted`               | The event used by Custodial receivers migrating to Webhooks                             |
+| `customer.registered_by_sender`   | An event triggered to the receiver client upon sender registration                      |
+| `customer.deregistered_by_sender` | An event triggered to the receiver client upon sender deregistration                    |
+| `sender.joined`                   | (Restricted) An event triggered when a new verified merchant joins the network          |
+
+## Using Webhooks
+
+On the Versa network, receipt data is sent directly from verified merchants to receivers.
+That means that the `receipt` event is posted to receivers by sending clients, not by the Versa registry.
+If you are a self-hosted receiver, you are already using Webhooks behind the scenes,
+and you can take advantage of the new `customer` webhooks by subscribing your existing webhook to the new events.
+
+If you are a custodial receiver, you can migrate to Webhooks with a few simple API calls, using your client credentials.
+
+## Migrating to Webhooks (Custodial)
+
+In the default custodial configuration, decrypted receipt data is sent to your "receiver address" in the following structure:
+
+```json
+{
+  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
+  "transaction_event_index": 0,
+  "registered_at": 1739221813,
+  "handles": {
+    "customer_email": "jshmoe@acme.com"
+  },
+  "sender": {
+    "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
+    "name": "Supplier Co.",
+    "brand_color": "f0C14B",
+    "logo": "https://imagedelivery.net/image_url.png",
+    "website": "supplier.com"
+  },
+  "receipt": { ... }
+}
+```
+
+When you migrate to Webhooks, you'll subscribe to the `receipt.decrypted` event, which will send event metadata and a `data` payload, in the following format:
+
+```json
+{
+    "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+    "event": "receipt.decrypted",
+    "data": {
+        "receipt": { ... },
+        "checkout": {
+            "key": "PlkzzmAhUwkdDme//TEKok7M934kX9REHdNyxNvj6Tk=",
+            "sender": {
+                "logo": null,
+                "name": "[TEST] Sender",
+                "org_id": "org_c1cd03fa4eab477cad07458b29774802",
+                "website": "test-sender.versa.org",
+                "brand_color": "#802365"
+            },
+            "handles": {
+                "customer_email": "john.smith@example.com", 
+                "customer_email_domain": "example.com"
+            },
+            "receipt_id": "rct_14a9817fea7d41bf941c16b8750cc845",
+            "registered_at": 1739315357,
+            "schema_version": "1.9.0",
+            "transaction_id": "txn_6b408ba7406b4754b7b7d287e0ca9fdf",
+            "transaction_event_index": 0
+        }
+    }
+}
+```
+
+### Overview of Changes
+
+1. Data is sent to your webhook `endpoint_url` instead of the `receiver_address` on your client credentials.
+2. HMAC verification is performed using your webhook `secret` instead of the `receiver_secret` on your client credentials.
+3. Data is wrapped in a WebhookEvent object, and the data contains both the decrypted `receipt` (matching the Versa schema) and the unaltered `checkout` object retrieved from the registry
+
+### Steps to Migrate
+
+1. Create a new webhook subscribed to the `receipt.decrypted` event.
+
+```bash
+curl -X POST https://registry.versa.org/webhook \
+-H 'Authorization: Basic versa_cid_xxxxxxxxx:versa_csk_xxxxxxxxx' \
+-H "Content-Type: application/json" \
+-d '{
+    "endpoint_url": "https://my-service.com/versa-webhook-endpoint",
+    "events": ["receipt.decrypted"]
+   }'
+```
+
+2. Handle the new event structure in your webhook endpoint, using the `secret` returned by the registry.
+
+3. Test that you are receiving data at the new endpoint.
+
+4. (Optional) Unsubscribe from the 'legacy' webhook for your custodial receiver.
+
+Get your list of webhooks like so:
+
+```bash
+curl -X GET https://registry.versa.org/webhook \
+-H 'Authorization: Basic versa_cid_xxxxxxxxx:versa_csk_xxxxxxxxx'
+```
+
+One of the webhooks will look like this:
+
+```json
+    {
+        "id": "whk_05bf695b96de278f6c5569d93e9d17fb",
+        "org_id": "org_4b07578e38e6414383ed0cbbb72e5315",
+        "client_id": "versa_cid_05bf695b96de278f6c5569d93e9d17fb",
+        "secret": "versa_rsk_11ad2b918ce70c24c460f73523331deb",
+        "endpoint_url": "https://custodial.versa.org/receiver/target/org_4b07578e38e6414383ed0cbbb72e5315/test",
+        "version": "legacy",
+        "event_types": [
+            "receipt"
+        ],
+        "created": 1733152514,
+        "last_used": 1738607095,
+        "disabled": null
+    }
+```
+
+Disable it with the following API call:
+
+```bash
+curl -X DELETE https://registry.versa.org/webhook/whk_05bf695b96de278f6c5569d93e9d17fb \
+-H 'Authorization: Basic versa_cid_xxxxxxxxx:versa_csk_xxxxxxxxx'
+```
