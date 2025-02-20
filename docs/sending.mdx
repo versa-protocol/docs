@@ -103,6 +103,7 @@ Example response:
 {
   "env": "prod",
   "encryption_key": "jZt54/mk2RjP4qtNekQQyamu4qoEaxCE/qk5fhi5LuQ=",
+  "event_id": "evt_ee5a0782cb734f56a36ede1c087e00c1",
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
   "receivers": [
@@ -149,7 +150,10 @@ For a language-specific example client implementations, see the [Sending Client 
 
 #### 3. Send the Receipt
 
-For each receiver, generate an HMAC verification token using the receiver's supplied secret. The nonce and encrypted data are then sent to each receiver address, at which point the receiver will check out the key from the registry and decrypt the envelope.
+For each receiver, generate an HMAC verification token using the supplied webhook secret.
+Wrap the data in a webhook "receipt" event, including the registry-provided `event_id`.
+The nonce and encrypted data are then sent to the receiver's address (a webhook endpoint),
+at which the receiver will check out the key from the registry and decrypt the envelope.
 
 ```bash
 curl --request POST \
@@ -157,11 +161,15 @@ curl --request POST \
   --header 'X-Request-Signature: <HMAC_TOKEN>' \
   --header 'Content-Type: application/json' \
   --data '{
-    "sender_client_id": "versa_cid_3633863a5e5d417eb723124b387ec929",
-    "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-    "envelope": {
-      "encrypted": "ozAUXJFhNlJTlfTAi33J4K55HxonNg2CnbAIbUBornUbsS3WG+AAhdbhdFgyB/WmPXTNgFNDRX5CfAqhAnJoDITBN56rncpv",
-      "nonce": "okYVc6b9GOeGsaMe"
+    "event": "receipt",
+    "event_id": "evt_ee5a0782cb734f56a36ede1c087e00c1",
+    "data": {
+      "sender_client_id": "versa_cid_3633863a5e5d417eb723124b387ec929",
+      "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+      "envelope": {
+        "encrypted": "ozAUXJFhNlJTlfTAi33J4K55HxonNg2CnbAIbUBornUbsS3WG+AAhdbhdFgyB/WmPXTNgFNDRX5CfAqhAnJoDITBN56rncpv",
+        "nonce": "okYVc6b9GOeGsaMe"
+      }
     }
   }'
 ```
