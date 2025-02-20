@@ -89,12 +89,13 @@ curl --request POST \
 
 ##### Handle Object
 
-| Field                   | Type              | Description                                                                                                                                                                                                                                  |
-| ----------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'.                                                                                                                                                                                                                      |
-| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.                                                                                                                                                                                                                             |
-| `card_bin`              | `nullable string` | The first 4-8 digits of a card number, identifying the financial institution that issued the card. E.g. 412345. This is useful only when there is a 1:1 mapping of card bin to receiver. Requires special authorization from the Versa team. |
-| `card_last_four`        | `nullable string` | The last four digits of a card number. Unlike the other handles, 'last four' is only used as a supporting value, as it is not unique to a customer or platform. Requires special authorization from the Versa team.                          |
+| Field                   | Type              | Description             |
+| ----------------------- | ----------------- | ----------------------- |
+| `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'. |
+| `customer_email_domain` | `nullable string` | E.g. 'acme.com'.        |
+
+> [!NOTE]
+> Versa also supports `card_bin_plus_last_four` and `merchant_customer_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
 
 Example response:
 

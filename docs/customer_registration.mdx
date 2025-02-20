@@ -33,7 +33,7 @@ curl --request POST \
 | `receiver_client_id` | `nullable string` | The client id of the intended receiver. Required for sender clients, optional for receiver clients. |
 
 > [!NOTE]
-> Versa also supports `card_bin` and `card_last_four` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
+> Versa also supports `card_bin_plus_last_four` and `merchant_customer_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
 
 You’re responsible for collecting the necessary permission when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
 
