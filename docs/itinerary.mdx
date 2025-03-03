@@ -1,0 +1,278 @@
+---
+title: "Itinerary Schema"
+---
+
+# Itinerary Schema
+
+The itinerary object is a subset of the [receipt](/receipt) object. It excludes all the financial data from receipts (total, taxes, payment, etc.), and is focused only on travel information (e.g. no e-commerce or subscription itemizations).
+
+https://github.com/versa-protocol/schema/blob/tcm/itinerary/data/itinerary.schema.json
+A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/itinerary.schema.json) or via the [@versaprotocol/schema](https://www.npmjs.com/package/@versaprotocol/schema) package.
+
+## Wrapper
+
+Receipts are wrapped in an object that includes the schema version. The structure is identical to a [receipt](/receipt), but without the payments.
+
+| Field            | Type     | Description                                                           |
+| ---------------- | -------- | --------------------------------------------------------------------- |
+| `schema_version` | `string` | Version of the receipt schema; useful for validating the receipt.     |
+| `header`         | `object` | Receipt [header](#header).                                            |
+| `itemization`    | `object` | Receipt [itemization](#itemization) object.                           |
+| `footer`         | `object` | The [footer](/receipt#footer) includes actions and supplemental text. |
+
+## Header
+
+The header is the same as a [receipt header](/receipt#header), but with all the financial info (totals, etc.) removed.
+
+| Field         | Type              | Description                                                                        |
+| ------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.     |
+| `third_party` | `nullable object` | [Third party](/receipt#third-party) involved in the transaction, where applicable. |
+| `customer`    | `nullable object` | [Customer](/receipt#customer) involved in the transaction, where applicable.       |
+| `location`    | `nullable object` | [Place](/receipt#place) object for brick-and-mortar in-person purchases.           |
+
+## Itemization
+
+The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [Flight](#flight), [Lodging](#lodging), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+
+```json
+"itemization": {
+  "general": { ... },
+  "car_rental": null,
+  "flight": null,
+  "lodging": null,
+  "transit_route": null
+}
+```
+
+<details>
+<summary>General Object</summary>
+<article>
+
+### General
+
+| Field   | Type    | Description                                |
+| ------- | ------- | ------------------------------------------ |
+| `items` | `array` | An array of generic [item](#item) objects. |
+
+</article>
+</details>
+
+<details>
+<summary>Car Rental Object</summary>
+<article>
+
+### Car Rental
+
+View a complete [car rental receipt](https://versa.org/demo/interactive?sender=generic&receipt=car_rental) example.
+
+```JSON
+"car_rental": {
+  "rental_at": 1713196492,
+  "return_at": 1713415500,
+  "rental_location": { ... },
+  "return_location": { ... },
+  "vehicle": {
+    "description": "Polestar 2",
+    "image": null
+  },
+  "driver_name": "Henry Ford",
+  "odometer_reading_in": 100,
+  "odometer_reading_out": 210,
+  "items": [ ... ],
+  "metadata": [],
+}
+```
+
+| Field                  | Type               | Description                                                               |
+| ---------------------- | ------------------ | ------------------------------------------------------------------------- |
+| `rental_at`            | `integer`          | Rental time. Measured in seconds since the Unix epoch.                    |
+| `return_at`            | `integer`          | Return time. Measured in seconds since the Unix epoch.                    |
+| `rental_location`      | `object`           | A [place](/receipts#place) describing the rental location.                |
+| `return_location`      | `object`           | A [place](/receipts#place) describing the return location.                |
+| `vehicle`              | `object`           | A [vehicle](#vehicle) object.                                             |
+| `driver_name`          | `nullable string`  |                                                                           |
+| `odometer_reading_in`  | `nullable integer` |                                                                           |
+| `odometer_reading_out` | `nullable integer` |                                                                           |
+| `items`                | `array`            | An array of generic [item](#item) objects.                                |
+| `metadata`             | `array`            | Array of [metadata](/receipts#metadata) objects, for any additional info. |
+
+#### Vehicle
+
+| Field         | Type              | Description   |
+| ------------- | ----------------- | ------------- |
+| `description` | `string`          | Type of car.  |
+| `image`       | `nullable string` | Image of car. |
+
+</article>
+</details>
+
+### Flight
+
+| Field               | Type              | Description                            |
+| ------------------- | ----------------- | -------------------------------------- |
+| `tickets`           | `array`           | An array of [ticket](#ticket) objects. |
+| `itinerary_locator` | `nullable string` |                                        |
+
+#### Tickets
+
+| Field            | Type              | Description                                                               |
+| ---------------- | ----------------- | ------------------------------------------------------------------------- |
+| `segments`       | `array`           | Array of [segments](#segments).                                           |
+| `number`         | `nullable string` |                                                                           |
+| `record_locator` | `nullable string` |                                                                           |
+| `passenger`      | `nullable string` |                                                                           |
+| `metadata`       | `array`           | Array of [metadata](/receipts#metadata) objects, for any additional info. |
+
+#### Segments
+
+| Field                    | Type               | Description                                                                                                          |
+| ------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `departure_airport_code` | `string`           | The three-letter IATA airport code that the flight departed from.                                                    |
+| `arrival_airport_code`   | `string`           | The three-letter IATA airport code of the flight’s destination.                                                      |
+| `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                            |
+| `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                              |
+| `departure_tz`           | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `arrival_tz`             | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `flight_number`          | `nullable string`  | The two-letter IATA airline designator followed by a one to four digit number (e.g. 'DL123').                        |
+| `class_of_service`       | `nullable string`  |                                                                                                                      |
+| `seat`                   | `nullable string`  |                                                                                                                      |
+| `aircraft_type`          | `nullable string`  | The ICAO code of the aircraft.                                                                                       |
+| `metadata`               | `array`            | Array of [metadata](/receipts#metadata) objects, for any additional info.                                            |
+
+</article>
+</details>
+
+<details>
+<summary>Lodging Object</summary>
+<article>
+
+### Lodging
+
+View a complete [lodging receipt](https://versa.org/demo/interactive?sender=generic&receipt=lodging) example.
+
+```JSON
+lodging: {
+  "check_in": 1713196492,
+  "check_out": 1713473361,
+  "guests": "Sue Shmoe",
+  "room": "806",
+  "location": { ... },
+  "items": [ ... ],
+  "metadata": [],
+}
+```
+
+| Field       | Type              | Description                                                                                                  |
+| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
+| `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
+| `guests`    | `nullable string` |                                                                                                              |
+| `room`      | `nullable string` | Room number.                                                                                                 |
+| `location`  | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
+| `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
+| `metadata`  | `array`           | Array of [metadata](/receipts#metadata) objects, for any additional info.                                    |
+
+</article>
+</details>
+
+<details>
+<summary>Transit Route Object</summary>
+<article>
+
+### Transit Route
+
+A route, typically used by rideshare / taxi services, or rail / bus / ferry / etc. View complete [taxi receipt](https://versa.org/demo/interactive?sender=generic&receipt=rideshare) or [rail receipt](https://versa.org/demo/interactive?sender=generic&receipt=rail) examples.
+
+```JSON
+"transit_route": {
+  "transit_route_items": [{
+    "departure_address": {
+      "street_address": "273 Sesame St",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.68266,
+      "lon": -73.94237,
+      "tz": "America/New_York"
+    },
+    "arrival_address": {
+      "street_address": "141 Broadway",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.69954,
+      "lon": -73.97064,
+      "tz": "America/New_York"
+    },
+    "departure_at": 1713196492,
+    "arrival_at": 1713197752,
+    "passenger": null,
+    "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
+    "metadata": [],
+  }],
+}
+```
+
+| Field                 | Type    | Description                                                 |
+| --------------------- | ------- | ----------------------------------------------------------- |
+| `transit_route_items` | `array` | Array of [transit route item](#transit-route-item) objects. |
+
+#### Transit Route Item
+
+| Field                | Type               | Description                                                                                                       |
+| -------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_location` | `object`           | The origin [place](/receipts#place) object.                                                                       |
+| `arrival_location`   | `object`           | The destination [place](/receipts#place) object.                                                                  |
+| `departure_at`       | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_at`         | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `mode`               | `nullable enum`    | One of `car`, `taxi`, `rail`, `bus`, `ferry`, `other`.                                                            |
+| `passenger`          | `nullable string`  | For ticketed local transit, the passenger name.                                                                   |
+| `polyline`           | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `metadata`           | `array`            | Array of key/value [metadata pairs](/receipts#metadata).                                                          |
+
+</article>
+</details>
+
+## Primitives
+
+Foundational objects used in a variety of locations within the receipt schema.
+
+<details>
+<summary>Item Primitive</summary>
+<article>
+
+### Item
+
+A generic line item.
+
+```json
+{
+  "description": "Blue Cheese Crumbles",
+  "quantity": 10,
+  "unit": null,
+  "product_image_asset_id": null,
+  "group": null,
+  "unspsc": null,
+  "url": null,
+  "date": null,
+  "metadata": [{ "key": "SKU", "value": "524959" }]
+}
+```
+
+| Field                    | Type              | Description                                                                                                                  |
+| ------------------------ | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `description`            | `string`          | Description of the good / service.                                                                                           |
+| `quantity`               | `nullable number` | Quantity of items.                                                                                                           |
+| `unit`                   | `nullable string` | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
+| `product_image_asset_id` | `nullable string` | [Asset](/assets) id of uploaded product image.                                                                               |
+| `group`                  | `nullable string` | Grouping of line items.                                                                                                      |
+| `unspsc`                 | `nullable string` | The 8-digit [UNSPSC code](https://www.unspsc.org/) for this item.                                                            |
+| `url`                    | `nullable string` | URL to product page.                                                                                                         |
+| `date`                   | `nullable string` | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
+| `metadata`               | `array`           | Array of key/value [metadata pairs](/receipts#metadata), e.g. SKU.                                                           |
+
+</article>
+</details>
