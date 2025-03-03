@@ -33,30 +33,16 @@ The header is the same as a [receipt header](/receipt#header), but with all the 
 
 ## Itemization
 
-The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [Flight](#flight), [Lodging](#lodging), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+The Itemization section describes the record of services that compose the itinerary. Based on the type of purchase, the object conforms to one of four templates: [Car Rental](#car-rental), [Flight](#flight), [Lodging](#lodging), or [Transit Route](#transit-route). Exactly one itemization template must be non-null.
 
 ```json
 "itemization": {
-  "general": { ... },
   "car_rental": null,
-  "flight": null,
+  "flight": { ... },
   "lodging": null,
   "transit_route": null
 }
 ```
-
-<details>
-<summary>General Object</summary>
-<article>
-
-### General
-
-| Field   | Type    | Description                                |
-| ------- | ------- | ------------------------------------------ |
-| `items` | `array` | An array of generic [item](#item) objects. |
-
-</article>
-</details>
 
 <details>
 <summary>Car Rental Object</summary>
