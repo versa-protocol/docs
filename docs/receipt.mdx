@@ -39,7 +39,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 | `header`         | `object`         | Receipt [header](#header).                                        |
 | `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
 | `payments`       | `nullable array` | List of [payments](#payments).                                    |
-| `footer`         | `object`         | Auxiliary details, including http actions and supplemental text   |
+| `footer`         | `object`         | Auxiliary details, including http actions and supplemental text.  |
 
 Below we cover each of these sections in detail.
 
@@ -261,10 +261,10 @@ View a complete [flight receipt](https://versa.org/demo/interactive?sender=gener
 | `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                              |
 | `departure_tz`           | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
 | `arrival_tz`             | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
-| `flight_number`          | `nullable string`  | The two-letter IATA airline designator followed by a one to four digit number (e.g. 'DL123')                         |
+| `flight_number`          | `nullable string`  | The two-letter IATA airline designator followed by a one to four digit number (e.g. 'DL123').                        |
 | `class_of_service`       | `nullable string`  |                                                                                                                      |
 | `seat`                   | `nullable string`  |                                                                                                                      |
-| `aircraft_type`          | `nullable string`  | The ICAO code of the aircraft                                                                                        |
+| `aircraft_type`          | `nullable string`  | The ICAO code of the aircraft.                                                                                       |
 | `metadata`               | `array`            | Array of [metadata](#metadata) objects, for any additional info.                                                     |
 | `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                          |
 
