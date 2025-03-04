@@ -13,12 +13,12 @@ A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitH
 
 Receipts are wrapped in an object that includes the schema version. The structure is identical to a [receipt](/receipt), but without the payments.
 
-| Field            | Type     | Description                                                           |
-| ---------------- | -------- | --------------------------------------------------------------------- |
-| `schema_version` | `string` | Version of the receipt schema; useful for validating the receipt.     |
-| `header`         | `object` | Receipt [header](#header).                                            |
-| `itemization`    | `object` | Receipt [itemization](#itemization) object.                           |
-| `footer`         | `object` | The [footer](/receipt#footer) includes actions and supplemental text. |
+| Field            | Type     | Description                                                       |
+| ---------------- | -------- | ----------------------------------------------------------------- |
+| `schema_version` | `string` | Version of the receipt schema; useful for validating the receipt. |
+| `header`         | `object` | Receipt [header](#header).                                        |
+| `itemization`    | `object` | Receipt [itemization](#itemization) object.                       |
+| `footer`         | `object` | The [footer](/#footer) includes supplemental text.                |
 
 ## Header
 
@@ -26,10 +26,8 @@ The header is the same as a [receipt header](/receipt#header), but with all the 
 
 | Field         | Type              | Description                                                                        |
 | ------------- | ----------------- | ---------------------------------------------------------------------------------- |
-| `mcc`         | `nullable string` | Merchant Category Code. This value should match the value on the card network.     |
 | `third_party` | `nullable object` | [Third party](/receipt#third-party) involved in the transaction, where applicable. |
 | `customer`    | `nullable object` | [Customer](/receipt#customer) involved in the transaction, where applicable.       |
-| `location`    | `nullable object` | [Place](/receipt#place) object for brick-and-mortar in-person purchases.           |
 
 ## Itemization
 
@@ -225,6 +223,12 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 
 </article>
 </details>
+
+## Footer
+
+| Field               | Type              | Description                                            |
+| ------------------- | ----------------- | ------------------------------------------------------ |
+| `supplemental_text` | `nullable string` | Terms and conditions or other info. Supports Markdown. |
 
 ## Primitives
 
