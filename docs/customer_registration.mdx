@@ -33,7 +33,8 @@ curl --request POST \
 | `receiver_client_id` | `nullable string` | The client id of the intended receiver. Required for sender clients, optional for receiver clients. |
 
 > [!NOTE]
-> Versa also supports `card_bin_plus_last_four` and `merchant_customer_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
+> Versa also supports `payment_account_reference` (PAR), `merchant_group_level_code`, and `merchant_user_level_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
+> (See the [Visa](https://developer.visa.com/capabilities/visa-par-inquiry), [Mastercard](https://developer.mastercard.com/payment-account-reference-inquiry/documentation/), and [AmEx](https://developer.americanexpress.com/products/payment-account-reference-public/overview) documentation on using PAR)
 
 You’re responsible for collecting the necessary permission when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
 
