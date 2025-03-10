@@ -28,7 +28,7 @@ and you can take advantage of the new `customer` webhooks by subscribing your ex
 
 If you are a custodial receiver, you can migrate to Webhooks with a few simple API calls, using your client credentials.
 
-## Migrating to Webhooks (Custodial)
+## Migrating to Webhooks v2 (Custodial)
 
 In the default custodial configuration, decrypted receipt data is sent to your "receiver address" in the following structure:
 
@@ -52,7 +52,7 @@ In the default custodial configuration, decrypted receipt data is sent to your "
 }
 ```
 
-When you migrate to Webhooks, you'll subscribe to the `receipt.decrypted` event, which will send event metadata and a `data` payload, in the following format:
+When you migrate to Webhooks v2, you'll subscribe to the `receipt.decrypted` event, which will send event metadata and a `data` payload, in the following format:
 
 ```json
 {
