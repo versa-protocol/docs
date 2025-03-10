@@ -166,7 +166,7 @@ Once you have an envelope with the encrypted data and nonce, you're ready to sen
 
 ## 3. Send the Receipt
 
-In this final step, the client makes a `POST` request to each receiver, with an HMAC verification token generated using their receiver secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data. Review the [sending specification](/sending#3-send-the-receipt) for details.
+In this final step, the client makes a `POST` request to each receiver, with an HMAC verification token generated using their webhook secret (provided by the registry). Loop through the list of receivers returned by the registry, generate a nonce, encrypt and send the data. Review the [sending specification](/sending#3-send-the-receipt) for details.
 
 <TabGroup>
   <Tab title="Rust">
