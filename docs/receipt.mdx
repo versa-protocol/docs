@@ -25,7 +25,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.10.0",
+  "schema_version": "1.11.0",
   "header": { ... },
   "itemization": { ... },
   "payments": [ ... ],
@@ -483,7 +483,7 @@ Merchants have the option to provide useful next actions in the Actions section.
 | -------------- | ----------------- | ----------------------------------------- |
 | `amount`       | `int`             |                                           |
 | `paid_at`      | `int`             | Measured in seconds since the Unix epoch. |
-| `payment_type` | `enum`            | One of `card` or `ach`.                   |
+| `payment_type` | `nullable enum`   | One of `card` or `ach`.                   |
 | `card_payment` | `nullable object` | [Card payment](#card-payment) object.     |
 | `ach_payment`  | `nullable object` | [ACH payment](#ach-payment) object.       |
 
