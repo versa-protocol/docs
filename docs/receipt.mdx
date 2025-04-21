@@ -562,6 +562,19 @@ A merchant, third party, or employer profile.
 
 Describes a brick-and-mortar location.
 
+```JSON
+"merchant": {
+  "name": "Widget Co",
+  "address": {
+    "tz": "America/New_York"
+  },
+  "phone": "+1-555-489-5861",
+  "url": null,
+  "google_place_id": null,
+  "image": null
+}
+```
+
 | Field             | Type              | Description                                                                                                            |
 | ----------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `name`            | `nullable string` | Place name.                                                                                                            |
@@ -579,6 +592,19 @@ Describes a brick-and-mortar location.
 <article>
 
 ### Address
+
+```JSON
+{
+  "street_address": "123 Main St",
+  "city": "Anytown",
+  "region": "CA",
+  "country": "US",
+  "postal_code": "12345",
+  "lat": 37.7749,
+  "lon": -122.4194,
+  "tz": "America/Los_Angeles"
+}
+```
 
 | Field            | Type              | Description                                                                                                          |
 | ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -653,6 +679,13 @@ A generic line item.
 
 Use line item metadata to track things not otherwise in the schema. E.g. SKU, Size, Color, UNSPSC Code, etc.
 
+```JSON
+{
+  "key": "SKU",
+  "value": "524959"
+}
+```
+
 | Field   | Type     | Description                                                                                   |
 | ------- | -------- | --------------------------------------------------------------------------------------------- |
 | `key`   | `string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
@@ -666,6 +699,14 @@ Use line item metadata to track things not otherwise in the schema. E.g. SKU, Si
 <article>
 
 ### Tax
+
+```JSON
+{
+  "amount": 432,
+  "name": "GST",
+  "rate": 0.0875
+}
+```
 
 | Field    | Type              | Description                                                       |
 | -------- | ----------------- | ----------------------------------------------------------------- |
@@ -683,6 +724,15 @@ Use line item metadata to track things not otherwise in the schema. E.g. SKU, Si
 ### Adjustment
 
 To be used for discounts, tip, fees, surchages, tolls.
+
+```JSON
+{
+  "amount": 1234,
+  "adjustment_type": "tip",
+  "name": "Tip",
+  "rate": null
+}
+```
 
 | Field             | Type              | Description                                                                                                                                |
 | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
