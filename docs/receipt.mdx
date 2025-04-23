@@ -75,7 +75,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 | `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
 | `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
 | `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
-| `location`         | `nullable object` | [Place](#place) object for the merchant.                                                                            |
+| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                               |
 | `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                               |
 | `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                               |
 
