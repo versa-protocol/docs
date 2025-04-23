@@ -6,7 +6,7 @@ title: "Webhooks"
 
 Webhooks are how receiver clients consume Versa events.
 
-## Supported events
+## Supported Events
 
 | Event                             | Description                                                                             |
 | --------------------------------- | --------------------------------------------------------------------------------------- |
@@ -28,7 +28,7 @@ and custodial clients use separate webhooks to get deliveries from Versa servers
 
 Custodial clients subscribe to a `receipt.decrypted` event.
 The custodial service receives and decrypts data on your behalf,
-and then posts a separate WebhookEvent to your remote endpoint, in the following format:
+and then posts a separate webhook event to your remote endpoint, in the following format:
 
 ```json
 {
