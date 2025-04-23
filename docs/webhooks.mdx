@@ -4,9 +4,7 @@ title: "Webhooks"
 
 # Webhooks
 
-Webhooks are how receiving clients consume Versa events.
-If you are consuming a 'legacy' custodial event, migrating to Webhooks v2 is not necessary.
-You can use Webhooks alongside your existing custodial implementation, or in place of it—or not at all.
+Webhooks are how receiver clients consume Versa events.
 
 ## Supported events
 
@@ -23,36 +21,14 @@ You can use Webhooks alongside your existing custodial implementation, or in pla
 
 On the Versa network, receipt data is sent directly from verified merchants to receivers.
 That means that the `receipt` event is posted to receivers by sending clients, not by the Versa registry.
-If you are a self-hosted receiver, you are already using Webhooks behind the scenes,
-and you can take advantage of the new `customer` webhooks by subscribing your existing webhook to the new events.
+All receivers use webhooks to handle encrypted data sent over the protocol,
+and custodial clients use separate webhooks to get deliveries from Versa servers.
 
-If you are a custodial receiver, you can migrate to Webhooks with a few simple API calls, using your client credentials.
+## Custodial Webhooks
 
-## Migrating to Webhooks v2 (Custodial)
-
-In the default custodial configuration, decrypted receipt data is sent to your "receiver address" in the following structure:
-
-```json
-{
-  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "transaction_event_index": 0,
-  "registered_at": 1739221813,
-  "handles": {
-    "customer_email": "jshmoe@acme.com"
-  },
-  "sender": {
-    "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
-    "name": "Supplier Co.",
-    "brand_color": "#f0C14B",
-    "logo": "https://imagedelivery.net/image_url.png",
-    "website": "supplier.com"
-  },
-  "receipt": { ... }
-}
-```
-
-When you migrate to Webhooks v2, you'll subscribe to the `receipt.decrypted` event, which will send event metadata and a `data` payload, in the following format:
+Custodial clients subscribe to a `receipt.decrypted` event.
+The custodial service receives and decrypts data on your behalf,
+and then posts a separate WebhookEvent to your remote endpoint, in the following format:
 
 ```json
 {
@@ -84,61 +60,6 @@ When you migrate to Webhooks v2, you'll subscribe to the `receipt.decrypted` eve
   }
 }
 ```
-
-### Overview of Changes
-
-1. Data is sent to your webhook `endpoint_url` instead of the `receiver_address` on your client credentials.
-2. HMAC verification is performed using your webhook `secret` instead of the `receiver_secret` on your client credentials.
-3. Data is wrapped in a WebhookEvent object, and the data contains both the decrypted `receipt` (matching the Versa schema) and the unaltered `checkout` object retrieved from the registry.
-
-### Steps to Migrate
-
-At the time of this writing, migration is only supported via API:
-
-#### 1. Create a Webhook
-
-Create a new webhook subscribed to the `receipt.decrypted` event.
-
-```bash
-curl -X POST https://registry.versa.org/webhook \
--H 'Authorization: Basic versa_cid_xxxxxxxxx:versa_csk_xxxxxxxxx' \
--H "Content-Type: application/json" \
--d '{
-    "endpoint_url": "https://my-service.com/versa-webhook-endpoint",
-    "events": ["receipt.decrypted"]
-   }'
-```
-
-The response will contain the new webhook record:
-
-```json
-{
-  "id": "whk_f162da3d06a74a7d92d4b65d5e0957be",
-  "org_id": "org_4b07578e38e6414383ed0cbbb72e5315",
-  "client_id": "versa_cid_xxxxxxxxx",
-  "secret": "versa_whsec_test_72762a2cad9ea7859aaba59e8c4ed3bb",
-  "endpoint_url": "https://my-service.com/versa-webhook-endpoint",
-  "version": "v2",
-  "events": [
-    "receipt.decrypted"
-  ],
-  "created": 1739314457,
-  "last_used": 0,
-  "disabled": null
-}
-```
-
-#### 2. Handle the WebhookEvent
-
-Deserialize the new structure in your webhook endpoint, and verify the event using the `secret` returned in the previous step.
-
-#### 3. Test your Endpoint
-
-Ensure that you are receiving data at the new endpoint, using our existing tools.
-
-#### 4. (Optional) Unsubscribe from the 'legacy' webhook
-
-Let us know when your migration is complete and we'll disable the v1 delivery system for your custodial client.
 
 ## API Reference
 
