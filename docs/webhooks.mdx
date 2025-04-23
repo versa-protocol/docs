@@ -11,9 +11,9 @@ Webhooks are how receiver clients consume Versa events.
 | Event                             | Description                                                                             |
 | --------------------------------- | --------------------------------------------------------------------------------------- |
 | `receipt`                         | The original encrypted payload. Existing senders use this event at the protocol level.  |
-| `receipt.decrypted`               | The event used by Custodial receivers migrating to Webhooks.                            |
+| `receipt.decrypted`               | The event received by custodial clients at their remote endpoint.                       |
 | `itinerary`                       | The encrypted payload for an itinerary event, which excludes payment data.              |
-| `itinerary.decrypted`             | As above, the Custodial event for itineraries.                                          |
+| `itinerary.decrypted`             | As above, the custodial event for itineraries.                                          |
 | `customer.registered_by_sender`   | An event triggered to the receiver client upon sender registration.                     |
 | `customer.deregistered_by_sender` | An event triggered to the receiver client upon sender deregistration.                   |
 
@@ -63,7 +63,8 @@ and then posts a separate webhook event to your remote endpoint, in the followin
 
 ## API Reference
 
-You can create, list, update, and delete your webhooks. As with rotating your v1 receiver_secret, you can also rotate your webhook secret at any time.
+You can create, list, update, and delete your webhooks, and you can rotate your webhook secrets at any time
+(remember to then update your destination endpoint with the new secret).
 
 All webhook endpoints require Basic Authentication with your client credentials.
 
