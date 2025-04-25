@@ -40,10 +40,18 @@ The following is a list of misuse codes that can be reported back to the registr
 | `protocol_decryption_failed`      | Decrypting the received receipt JSON failed.                                            |
 | `protocol_deserialization_failed` | Decryption succeeded, but the payload was not valid JSON.                               |
 | `schema_validation_failed`        | Schema validation of the receipt based on the receipt's provided schema version failed. |
-| `flag_subtotals_do_not_sum`       | The sum of the subtotals in the receipt does not match the total.                       |
+| `schema_version_invalid`          | The schema version provided is invalid.                                                 |
+| `schema_version_unknown`          | the schema version provided was vaild but not recognized.                               |
+| `semantic_validation_failed`      | Semantic validation returned one or more violations                                     |
 
 ## Best Practices
 
 It is recommended best practice that all misuse be reported back to the registry. We also recommend that senders implement this validation logic before sending receipt data, but flaws in implementation can still occur. Due to the semi-decentralized nature of the protocol, misuse reporting helps us maintain the integrity of the network.
 
 Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
+
+## Semantic Validation
+
+Semantic validation is a separate idea from protocol correctness and JSON schema validation.
+Semantic validation consists of a set of rules and rule evaluators, which can result in one or more violations.
+An example is if the `header.total` does not equal the sum of the itemized subtotals, taxes, and adjustments, then a semantic violation has occurred.
