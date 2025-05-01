@@ -92,8 +92,8 @@ Below is the list of semantic validation rules we currently support:
 
 | Rule                                           | Description                                                                                                                                                        |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header's 'paid' field.                                                                               |
 | `all_headers_should_have_tz`                   | All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business. |
 | `flight_fare_at_ticket_or_segment_exclusively` | Flight receipts should set the fare at the ticket level, or the segment level, but not both.                                                                       |
+| `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header's 'paid' field.                                                                               |
 | `header_total_should_be_sum_of_itemization`    | The header total should equal the sum of all line items, taxes, and adjustments.                                                                                   |
 | `schema_version_should_be_current`             | The schema should be updated to the latest version.                                                                                                                |
