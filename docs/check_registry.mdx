@@ -4,9 +4,10 @@ title: "Check Registry"
 
 # Check Registry
 
-It may be useful to see what registered receivers exist for a given user.
+It may be useful to see what registered receivers exist for a given customer.
 
-The 'check_registry' endpoint returns a list of matched receiver profiles.
+The 'check_registry' endpoint expects a body containing the transaction handles
+for a hypothetical receipt registration and returns a list of matched receiver profiles.
 
 Request:
 
@@ -24,11 +25,10 @@ Returns:
 
 ```json
 {
-  "env": "prod",
+  "mode": "prod",
   "receivers": [
     {
-      "client_id": "versa_cid_05d108be2b974577b203a4d907a61e7d,
-      "receiver": {
+      "org": {
         "id": "org_67b09701789b44428e69664e7f1eb165",
         "name": "Acme Bank",
         "slug": "acme-bank",
