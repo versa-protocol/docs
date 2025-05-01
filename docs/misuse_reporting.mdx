@@ -54,7 +54,7 @@ curl --request POST \
     {
       "code": "semantic_validation_failed",
       "description": "All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business.",
-      "rule": "all-headers-should-have-tz"
+      "rule": "all_headers_should_have_tz"
     }],
   }'
 ```
@@ -70,7 +70,7 @@ The following is a list of misuse codes that can be reported back to the registr
 | `schema_validation_failed`        | Schema validation of the receipt based on the receipt's provided schema version failed. |
 | `schema_version_invalid`          | The schema version provided is invalid.                                                 |
 | `schema_version_unknown`          | The schema version provided was vaild but not recognized.                               |
-| `semantic_validation_failed`      | Semantic validation returned one or more violations                                     |
+| `semantic_validation_failed`      | Semantic validation returned one or more violations.                                    |
 
 ## Best Practices
 
@@ -78,11 +78,11 @@ It is recommended best practice that all misuse be reported back to the registry
 
 Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
 
-When including misuse descriptions, do not include any data from the receipt itself. Field names are acceptable, but values should be omitted and may result in the report being rejected.
+When including misuse descriptions, do not include any data from the receipt itself. Field names are acceptable, but values should be omitted and otherwise may result in the report being rejected.
 
 ## Semantic Validation
 
-Semantic validation is a separate idea from protocol correctness and JSON schema validation.
+Semantic validation is a separate domain from protocol correctness and JSON schema validation.
 Semantic validation consists of a set of rules and rule evaluators, which can result in one or more violations.
 An example is if the `header.total` does not equal the sum of the itemized subtotals, taxes, and adjustments, then a semantic violation has occurred.
 
