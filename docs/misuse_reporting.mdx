@@ -16,9 +16,11 @@ There are three broad categories of misuse that a receiver should report:
 
 ## Reporting Misuse
 
-When implementing your client, reporting misuse should be baked into the error handling process. After [checking out the key](/receiving#2-get-the-key) for a given receipt, any error falling into one of the above categories should be identified and posted back to the registry.
+When implementing your client, reporting misuse should be baked into the error handling process.
+After [checking out the key](/receiving#2-get-the-key) for a given receipt,
+any error falling into one of the above categories should be identified and posted to the registry.
 
-Take the `receipt_id` you received, and post it along with the proper misuse code.
+Take the `receipt_id` you received, and post it along with any relevant misuse codes.
 
 ```bash
 curl --request POST \
@@ -27,13 +29,37 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-    "misuses": [
+    "misuse": [
       "code": "protocol_decryption_failed"
     ],
   }'
 ```
 
-## List of Misuse Codes
+The schema validation and semantic validation steps may yield multiple codes,
+along with descriptions and (in the case of semantic validation) rule names.
+
+The `description` and `rule` fields are optional, but may help us resolve the issue with the sender more quickly.
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/report_misuse' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
+    "misuse": [{
+      "code": "schema_validation_failed",
+      "description": "Property `header` does not match schema. A subschema had errors. Instance does not have required property `total`."
+    },
+    {
+      "code": "semantic_validation_failed",
+      "description": "All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business.",
+      "rule": "all-headers-should-have-tz"
+    }],
+  }'
+```
+
+### List of Misuse Codes
 
 The following is a list of misuse codes that can be reported back to the registry:
 
@@ -52,8 +78,22 @@ It is recommended best practice that all misuse be reported back to the registry
 
 Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
 
+When including misuse descriptions, do not include any data from the receipt itself. Field names are acceptable, but values should be omitted and may result in the report being rejected.
+
 ## Semantic Validation
 
 Semantic validation is a separate idea from protocol correctness and JSON schema validation.
 Semantic validation consists of a set of rules and rule evaluators, which can result in one or more violations.
 An example is if the `header.total` does not equal the sum of the itemized subtotals, taxes, and adjustments, then a semantic violation has occurred.
+
+### List of Semantic Validation Rules
+
+Below is the list of semantic validation rules we currently support:
+
+| Rule                                           | Description                                                                                                                                                        |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header's 'paid' field.                                                                               |
+| `all_headers_should_have_tz`                   | All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business. |
+| `flight_fare_at_ticket_or_segment_exclusively` | Flight receipts should set the fare at the ticket level, or the segment level, but not both.                                                                       |
+| `header_total_should_be_sum_of_itemization`    | The header total should equal the sum of all line items, taxes, and adjustments.                                                                                   |
+| `schema_version_should_be_current`             | The schema should be updated to the latest version.                                                                                                                |
