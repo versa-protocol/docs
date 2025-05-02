@@ -72,14 +72,6 @@ The following is a list of misuse codes that can be reported back to the registr
 | `schema_version_unknown`          | The schema version provided was vaild but not recognized.                               |
 | `semantic_validation_failed`      | Semantic validation returned one or more violations.                                    |
 
-## Best Practices
-
-It is recommended best practice that all misuse be reported back to the registry. We also recommend that senders implement this validation logic before sending receipt data, but flaws in implementation can still occur. Due to the semi-decentralized nature of the protocol, misuse reporting helps us maintain the integrity of the network.
-
-Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
-
-When including misuse descriptions, do not include any data from the receipt itself. Field names are acceptable, but values should be omitted and otherwise may result in the report being rejected.
-
 ## Semantic Validation
 
 Semantic validation is a separate domain from protocol correctness and JSON schema validation.
@@ -97,3 +89,11 @@ Below is the list of semantic validation rules we currently support:
 | `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header's 'paid' field.                                                                               |
 | `header_total_should_be_sum_of_itemization`    | The header total should equal the sum of all line items, taxes, and adjustments.                                                                                   |
 | `schema_version_should_be_current`             | The schema should be updated to the latest version.                                                                                                                |
+
+## Best Practices
+
+It is recommended best practice that all misuse be reported back to the registry. We also recommend that senders implement this validation logic before sending receipt data, but flaws in implementation can still occur. Due to the semi-decentralized nature of the protocol, misuse reporting helps us maintain the integrity of the network.
+
+Validation and misuse reporting is included in our official [Rust crate](https://crates.io/crates/versa), and we will be adding support for other client libraries soon.
+
+When including misuse descriptions, do not include any data from the receipt itself. Field names are acceptable, but values should be omitted and otherwise may result in the report being rejected.
