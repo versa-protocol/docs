@@ -62,21 +62,32 @@ The payload looks like this:
 
 ```json
 {
-  "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "transaction_id": "txn_5ed073abbf3a4b49a8c03191f87d8ffe",
-  "transaction_event_index": 0,
-  "registered_at": 1739221813,
-  "handles": {
-    "customer_email": "jshmoe@acme.com"
-  },
-  "sender": {
-    "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
-    "name": "Supplier Co.",
-    "brand_color": "#f0C14B",
-    "logo": "https://imagedelivery.net/image_url.png",
-    "website": "supplier.com"
-  },
-  "receipt": { ... }
+  "event": "receipt.decrypted",
+  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+  "event_at": 1739315358,
+  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
+  "delivery_at": 1739315358,
+  "data": {
+    "receipt": { ... },
+    "checkout": {
+      "sender": {
+        "logo": "https://imagedelivery.net/image_url.png",
+        "name": "Supplier Co.",
+        "org_id": "org_b6d073a9bf3a4c49a8c03191f87d8ee2",
+        "website": "supplier.com",
+        "brand_color": "#f0C14B"
+      },
+      "handles": {
+        "customer_email": "john.smith@example.com", 
+        "customer_email_domain": "example.com"
+      },
+      "receipt_id": "rct_14a9817fea7d41bf941c16b8750cc845",
+      "registered_at": 1739315357,
+      "schema_version": "1.11.0",
+      "transaction_id": "txn_6b408ba7406b4754b7b7d287e0ca9fdf",
+      "transaction_event_index": 0
+    }
+  }
 }
 ```
 
