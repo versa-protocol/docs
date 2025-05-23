@@ -25,11 +25,11 @@ curl --request POST \
   }'
 ```
 
-| Field                | Type              | Description                                                                                         |
-| -------------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
-| `handle_type`        | `enum`            | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com).          |
-| `handle`             | `string`          | The handle value.                                                                                   |
-| `receiver_org_id`    | `nullable string` | The org id of the intended receiver. Required for any sender registration.                          |
+| Field             | Type              | Description                                                                                |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------ |
+| `handle_type`     | `enum`            | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
+| `handle`          | `string`          | The handle value.                                                                          |
+| `receiver_org_id` | `nullable string` | The org id of the intended receiver. Required for any sender registration.                 |
 
 > [!NOTE]
 > Versa also supports `payment_account_reference` (PAR), `merchant_group_code`, and `merchant_user_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
@@ -65,3 +65,15 @@ Senders, on the other hand, can only register customers to receive the receipts 
 Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_org_id` parameter on the /customer endpoint. Receiver clients do not need to specifiy a `receiver_org_id` — they can either skip the paramter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers, on the other hand, must include a `receiver_org_id`, and that `receiver_org_id` must reference an active receiver client. If a sender client excludes the `receiver_org_id` parameter, the registration attempt will error.
 
 Sender and receiver registrations are not mutually exclusive. For instance: if Sender A registers a customer for Receiver B, and Receiver B also registers that same customer, Versa will match against both registrations, and return a single reference to Receiver B.
+
+## Sender Registration, "Merchant Group Codes", and "Merchant User Codes"
+
+In addition to the standard domain and email -based forms of customer registration, senders can also register customers using a "merchant group code" (MGC) or a "merchant user code" (MUC).
+
+A merchant group code is a unique identifer assigned to a corporate program. For example, a rental car company might have a 'corporate discount code' for Acme Co.
+
+A merchant user code is a unique identifer assigned to an individual user. For example, an airline might have a loyalty program id for each of their frequent flyers.
+
+'MGC' and 'MUC' handles give merchants the flexibility to register customers according to these core identifiers in their system, alongside more universal identifiers like domain and email.
+
+Note: usage of 'MGC' and 'MUC' customer registration is currently invite-only. Contact Versa Support if you’d like to learn more about this feature.
