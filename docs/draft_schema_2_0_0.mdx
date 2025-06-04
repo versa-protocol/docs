@@ -1,6 +1,41 @@
 ---
-title: "Receipt Schema"
+title: "Draft Schema 2.0.0"
 ---
+
+# Key Changes
+
+This is a major version update to the schema,
+changing the `passenger` string to a nullable `Person` object,
+along with other small improvements.
+
+Breaking Changes
+---
+- `passenger` changes from type `["string", "null"]` to a nullable `Person` object
+- `metadata` is removed from flight tickets
+
+Other Changes
+---
+- Fixed: `place` nullable fields should also not be required
+- Fixed: `vehicle` nullable `image` should also not be required
+- Fixed: `currency` should support `cny` instead of `cnh`
+- Added to rental car `vehicle`
+  - `license_plate_number` (string)
+  - `vehicle_class` (ACRISS car code, four letters)
+- Added `adjustment_type` enum option: `add_on`
+- Added `website` to `customer`
+
+New Passenger Model
+---
+A `Person` is distinct from a `Customer` in that it always refers to an individual. 
+
+Field | Type | Required | Description
+-- | -- | -- | --
+first_name | string \| null | No |  
+last_name | string \| null | No |  
+preferred_first_name | string \| null | No |  
+email | string \| null | No |  
+phone | string \| null | No |  
+metadata | array of metadatum | Yes | List of metadata items
 
 # Receipt Schema
 
