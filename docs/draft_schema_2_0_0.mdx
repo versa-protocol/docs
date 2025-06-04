@@ -1,0 +1,789 @@
+---
+title: "Receipt Schema"
+---
+
+# Receipt Schema
+
+Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
+
+Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain pre-purchase scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
+
+A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versaprotocol/schema](https://www.npmjs.com/package/@versaprotocol/schema) package.
+
+Versa receipts are composed of four sections:
+
+1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
+2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, subscription.
+3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
+4. [**Payments**](#payments): Payment status and details.
+
+![Rough diagram of receipt elements.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/receipt_structure.png)
+
+## Wrapper
+
+Receipts are wrapped in an object that includes the schema version. The overall Versa receipt structure looks like this:
+
+```json
+{
+  "schema_version": "1.11.0",
+  "header": { ... },
+  "itemization": { ... },
+  "payments": [ ... ],
+  "footer": { ... }
+}
+```
+
+| Field            | Type             | Description                                                       |
+| ---------------- | ---------------- | ----------------------------------------------------------------- |
+| `schema_version` | `string`         | Version of the receipt schema; useful for validating the receipt. |
+| `header`         | `object`         | Receipt [header](#header).                                        |
+| `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
+| `payments`       | `nullable array` | List of [payments](#payments).                                    |
+| `footer`         | `object`         | The [footer](#footer) includes actions and supplemental text.     |
+
+Below we cover each of these sections in detail.
+
+## Header
+
+The receipt header is the 10,000 foot view of the transaction, describing the “who,” “when,” and “where” (the “what” is covered in the itemization section). An example receipt header:
+
+```json
+"header": {
+  "currency": "USD",
+  "subtotal": 5928,
+  "total": 6332,
+  "paid": 6332,
+  "invoiced_at": 1713295619,
+  "invoice_number": "1024",
+  "mcc": 3234,
+  "third_party": null,
+  "customer": null,
+  "location": null,
+  "invoice_asset_id": "asset_6dbca44449094eb28aaa6b3c6b2aa4",
+  "receipt_asset_id": null
+}
+```
+
+| Field              | Type              | Description                                                                                                         |
+| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `currency`         | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
+| `subtotal`         | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
+| `total`            | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
+| `paid`             | `integer`         | Sum of all payments. Will equal `total` if the invoice is paid in full.                                             |
+| `invoiced_at`      | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                                    |
+| `invoice_number`   | `nullable string` | Unique identifier for the invoice / receipt.                                                                        |
+| `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
+| `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
+| `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
+| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                               |
+| `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                               |
+| `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                               |
+
+<details>
+<summary>Third Party Object</summary>
+<article>
+
+### Third Party
+
+Use the optional third party object in cases where the sender is a platform / broker. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+
+| Field          | Type              | Description                                                                                         |
+| -------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
+| `relation`     | `enum`            | One of `bnpl`, `delivery_service`, `marketplace`, `payment_processor`, `platform`, `point_of_sale`. |
+| `make_primary` | `boolean`         | Determines whether the merchant or third party gets top billing on the receipt.                     |
+| `merchant`     | `nullable object` | An [org](#org) object representing the third party.                                                 |
+
+</article>
+</details>
+
+<details>
+<summary>Customer Object</summary>
+<article>
+
+### Customer
+
+Used in cases where the merchant has a profile for the customer. Can be left null i.e. for guest checkout flows.
+
+| Field      | Type              | Description                                                              |
+| ---------- | ----------------- | ------------------------------------------------------------------------ |
+| `name`     | `string`          |                                                                          |
+| `email`    | `nullable string` |                                                                          |
+| `website`  | `nullable string` |                                                                          |
+| `address`  | `nullable object` | An [address](#address) object.                                           |
+| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
+| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
+
+</article>
+</details>
+
+## Itemization
+
+The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Subscription](#subscription), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+
+```json
+"itemization": {
+  "general": { ... },
+  "car_rental": null,
+  "ecommerce": null,
+  "flight": null,
+  "lodging": null,
+  "subscription": null,
+  "transit_route": null
+}
+```
+
+<details>
+<summary>General Object</summary>
+<article>
+
+### General
+
+| Field                       | Type    | Description                                                                                                                                                     |
+| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`                     | `array` | An array of generic [item](#item) objects.                                                                                                                      |
+| `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+</article>
+</details>
+
+<details>
+<summary>Car Rental Object</summary>
+<article>
+
+### Car Rental
+
+View a complete [car rental receipt](https://versa.org/studio?sender=generic&receipt=car_rental) example.
+
+```JSON
+"car_rental": {
+  "rental_at": 1713196492,
+  "return_at": 1713415500,
+  "rental_location": { ... },
+  "return_location": { ... },
+  "vehicle": {
+    "description": "Polestar 2",
+    "image": null,
+    "license_plate_number": null,
+    "vehicle_class": "EDAE"
+  },
+  "driver_name": "Henry Ford",
+  "odometer_reading_in": 100,
+  "odometer_reading_out": 210,
+  "items": [ ... ],
+  "metadata": [],
+  "invoice_level_adjustments": [],
+}
+```
+
+| Field                       | Type               | Description                                                                                                                                                     |
+| --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rental_at`                 | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                          |
+| `return_at`                 | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                          |
+| `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
+| `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
+| `vehicle`                   | `object`           | A [vehicle](#vehicle) object.                                                                                                                                   |
+| `driver_name`               | `nullable string`  |                                                                                                                                                                 |
+| `odometer_reading_in`       | `nullable integer` |                                                                                                                                                                 |
+| `odometer_reading_out`      | `nullable integer` |                                                                                                                                                                 |
+| `items`                     | `array`            | An array of generic [item](#item) objects.                                                                                                                      |
+| `metadata`                  | `array`            | Array of [metadata](#metadata) objects, for any additional info.                                                                                                |
+| `invoice_level_adjustments` | `array`            | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+#### Vehicle
+
+| Field                  | Type              | Description                                                         |
+| ---------------------- | ----------------- | ------------------------------------------------------------------- |
+| `description`          | `string`          | Type of car.                                                        |
+| `image`                | `nullable string` | Image of car.                                                       |
+| 'license_plate_number' | 'nullable string' |                                                                     |
+| 'vehicle_class'        | 'nullable string' | [ACRISS car code](https://www.acriss.org/car-codes/), four letters. |
+
+</article>
+</details>
+
+<details>
+<summary>E-commerce Object</summary>
+<article>
+
+### E-commerce
+
+For online orders, with shipping info. If items have not been assigned to a shipment, add those items to `invoice_level_line_items`. Once they’ve been assigned to a shipment, move them to `shipment.items`. View a complete [E-commerce receipt](https://versa.org/studio?sender=generic&receipt=ecommerce) example.
+
+| Field                       | Type    | Description                                                                                                                                                     |
+| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `invoice_level_line_items`  | `array` | An array of [item](#item) objects at the invoice level. For items that are part of shipment, move them under the [shipment](#shipment) object.                  |
+| `shipments`                 | `array` | An array of [shipment](#shipment) objects.                                                                                                                      |
+| `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+#### Shipment
+
+| Field                  | Type              | Description                                          |
+| ---------------------- | ----------------- | ---------------------------------------------------- |
+| `items`                | `array`           | An array of [item](#item) objects at shipment level. |
+| `tracking_number`      | `nullable string` | Label that appears on the button.                    |
+| `expected_delivery_at` | `nullable int`    | Measured in seconds since the Unix epoch.            |
+| `shipment_status`      | `nullable enum`   | One of `prep`, `in_transit`, `delivered`.            |
+| `destination_address`  | `nullable object` | An [address](#address) object.                       |
+
+</article>
+</details>
+
+<details>
+<summary>Flight Object</summary>
+<article>
+
+### Flight
+
+View a complete [flight receipt](https://versa.org/studio?sender=generic&receipt=flight) example.
+
+| Field                       | Type              | Description                                                                                                                                                     |
+| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tickets`                   | `array`           | An array of [ticket](#ticket) objects.                                                                                                                          |
+| `itinerary_locator`         | `nullable string` |                                                                                                                                                                 |
+| `invoice_level_adjustments` | `array`           | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+#### Tickets
+
+| Field            | Type               | Description                                                                |
+| ---------------- | ------------------ | -------------------------------------------------------------------------- |
+| `segments`       | `array`            | Array of [segments](#segments).                                            |
+| `number`         | `nullable string`  |                                                                            |
+| `record_locator` | `nullable string`  |                                                                            |
+| `passenger`      | `nullable object`  | A [person](#person) object.                                                |
+| `metadata`       | `array`            | Array of [metadata](#metadata) objects, for any additional info.           |
+| `fare`           | `nullable integer` | Optional, only needed if fares are not included on the contained segments. |
+| `taxes`          | `array`            | Optional, only needed if taxes are not included on the contained segments. |
+
+#### Segments
+
+| Field                    | Type               | Description                                                                                                          |
+| ------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `departure_airport_code` | `string`           | The three-letter IATA airport code that the flight departed from.                                                    |
+| `arrival_airport_code`   | `string`           | The three-letter IATA airport code of the flight’s destination.                                                      |
+| `fare`                   | `nullable integer` | Should be included, unless `fare` is on the parent ticket object instead.                                            |
+| `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                        |
+| `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                            |
+| `arrival_at`             | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                              |
+| `departure_tz`           | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `arrival_tz`             | `nullable string`  | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
+| `flight_number`          | `nullable string`  | The two-letter IATA airline designator followed by a one to four digit number (e.g. 'DL123').                        |
+| `class_of_service`       | `nullable string`  |                                                                                                                      |
+| `seat`                   | `nullable string`  |                                                                                                                      |
+| `aircraft_type`          | `nullable string`  | The ICAO code of the aircraft.                                                                                       |
+| `metadata`               | `array`            | Array of [metadata](#metadata) objects, for any additional info.                                                     |
+| `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                          |
+
+</article>
+</details>
+
+<details>
+<summary>Lodging Object</summary>
+<article>
+
+### Lodging
+
+View a complete [lodging receipt](https://versa.org/studio?sender=generic&receipt=lodging) example.
+
+```JSON
+lodging: {
+  "check_in": 1713196492,
+  "check_out": 1713473361,
+  "guests": "Sue Shmoe",
+  "room": "806",
+  "location": { ... },
+  "items": [ ... ],
+  "metadata": [],
+  "invoice_level_adjustments": []
+}
+```
+
+| Field                       | Type              | Description                                                                                                                                                     |
+| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
+| `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
+| `guests`                    | `nullable string` |                                                                                                                                                                 |
+| `room`                      | `nullable string` | Room number.                                                                                                                                                    |
+| `location`                  | `nullable object` | A [place](#place) object describing the hotel / lodging.                                                                                                        |
+| `items`                     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                                    |
+| `metadata`                  | `array`           | Array of [metadata](#metadata) objects, for any additional info.                                                                                                |
+| `invoice_level_adjustments` | `array`           | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+</article>
+</details>
+
+<details>
+<summary>Subscription Object</summary>
+<article>
+
+### Subscription
+
+For SaaS bills, phone bills, etc. View a complete [subscription receipt](https://versa.org/studio?sender=generic&receipt=subscription) example.
+
+> [!NOTE]
+> At least one subscription item within your subscription array must be a `subscription_type` of `recurring`.
+
+```JSON
+"subscription": {
+  "subscription_items": [{
+    "subscription_type": "recurring",
+    "description": "Pro monthly plan",
+    "amount": 1000,
+    "interval": "month",
+    "interval_count": 1,
+    "current_period_start": 1679609767,
+    "current_period_end": 1682288167,
+    "quantity": 10,
+    "unit_cost": 875,
+    "taxes": [],
+    "metadata": [],
+    "adjustments": []
+  }],
+  "invoice_level_adjustments": []
+}
+```
+
+| Field                       | Type    | Description                                                                                                                                                     |
+| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscription_items`        | `array` | An array of [subscription item](#subscription-item) objects.                                                                                                    |
+| `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+#### Subscription Item
+
+| Field                  | Type               | Description                                                                                                                                                         |
+| ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `description`          | `string`           | Description of the good / service.                                                                                                                                  |
+| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
+| `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
+| `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
+| `quantity`             | `nullable number`  | Quantity of items.                                                                                                                                                  |
+| `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
+| `taxes`                | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
+| `metadata`             | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
+| `adjustments`          | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
+
+</article>
+</details>
+
+<details>
+<summary>Transit Route Object</summary>
+<article>
+
+### Transit Route
+
+A route, typically used by rideshare / taxi services, or rail / bus / ferry / etc. View complete [taxi receipt](https://versa.org/studio?sender=generic&receipt=rideshare) or [rail receipt](https://versa.org/studio?sender=generic&receipt=rail) examples.
+
+```JSON
+"transit_route": {
+  "transit_route_items": [{
+    "departure_address": {
+      "street_address": "273 Sesame St",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.68266,
+      "lon": -73.94237,
+      "tz": "America/New_York"
+    },
+    "arrival_address": {
+      "street_address": "141 Broadway",
+      "city": "Brooklyn",
+      "region": "NY",
+      "country": "US",
+      "postal_code": "11205",
+      "lat": 40.69954,
+      "lon": -73.97064,
+      "tz": "America/New_York"
+    },
+    "fare": 4215,
+    "departure_at": 1713196492,
+    "arrival_at": 1713197752,
+    "passenger": null,
+    "polyline": "syhwFxzhbMrFtdAmpAhOlGzmAi%5CdEaGEDgEoAEMfK",
+    "taxes": [],
+    "metadata": [],
+    "adjustments": []
+  }],
+  "invoice_level_adjustments": []
+}
+```
+
+| Field                       | Type    | Description                                                                                                                                                     |
+| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transit_route_items`       | `array` | Array of [transit route item](#transit-route-item) objects.                                                                                                     |
+| `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
+
+#### Transit Route Item
+
+| Field                | Type               | Description                                                                                                       |
+| -------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `departure_location` | `object`           | The origin [place](#place) object.                                                                                |
+| `arrival_location`   | `object`           | The destination [place](#place) object.                                                                           |
+| `fare`               | `integer`          | Ride amount, typically the same as the header subtotal.                                                           |
+| `departure_at`       | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                         |
+| `arrival_at`         | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                           |
+| `mode`               | `nullable enum`    | One of `car`, `taxi`, `rail`, `bus`, `ferry`, `other`.                                                            |
+| `passenger`          | `nullable object`  | A [person](#person) object.                                                                                       |
+| `polyline`           | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
+| `taxes`              | `array`            | Array of [tax](#tax) objects.                                                                                     |
+| `metadata`           | `array`            | Array of key/value [metadata pairs](#metadata).                                                                   |
+| `adjustments`        | `array`            | Array of [adjustment](#adjustment) objects.                                                                       |
+
+</article>
+</details>
+
+## Footer
+
+| Field               | Type              | Description                                            |
+| ------------------- | ----------------- | ------------------------------------------------------ |
+| `actions`           | `array`           | List of [actions](#actions).                           |
+| `supplemental_text` | `nullable string` | Terms and conditions or other info. Supports Markdown. |
+
+## Actions
+
+Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant’s website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions per receipt.
+
+> [!NOTE]
+> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Action URLs that don’t share a domain with the sending merchant may be filtered by the receiver.
+
+```JSON
+"actions": [
+  {
+    "name": "Emergency Roadside Assistance",
+    "url": "https://yourco.com/support/be1e1b57-8fe9-4729-8b7d-f9a4690bb2cd"
+  },
+  {
+    "name": "Rebook",
+    "url": "https://yourco.com/buy/ad058b82-d0dd-4534-a915-d448df098167"
+  }
+]
+```
+
+| Field  | Type     | Description                       |
+| ------ | -------- | --------------------------------- |
+| `name` | `string` | Label that appears on the button. |
+| `url`  | `string` | Action deep link.                 |
+
+## Payments
+
+```JSON
+"payments": [
+  {
+    "paid_at": 1679609767,
+    "payment_type": "card",
+    "amount": 234,
+    "card_payment": {
+      "last_four": "7806",
+      "network": "mastercard"
+    },
+    "ach_payment": null
+  }
+]
+```
+
+| Field          | Type              | Description                               |
+| -------------- | ----------------- | ----------------------------------------- |
+| `amount`       | `int`             |                                           |
+| `paid_at`      | `int`             | Measured in seconds since the Unix epoch. |
+| `payment_type` | `nullable enum`   | One of `card` or `ach`.                   |
+| `card_payment` | `nullable object` | [Card payment](#card-payment) object.     |
+| `ach_payment`  | `nullable object` | [ACH payment](#ach-payment) object.       |
+
+<details>
+<summary>Card Payment Object</summary>
+<article>
+
+### Card Payment
+
+| Field       | Type            | Description                                                                                   |
+| ----------- | --------------- | --------------------------------------------------------------------------------------------- |
+| `last_four` | `string`        | The last four digits of the card number.                                                      |
+| `network`   | `nullable enum` | One of `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, or `visa`. |
+
+</article>
+</details>
+
+<details>
+<summary>ACH Payment Object</summary>
+<article>
+
+### ACH Payment
+
+| Field            | Type     | Description         |
+| ---------------- | -------- | ------------------- |
+| `routing_number` | `string` | ACH routing number. |
+
+</article>
+</details>
+
+## Primitives
+
+Foundational objects used in a variety of locations within the receipt schema.
+
+<details>
+<summary>Org Primitive</summary>
+<article>
+
+### Org
+
+A merchant, third party, or employer profile.
+
+> [!TIP]
+> The org object is used to describe both a sending merchant and a third party merchant. In the former case, the org object is expanded implicitly via the Versa Registry, whereas in the latter case, the org object is explicitly encoded into the receipt, via the header `third_party` object.
+
+```JSON
+{
+  "name": "Some Co",
+  "legal_name": "Some Co, Inc.",
+  "brand_color": "#f0C14B",
+  "logo": "https://static.platform.co/image_url.png",
+  "website": "platform.co",
+  "vat_number": null,
+  "address": null
+}
+```
+
+| Field         | Type              | Description                                                        |
+| ------------- | ----------------- | ------------------------------------------------------------------ |
+| `name`        | `string`          | The organization's common name.                                    |
+| `legal_name`  | `nullable string` | The organization's legal name.                                     |
+| `brand_color` | `nullable string` | Hex color.                                                         |
+| `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
+| `website`     | `nullable string` | Organization's primary website url.                                |
+| `vat_number`  | `nullable string` |                                                                    |
+| `address`     | `nullable object` | An [address](#address) object.                                     |
+
+</article>
+</details>
+
+<details>
+<summary>Person Primitive</summary>
+<article>
+
+### Person
+
+```JSON
+{
+  "first_name": "Theodore",
+  "last_name": "Doe",
+  "preferred_first_name": "Ted",
+  "email": "tdoe@platform.co",
+  "phone": "+14155552671",
+  "metadata": []
+}
+```
+
+| Field                  | Type              | Description                                                              |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------ |
+| `first_name`           | `nullable string` | Legal first name.                                                        |
+| `last_name`            | `nullable string` | Legal last name.                                                         |
+| `preferred_first_name` | `nullable string` |                                                                          |
+| `email`                | `nullable string` |                                                                          |
+| `phone`                | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
+| `metadata`             | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
+
+</article>
+</details>
+
+<details>
+<summary>Place Primitive</summary>
+<article>
+
+### Place
+
+Describes a brick-and-mortar location.
+
+```JSON
+{
+  "name": "Widget Co",
+  "address": {
+    "tz": "America/New_York"
+  },
+  "phone": "+14155552671",
+  "url": null,
+  "google_place_id": null,
+  "image": null
+}
+```
+
+| Field             | Type              | Description                                                                                                            |
+| ----------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `name`            | `nullable string` | Place name.                                                                                                            |
+| `address`         | `nullable object` | An [address](#address) object.                                                                                         |
+| `phone`           | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).                                               |
+| `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                       |
+| `google_place_id` | `nullable string` | Mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id). |
+| `image`           | `nullable string` | Image representing the place.                                                                                          |
+
+</article>
+</details>
+
+<details>
+<summary>Address Primitive</summary>
+<article>
+
+### Address
+
+```JSON
+{
+  "street_address": "123 Main St",
+  "city": "Anytown",
+  "region": "CA",
+  "country": "US",
+  "postal_code": "12345",
+  "lat": 37.7749,
+  "lon": -122.4194,
+  "tz": "America/Los_Angeles"
+}
+```
+
+| Field            | Type              | Description                                                                                                          |
+| ---------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `street_address` | `nullable string` |                                                                                                                      |
+| `city`           | `nullable string` |                                                                                                                      |
+| `region`         | `nullable string` | Two letter region code.                                                                                              |
+| `country`        | `nullable string` | Two letter ISO 3166 country code.                                                                                    |
+| `postal_code`    | `nullable string` |                                                                                                                      |
+| `lat`            | `nullable number` |                                                                                                                      |
+| `lon`            | `nullable number` |                                                                                                                      |
+| `tz`             | `nullable string` | A list of possible time zone values is maintained at the [IANA Time Zone Database](https://www.iana.org/time-zones). |
+
+</article>
+</details>
+
+<details>
+<summary>Item Primitive</summary>
+<article>
+
+### Item
+
+A generic line item.
+
+```json
+{
+  "description": "Blue Cheese Crumbles",
+  "amount": 1780,
+  "quantity": 10,
+  "unit_cost": 178,
+  "unit": null,
+  "product_image_asset_id": null,
+  "group": null,
+  "unspsc": null,
+  "url": null,
+  "date": null,
+  "taxes": [
+    {
+      "amount": 432,
+      "rate": 0.0875,
+      "name": "GST"
+    }
+  ],
+  "metadata": [{ "key": "SKU", "value": "524959" }],
+  "adjustments": []
+}
+```
+
+| Field                    | Type               | Description                                                                                                                  |
+| ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `description`            | `string`           | Description of the good / service.                                                                                           |
+| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                   |
+| `quantity`               | `nullable number`  | Quantity of items.                                                                                                           |
+| `unit_cost`              | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
+| `unit`                   | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
+| `product_image_asset_id` | `nullable string`  | [Asset](/assets) id of uploaded product image.                                                                               |
+| `group`                  | `nullable string`  | Grouping of line items.                                                                                                      |
+| `unspsc`                 | `nullable string`  | The 8-digit [UNSPSC code](https://www.unspsc.org/) for this item.                                                            |
+| `url`                    | `nullable string`  | URL to product page.                                                                                                         |
+| `date`                   | `nullable string`  | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
+| `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                                |
+| `metadata`               | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
+| `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                                  |
+
+</article>
+</details>
+
+<details>
+<summary>Metadata Primitive</summary>
+<article>
+
+### Metadata
+
+Use line item metadata to track things not otherwise in the schema. E.g. SKU, Size, Color, UNSPSC Code, etc.
+
+```JSON
+{
+  "key": "SKU",
+  "value": "524959"
+}
+```
+
+| Field   | Type     | Description                                                                                   |
+| ------- | -------- | --------------------------------------------------------------------------------------------- |
+| `key`   | `string` | The type of metadata, e.g. 'Size', 'Brand', 'Product Condition', 'Special Instructions', etc. |
+| `value` | `string` | The corresponding value.                                                                      |
+
+</article>
+</details>
+
+<details>
+<summary>Tax Primitive</summary>
+<article>
+
+### Tax
+
+```JSON
+{
+  "amount": 432,
+  "name": "GST",
+  "rate": 0.0875
+}
+```
+
+| Field    | Type              | Description                                                       |
+| -------- | ----------------- | ----------------------------------------------------------------- |
+| `amount` | `int`             | The total tax, in the [smallest currency unit](#currency-values). |
+| `name`   | `string`          | E.g. 'VAT' or 'GST'.                                              |
+| `rate`   | `nullable number` | The tax rate, e.g. 0.05 for 5%.                                   |
+
+</article>
+</details>
+
+<details>
+<summary>Adjustment Primitive</summary>
+<article>
+
+### Adjustment
+
+To be used for discounts, tip, fees, surchages, tolls.
+
+```JSON
+{
+  "amount": 1234,
+  "adjustment_type": "tip",
+  "name": "Tip",
+  "rate": null
+}
+```
+
+| Field             | Type              | Description                                                                                                                                |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive value for tip / fee, negative value for discount. |
+| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `add_on`, `other`.                                                                                        |
+| `name`            | `nullable string` | The name of the adjustment.                                                                                                                |
+| `rate`            | `nullable number` | The adjustment rate, e.g. -0.1 for 10% discount, or 0.2 for 20% tip. Null for fixed adjustment.                                            |
+
+</article>
+</details>
+
+## Definitions & Formatting
+
+### Currency Values
+
+All API requests expect amounts to be provided in a currency’s smallest unit. For example, to represent 10 USD, provide an amount value of 1000 (that is, 1000 cents). For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to represent ¥500, provide an amount value of 500.
+
+### Images
+
+Images must be hosted at public URLs. The images are likely to be indexed by the receiver. For best results, no image dimension should be less than 400px, or greater than 2,000px.
