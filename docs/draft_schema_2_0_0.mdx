@@ -2,7 +2,11 @@
 title: "Draft Schema 2.0.0"
 ---
 
-# Key Changes
+# Draft Schema 2.0.0
+
+This is a draft of the next major version of the Versa receipt schema, version 2.0.0.
+
+## Key Changes
 
 This is a major version update to the schema,
 changing the `passenger` string to a nullable `Person` object,
@@ -37,7 +41,7 @@ email | string \| null | No |  
 phone | string \| null | No |  
 metadata | array of metadatum | Yes | List of metadata items
 
-# Receipt Schema
+## Receipt Schema
 
 Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
 
