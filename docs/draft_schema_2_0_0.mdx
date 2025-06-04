@@ -12,13 +12,13 @@ This is a major version update to the schema,
 changing the `passenger` string to a nullable `Person` object,
 along with other small improvements.
 
-Breaking Changes
----
+### Breaking Changes
+
 - `passenger` changes from type `["string", "null"]` to a nullable `Person` object
 - `metadata` is removed from flight tickets
 
-Other Changes
----
+### Other Changes
+
 - Fixed: `place` nullable fields should also not be required
 - Fixed: `vehicle` nullable `image` should also not be required
 - Fixed: `currency` should support `cny` instead of `cnh`
