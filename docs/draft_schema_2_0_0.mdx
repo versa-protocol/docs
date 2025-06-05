@@ -28,18 +28,18 @@ along with other small improvements.
 - Added `adjustment_type` enum option: `add_on`
 - Added `website` to `customer`
 
-New Passenger Model
----
-A `Person` is distinct from a `Customer` in that it always refers to an individual. 
+## New Passenger Model
 
-Field | Type | Required | Description
--- | -- | -- | --
-first_name | string \| null | No |  
-last_name | string \| null | No |  
-preferred_first_name | string \| null | No |  
-email | string \| null | No |  
-phone | string \| null | No |  
-metadata | array of metadatum | Yes | List of metadata items
+A `Person` is distinct from a `Customer` in that it always refers to an individual.
+
+| Field                | Type               | Required | Description            |
+| -------------------- | ------------------ | -------- | ---------------------- |
+| first_name           | string \| null     | No       |                        |
+| last_name            | string \| null     | No       |                        |
+| preferred_first_name | string \| null     | No       |                        |
+| email                | string \| null     | No       |                        |
+| phone                | string \| null     | No       |                        |
+| metadata             | array of metadatum | Yes      | List of metadata items |
 
 ## Receipt Schema
 
@@ -234,8 +234,8 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 | ---------------------- | ----------------- | ------------------------------------------------------------------- |
 | `description`          | `string`          | Type of car.                                                        |
 | `image`                | `nullable string` | Image of car.                                                       |
-| 'license_plate_number' | 'nullable string' |                                                                     |
-| 'vehicle_class'        | 'nullable string' | [ACRISS car code](https://www.acriss.org/car-codes/), four letters. |
+| `license_plate_number` | `nullable string` |                                                                     |
+| `vehicle_class`        | `nullable string` | [ACRISS car code](https://www.acriss.org/car-codes/), four letters. |
 
 </article>
 </details>
