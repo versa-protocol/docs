@@ -27,19 +27,20 @@ along with other small improvements.
   - `vehicle_class` (ACRISS car code, four letters)
 - Added `adjustment_type` enum option: `add_on`
 - Added `website` to `customer`
+- In a lodging itemization, `guests` is an array of `person` objects
 
 ## New Passenger Model
 
 A `Person` is distinct from a `Customer` in that it always refers to an individual.
 
-| Field                | Type               | Required | Description            |
-| -------------------- | ------------------ | -------- | ---------------------- |
-| first_name           | string \| null     | No       |                        |
-| last_name            | string \| null     | No       |                        |
-| preferred_first_name | string \| null     | No       |                        |
-| email                | string \| null     | No       |                        |
-| phone                | string \| null     | No       |                        |
-| metadata             | array of metadatum | Yes      | List of metadata items |
+| Field                  | Type              | Description                                                              |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------ |
+| `first_name`           | `nullable string` | Legal first name.                                                        |
+| `last_name`            | `nullable string` | Legal last name.                                                         |
+| `preferred_first_name` | `nullable string` |                                                                          |
+| `email`                | `nullable string` |                                                                          |
+| `phone`                | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
+| `metadata`             | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
 
 ## Receipt Schema
 
@@ -340,7 +341,7 @@ lodging: {
 | --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
 | `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
-| `guests`                    | `nullable string` |                                                                                                                                                                 |
+| `guests`                    | `array`           | Array of [person](#person) objects.                                                                                                                             |
 | `room`                      | `nullable string` | Room number.                                                                                                                                                    |
 | `location`                  | `nullable object` | A [place](#place) object describing the hotel / lodging.                                                                                                        |
 | `items`                     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                                    |
