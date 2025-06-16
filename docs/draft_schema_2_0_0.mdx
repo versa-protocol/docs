@@ -16,6 +16,9 @@ along with other small improvements.
 
 - `passenger` changes from type `["string", "null"]` to a nullable `Person` object
 - `metadata` is removed from flight tickets
+- `guests` is now an array of `Person` objects
+- `current_period_start` and `current_period_end` have been renamed `current_period_start_at` and `current_period_end_at`
+- `metadata`, `taxes`, `adjustments` and other arrays that are valid when empty are now also optional and nullable
 
 ### Other Changes
 
@@ -27,7 +30,8 @@ along with other small improvements.
   - `vehicle_class` (ACRISS car code, four letters)
 - Added `adjustment_type` enum option: `add_on`
 - Added `website` to `customer`
-- In a lodging itemization, `guests` is an array of `person` objects
+- regex pattern validation for `vehicle_class`, `phone`, `routing_number`, `last_four` and airport codes
+- minimum and maximum bounds for unix timestamps
 
 ## New Passenger Model
 
