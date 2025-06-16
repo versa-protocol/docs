@@ -370,8 +370,8 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
     "amount": 1000,
     "interval": "month",
     "interval_count": 1,
-    "current_period_start": 1679609767,
-    "current_period_end": 1682288167,
+    "current_period_start_at": 1679609767,
+    "current_period_end_at": 1682288167,
     "quantity": 10,
     "unit_cost": 875,
     "taxes": [],
@@ -389,20 +389,20 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 #### Subscription Item
 
-| Field                  | Type               | Description                                                                                                                                                         |
-| ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
-| `description`          | `string`           | Description of the good / service.                                                                                                                                  |
-| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
-| `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
-| `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
-| `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
-| `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
-| `quantity`             | `nullable number`  | Quantity of items.                                                                                                                                                  |
-| `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
-| `taxes`                | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
-| `metadata`             | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
-| `adjustments`          | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
+| Field                     | Type               | Description                                                                                                                                                         |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscription_type`       | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `description`             | `string`           | Description of the good / service.                                                                                                                                  |
+| `amount`                  | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
+| `interval`                | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
+| `interval_count`          | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `current_period_start_at` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_end_at`   | `nullable integer` | End of the current period.                                                                                                                                          |
+| `quantity`                | `nullable number`  | Quantity of items.                                                                                                                                                  |
+| `unit_cost`               | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
+| `taxes`                   | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
+| `metadata`                | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
+| `adjustments`             | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
 
 </article>
 </details>
