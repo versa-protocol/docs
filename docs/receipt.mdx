@@ -25,7 +25,7 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 
 ```json
 {
-  "schema_version": "1.11.0",
+  "schema_version": "2.0.0",
   "header": { ... },
   "itemization": { ... },
   "payments": [ ... ],
@@ -104,13 +104,14 @@ Use the optional third party object in cases where the sender is a platform / br
 
 Used in cases where the merchant has a profile for the customer. Can be left null i.e. for guest checkout flows.
 
-| Field      | Type              | Description                                                      |
-| ---------- | ----------------- | ---------------------------------------------------------------- |
-| `name`     | `string`          |                                                                  |
-| `email`    | `nullable string` |                                                                  |
-| `address`  | `nullable object` | An [address](#address) object.                                   |
-| `phone`    | `nullable string` |                                                                  |
-| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info. |
+| Field      | Type              | Description                                                              |
+| ---------- | ----------------- | ------------------------------------------------------------------------ |
+| `name`     | `string`          |                                                                          |
+| `email`    | `nullable string` |                                                                          |
+| `website`  | `nullable string` |                                                                          |
+| `address`  | `nullable object` | An [address](#address) object.                                           |
+| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
+| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
 
 </article>
 </details>
@@ -161,7 +162,9 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
   "return_location": { ... },
   "vehicle": {
     "description": "Polestar 2",
-    "image": null
+    "image": null,
+    "license_plate_number": null,
+    "vehicle_class": "EDAE"
   },
   "driver_name": "Henry Ford",
   "odometer_reading_in": 100,
@@ -188,10 +191,12 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 
 #### Vehicle
 
-| Field         | Type              | Description   |
-| ------------- | ----------------- | ------------- |
-| `description` | `string`          | Type of car.  |
-| `image`       | `nullable string` | Image of car. |
+| Field                  | Type              | Description                                                         |
+| ---------------------- | ----------------- | ------------------------------------------------------------------- |
+| `description`          | `string`          | Type of car.                                                        |
+| `image`                | `nullable string` | Image of car.                                                       |
+| `license_plate_number` | `nullable string` |                                                                     |
+| `vehicle_class`        | `nullable string` | [ACRISS car code](https://www.acriss.org/car-codes/), four letters. |
 
 </article>
 </details>
@@ -244,7 +249,7 @@ View a complete [flight receipt](https://versa.org/studio?sender=generic&receipt
 | `segments`       | `array`            | Array of [segments](#segments).                                            |
 | `number`         | `nullable string`  |                                                                            |
 | `record_locator` | `nullable string`  |                                                                            |
-| `passenger`      | `nullable string`  |                                                                            |
+| `passenger`      | `nullable object`  | A [person](#person) object.                                                |
 | `metadata`       | `array`            | Array of [metadata](#metadata) objects, for any additional info.           |
 | `fare`           | `nullable integer` | Optional, only needed if fares are not included on the contained segments. |
 | `taxes`          | `array`            | Optional, only needed if taxes are not included on the contained segments. |
@@ -296,7 +301,7 @@ lodging: {
 | --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
 | `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
-| `guests`                    | `nullable string` |                                                                                                                                                                 |
+| `guests`                    | `array`           | Array of [person](#person) objects.                                                                                                                             |
 | `room`                      | `nullable string` | Room number.                                                                                                                                                    |
 | `location`                  | `nullable object` | A [place](#place) object describing the hotel / lodging.                                                                                                        |
 | `items`                     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                                    |
@@ -325,8 +330,8 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
     "amount": 1000,
     "interval": "month",
     "interval_count": 1,
-    "current_period_start": 1679609767,
-    "current_period_end": 1682288167,
+    "current_period_start_at": 1679609767,
+    "current_period_end_at": 1682288167,
     "quantity": 10,
     "unit_cost": 875,
     "taxes": [],
@@ -344,20 +349,20 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 #### Subscription Item
 
-| Field                  | Type               | Description                                                                                                                                                         |
-| ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscription_type`    | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
-| `description`          | `string`           | Description of the good / service.                                                                                                                                  |
-| `amount`               | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
-| `interval`             | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
-| `interval_count`       | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
-| `current_period_start` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
-| `current_period_end`   | `nullable integer` | End of the current period.                                                                                                                                          |
-| `quantity`             | `nullable number`  | Quantity of items.                                                                                                                                                  |
-| `unit_cost`            | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
-| `taxes`                | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
-| `metadata`             | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
-| `adjustments`          | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
+| Field                     | Type               | Description                                                                                                                                                         |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subscription_type`       | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `description`             | `string`           | Description of the good / service.                                                                                                                                  |
+| `amount`                  | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
+| `interval`                | `nullable enum`    | On of `day`, `week`, `month` or `year`.                                                                                                                             |
+| `interval_count`          | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
+| `current_period_start_at` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_end_at`   | `nullable integer` | End of the current period.                                                                                                                                          |
+| `quantity`                | `nullable number`  | Quantity of items.                                                                                                                                                  |
+| `unit_cost`               | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
+| `taxes`                   | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
+| `metadata`                | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
+| `adjustments`             | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
 
 </article>
 </details>
@@ -421,7 +426,7 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 | `departure_at`       | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                         |
 | `arrival_at`         | `nullable integer` | Arrival time. Measured in seconds since the Unix epoch.                                                           |
 | `mode`               | `nullable enum`    | One of `car`, `taxi`, `rail`, `bus`, `ferry`, `other`.                                                            |
-| `passenger`          | `nullable string`  | For ticketed local transit, the passenger name.                                                                   |
+| `passenger`          | `nullable object`  | A [person](#person) object.                                                                                       |
 | `polyline`           | `nullable string`  | An [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) of the route. |
 | `taxes`              | `array`            | Array of [tax](#tax) objects.                                                                                     |
 | `metadata`           | `array`            | Array of key/value [metadata pairs](#metadata).                                                                   |
@@ -555,6 +560,35 @@ A merchant, third party, or employer profile.
 </details>
 
 <details>
+<summary>Person Primitive</summary>
+<article>
+
+### Person
+
+```JSON
+{
+  "first_name": "Theodore",
+  "last_name": "Doe",
+  "preferred_first_name": "Ted",
+  "email": "tdoe@platform.co",
+  "phone": "+14155552671",
+  "metadata": []
+}
+```
+
+| Field                  | Type              | Description                                                              |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------ |
+| `first_name`           | `nullable string` | Legal first name.                                                        |
+| `last_name`            | `nullable string` | Legal last name.                                                         |
+| `preferred_first_name` | `nullable string` |                                                                          |
+| `email`                | `nullable string` |                                                                          |
+| `phone`                | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
+| `metadata`             | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
+
+</article>
+</details>
+
+<details>
 <summary>Place Primitive</summary>
 <article>
 
@@ -568,7 +602,7 @@ Describes a brick-and-mortar location.
   "address": {
     "tz": "America/New_York"
   },
-  "phone": "+1-555-489-5861",
+  "phone": "+14155552671",
   "url": null,
   "google_place_id": null,
   "image": null
@@ -579,7 +613,7 @@ Describes a brick-and-mortar location.
 | ----------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `name`            | `nullable string` | Place name.                                                                                                            |
 | `address`         | `nullable object` | An [address](#address) object.                                                                                         |
-| `phone`           | `nullable string` |                                                                                                                        |
+| `phone`           | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).                                               |
 | `url`             | `nullable string` | URL for specific place, e.g. chain.com/store-id.                                                                       |
 | `google_place_id` | `nullable string` | Mapping to the [Google Places database](https://developers.google.com/maps/documentation/places/web-service/place-id). |
 | `image`           | `nullable string` | Image representing the place.                                                                                          |
@@ -737,7 +771,7 @@ To be used for discounts, tip, fees, surchages, tolls.
 | Field             | Type              | Description                                                                                                                                |
 | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `amount`          | `int`             | The total of the adjustment, in the [smallest currency unit](#currency-values). Positive value for tip / fee, negative value for discount. |
-| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `other`.                                                                                                  |
+| `adjustment_type` | `enum`            | One of `discount`, `tip`, `fee`, `add_on`, `other`.                                                                                        |
 | `name`            | `nullable string` | The name of the adjustment.                                                                                                                |
 | `rate`            | `nullable number` | The adjustment rate, e.g. -0.1 for 10% discount, or 0.2 for 20% tip. Null for fixed adjustment.                                            |
 

@@ -4,17 +4,66 @@ title: "Changelog"
 
 # Changelog
 
+## 2025-06-17 - Schema Version 2.0.0
+
+**This is a major version change.**
+If you are a sender, make a plan to migrate your data mapping from `1.11.0`.
+If you are a receiver, update your webhooks to handle the new version alongside LTS versions (`1.11.0`),
+based on the incoming data's schema version.
+
+If you are a custodial client, you may have to manually update your webhook's maximum schema version to start receiving data of the newer version.
+Until you do, data will be 'downshifted' to fit the `1.11.0` schema.
+
+### Breaking Changes
+
+- `passenger` changes from type `["string", "null"]` to a nullable `Person` object
+- `metadata` is removed from flight tickets
+- `guests` is now an array of `Person` objects
+- `current_period_start` and `current_period_end` have been renamed `current_period_start_at` and `current_period_end_at`
+- `metadata`, `taxes`, `adjustments` and other arrays that are valid when empty are now also optional and nullable
+
+### Other Changes
+
+- Fixed: `place` nullable fields should also not be required
+- Fixed: `vehicle` nullable `image` should also not be required
+- Fixed: `currency` should support `cny` instead of `cnh`
+- Added to rental car `vehicle`
+  - `license_plate_number` (string)
+  - `vehicle_class` (ACRISS car code, four letters)
+- Added `adjustment_type` enum option: `add_on`
+- Added `website` to `customer`
+- regex pattern validation for `vehicle_class`, `phone`, `routing_number`, `last_four` and airport codes
+- minimum and maximum bounds for unix timestamps
+
+### New Passenger Model
+
+A `Person` is distinct from a `Customer` in that it always refers to an individual. 
+
+Field | Type | Required | Description
+-- | -- | -- | --
+first_name | string \| null | No |  
+last_name | string \| null | No |  
+preferred_first_name | string \| null | No |  
+email | string \| null | No |  
+phone | string \| null | No |  
+metadata | array of metadatum | No | List of metadata items
+
+### End of Life
+
+Schema Version `1.10.0` and earlier are now considered at end of life (EOL) and are no longer supported.
+The registry will not accept new registrations for these versions.
+
 ## 2025-05-01 - Protocol Update
 
 - Added support for multiple misuse codes in the `/report_misuse` API
 - Added semantic validation to misuse reporting spec (see [Misuse Reporting](/misuse_reporting) for more details)
 
-## 2025-03-31 - v1.11.0
+## 2025-03-31 - Schema Version 1.11.0
 
 - Made 'payment_type' optional on 'payment'
 - Fixed incorrect definition of nullable enum types ('mode', 'shipment_status', and 'network')
 
-## 2025-03-13 - v1.10.0
+## 2025-03-13 - Schema Version 1.10.0
 
 - Made 'merchant' optional on 'third_party'
 - Renamed 'first_party_relation' to 'relation' on 'third_party'
@@ -34,15 +83,15 @@ title: "Changelog"
 - Added `registered_at` timestamp to [Checkout](https://docs.versa.org/receiving#2-get-the-key)
 - Added `transaction_event_index` to [Checkout](https://docs.versa.org/receiving#2-get-the-key)
 
-## 2025-01-07 - v1.9.0
+## 2025-01-07 - Schema Version 1.9.0
 
 - Flight itemization change: added optional 'fare' and 'taxes' to the flight ticket, and adjusted the segment 'fare' to be nullable, to support cases where fare and tax info is only available at the parent ticket level and not at the segment level
 
-## 2024-11-21 - v1.8.0
+## 2024-11-21 - Schema Version 1.8.0
 
 - Flight itemization change: added 'aircraft_type' to flight segment
 
-## 2024-11-7 - v1.7.0
+## 2024-11-7 - Schema Version 1.7.0
 
 - Added 'footer' to top level
 - Added 'supplemental_text' nullable string to footer, which supports Markdown
@@ -50,7 +99,7 @@ title: "Changelog"
 - Made 'rate' and 'name' optional on 'adjustment'
 - Made 'email', 'address', and 'phone' optional on 'customer'
 
-## 2024-10-31 - v1.6.0
+## 2024-10-31 - Schema Version 1.6.0
 
 - Changed 'product_image_url' to 'product_image_asset_id'
 - Changed General itemization 'line_items' to 'items'
@@ -61,7 +110,7 @@ title: "Changelog"
 - Made all 'address' fields optional
 - Change itemized 'subtotal' field to 'amount'—so 'total' and 'subtotal' should appear only in the receipt header
 
-## 2024-10-18 - v1.5.0
+## 2024-10-18 - Schema Version 1.5.0
 
 - Omitting optional keys is now allowed and considered equivalent to setting said keys to null
 - Added support for PDF receipt exports in the [@versaprotocol/react library](https://www.npmjs.com/package/@versaprotocol/react)
@@ -74,11 +123,11 @@ title: "Changelog"
 
 - Added misuse reporting to the receiver client specification (see [Misuse Reporting](/misuse_reporting) for more details)
 
-## 2024-10-08 - v1.4.0
+## 2024-10-08 - Schema Version 1.4.0
 
 - Adding 'invoice_asset_id' and 'receipt_asset_id' to receipt header (see [Assets](/assets) for more details)
 
-## 2024-09-26 - v1.3.0
+## 2024-09-26 - Schema Version 1.3.0
 
 - Fields 'actions' and 'payments' no longer accept null
 - Changed 'merchant' schema definition name to 'org'
@@ -86,7 +135,7 @@ title: "Changelog"
 - Added 'legal_name' to 'org'
 - Collapsed 'lodging_items' up a level to the 'lodging' itemization, meaning the schema no longer supports multiple rooms per receipt
 
-## 2024-08-27 - v1.2.0
+## 2024-08-27 - Schema Version 1.2.0
 
 - Added 'metadata' object to customer in receipt header
 - Added 'tz' to address
@@ -98,13 +147,13 @@ title: "Changelog"
 - Render percentages next to taxes in @versaprotocol/react
 - Render customer data in @versaprotocol/react
 
-## 2024-08-21 - v1.1.0
+## 2024-08-21 - Schema Version 1.1.0
 
 - Added optional timezone field for origin and destination on flight segments
 - Made the card payment network field to be nullable
 - Updated the payment UI component in @versaprotocol/react
 
-## 2024-06-30 - v1.0.0
+## 2024-06-30 - Schema Version 1.0.0
 
 The schema is considered finalized for production use. Core client specifications are stable.
 
