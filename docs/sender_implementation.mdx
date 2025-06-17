@@ -25,7 +25,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
     ```rust
     let versa_client =
-      versa::client::VersaClient::new(client_id, client_secret).sending_client("1.11.0".into());
+      versa::client::VersaClient::new(client_id, client_secret).sending_client("2.0.0".into());
     let transaction_id: Option<String> = None;
     versa_client.register_receipt(handles, None).await;
     ```
@@ -69,7 +69,7 @@ Upon completing a sale, you'll register the transaction with Versa. You'll pass 
 
       ```ts
       const payload: ReceiptRegistrationRequest = {
-        schema_version: "1.11.0",
+        schema_version: "2.0.0",
         handles,
         transaction_id,
       };
