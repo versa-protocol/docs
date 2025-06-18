@@ -6,20 +6,20 @@ title: "Changelog"
 
 ## 2025-06-17 - Schema Version 2.0.0
 
-**This is a major version change.**
-If you are a sender, make a plan to migrate your data mapping from `1.11.0`.
-If you are a receiver, update your webhooks to handle the new version alongside LTS versions (`1.11.0`),
-based on the incoming data's schema version.
+This is a major version change. The grace period to get all senders and receivers migrated is currently indefinite; both `1.11.0` and `2.0.0` will be supported for the foreseeable future. We will automatically 'downshift' `2.0.0` receipts to `1.11.0` receipts for 'Custodial Receivers' (as needed) to smooth the transition. We will work with all clients directly on this migration, and we will deprecate `1.11.0` when we confirm 100% readiness.
 
-If you are a custodial client, you may have to manually update your webhook's maximum schema version to start receiving data of the newer version.
-Until you do, data will be 'downshifted' to fit the `1.11.0` schema.
+If you’re a sender, please make a plan to migrate from `1.11.0`. If you’re a Custodial Receiver client, you’ll need to manually update your webhook’s maximum schema version, via the Versa dev portal, to start receiving `2.0.0` data.
+
+### Why?
+
+The `2.0.0` updated incorporates several threads of customer feedback. It enables a richer 'passenger' profile for flights and hotels. And it enables more flexibility around matching and corporate loyalty programs.
 
 ### Breaking Changes
 
-- `passenger` changes from type `["string", "null"]` to a nullable `Person` object
-- `metadata` is removed from flight tickets
-- `guests` is now an array of `Person` objects
-- `current_period_start` and `current_period_end` have been renamed `current_period_start_at` and `current_period_end_at`
+- `passenger` changes from a string to a new nullable `person` object (see the [Person documentation](/receipt#person) for details)
+- `metadata` is removed from flight tickets (and included in the `person` object)
+- `guests` is now an array of `person` objects
+- `current_period_start` and `current_period_end` have been renamed `current_period_start_at` and `current_period_end_at` for consistency
 - `metadata`, `taxes`, `adjustments` and other arrays that are valid when empty are now also optional and nullable
 
 ### Other Changes
@@ -35,23 +35,9 @@ Until you do, data will be 'downshifted' to fit the `1.11.0` schema.
 - regex pattern validation for `vehicle_class`, `phone`, `routing_number`, `last_four` and airport codes
 - minimum and maximum bounds for unix timestamps
 
-### New Passenger Model
-
-A `Person` is distinct from a `Customer` in that it always refers to an individual. 
-
-Field | Type | Required | Description
--- | -- | -- | --
-first_name | string \| null | No |  
-last_name | string \| null | No |  
-preferred_first_name | string \| null | No |  
-email | string \| null | No |  
-phone | string \| null | No |  
-metadata | array of metadatum | No | List of metadata items
-
 ### End of Life
 
-Schema Version `1.10.0` and earlier are now considered at end of life (EOL) and are no longer supported.
-The registry will not accept new registrations for these versions.
+Schema Version `1.10.0` and earlier are now considered at end of life (EOL) and are no longer supported. The registry will not accept new registrations for these versions.
 
 ## 2025-05-01 - Protocol Update
 
