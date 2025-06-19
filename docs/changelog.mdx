@@ -8,11 +8,11 @@ title: "Changelog"
 
 This is a major version change. The grace period to get all senders and receivers migrated is currently indefinite; both `1.11.0` and `2.0.0` will be supported for the foreseeable future. We will automatically 'downshift' `2.0.0` receipts to `1.11.0` receipts for 'Custodial Receivers' (as needed) to smooth the transition. We will work with all clients directly on this migration, and we will deprecate `1.11.0` when we confirm 100% readiness.
 
-If you’re a sender, please make a plan to migrate from `1.11.0`. If you’re a Custodial Receiver client, you’ll need to manually update your webhook’s maximum schema version, via the Versa dev portal, to start receiving `2.0.0` data.
+If you’re a sender, please make a plan to migrate from `1.11.0` to `2.0.0`. If you’re a Custodial Receiver client, you’ll need to manually update your webhook’s maximum schema version, via the Versa dev portal, to start receiving `2.0.0` data (until you do, you will continue to receive `1.11.0` formatted data).
 
 ### Why?
 
-The `2.0.0` updated incorporates several threads of customer feedback. It enables a richer 'passenger' profile for flights and hotels. And it enables more flexibility around matching and corporate loyalty programs.
+The `2.0.0` update incorporates several points of customer feedback. It enables a richer 'passenger' profile for flights and hotels. And it enables more flexibility around matching and corporate loyalty programs, to increase match rates.
 
 ### Breaking Changes
 
@@ -24,13 +24,13 @@ The `2.0.0` updated incorporates several threads of customer feedback. It enable
 
 ### Other Changes
 
-- Fixed: `place` nullable fields should also not be required
-- Fixed: `vehicle` nullable `image` should also not be required
-- Fixed: `currency` should support `cny` instead of `cnh`
+- Fixed: `place` nullable fields are no longer required
+- Fixed: `vehicle` nullable `image` is no longer required
+- Fixed: `currency` now supports `cny` instead of `cnh`
 - Added to rental car `vehicle`
   - `license_plate_number` (string)
   - `vehicle_class` (ACRISS car code, four letters)
-- Added `adjustment_type` enum option: `add_on`
+- Added `adjustment_type` enum option: `add_on` (for e.g. paid seat upgrades)
 - Added `website` to `customer`
 - regex pattern validation for `vehicle_class`, `phone`, `routing_number`, `last_four` and airport codes
 - minimum and maximum bounds for unix timestamps
