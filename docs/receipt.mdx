@@ -697,7 +697,7 @@ A generic line item.
 | `group`                  | `nullable string`  | Grouping of line items.                                                                                                      |
 | `unspsc`                 | `nullable string`  | The 8-digit [UNSPSC code](https://www.unspsc.org/) for this item.                                                            |
 | `url`                    | `nullable string`  | URL to product page.                                                                                                         |
-| `date`                   | `nullable string`  | Date corresponding to the given line item, in ISO 8601 format (YYYY-MM-DD).                                                  |
+| `date`                   | `nullable string`  | Date corresponding to the line item, in ISO 8601 format (YYYY-MM-DD), e.g. for nightly rate in a hotel folio.                |
 | `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                                |
 | `metadata`               | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                    |
 | `adjustments`            | `array`            | Array of [adjustment](#adjustment) objects.                                                                                  |
