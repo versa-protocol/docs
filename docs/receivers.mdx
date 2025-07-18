@@ -1,0 +1,160 @@
+---
+title: "Receivers"
+---
+
+# Receivers
+
+All Versa receivers are registered Versa clients and have been verified during our onboarding process.
+Since [sender registration](/customer_registration#receiver-vs-sender-customer-registration) requires explicitly identifying the receiver to which you are sending data,
+receivers are queryable via our API.
+
+## Receiver Query API
+
+The Receiver Query API allows clients to discover and query receiver organizations in the Versa Registry.
+This API enables senders to look up available data handling services in the network and understand their business category.
+It also provides all the information necessary to programmatically populate a user interface for the purpose of sender registration.
+
+### Overview
+
+The Receiver Query API provides:
+- Discovery of network receiver organizations, verified by the Versa team
+- (Optional) Filtering by receiver category (expense, duty of care, etc.)
+- (Optional) Routing status for a provided set of transaction handles
+
+### Request Format
+
+```
+POST /receiver/query
+```
+
+The API accepts an optional JSON request body with the following structure:
+
+```json
+{
+  "filters": [
+    {
+      "category": ["expense", "duty_of_care"]
+    }
+  ],
+  "handles": {
+    "customer_email_domain": "company.com",
+    "merchant_group_code": "A932LH0"
+  }
+}
+```
+
+### Request Parameters
+
+#### `filters` (optional)
+Array of filter objects to limit results:
+
+- **`category`**: Array of receiver categories to include
+  - `"expense"` - Expense management receivers (Ramp, Emburse, etc.)
+  - `"duty_of_care"` - Travel safety receivers (International SOS, etc.)
+
+#### `handles` (optional)
+Transaction handle information for routing queries:
+
+- **`customer_email`**: Specific customer email address
+- **`customer_email_domain`**: Customer's email domain
+- **`merchant_group_code`**: A merchant identifier for the group or corporate entity, specific to the sending client
+- **`merchant_user_code`**: A merchant identifier for the user, employee, or individual customer, specific to the sending client
+
+### Response Format
+
+```json
+{
+  "mode": "prod",
+  "receivers": [
+    {
+      "org": {
+        "id": "org_abc123e74919435bad07c2e9473dfbb4",
+        "name": "EZ Expenses",
+        "legal_name": "EZ Expenses, Inc.",
+        "slug": "ez-expenses",
+        "website": "https://ez.example.com",
+        "logo": "https://ez.example.com/logo.png",
+        "brand_color": null,
+        "stock_symbol": null,
+        "twitter": null,
+        "isin": null,
+        "lei": null,
+        "naics": null,
+        "vat_number": null
+      },
+      "category": "expense",
+      "handling": {
+        "sender_registered": true,
+        "receiver_registered": false
+      }
+    }
+  ]
+}
+```
+
+### Response Fields
+
+#### `mode`
+The operational mode of the request:
+- `"test"` - Test environment
+- `"prod"` - Production environment
+
+#### `receivers`
+Array of receiver organizations matching the query:
+
+- **`org`**: Organization details
+  - `id`: Unique organization identifier
+  - `name`: Organization display name
+  - `legal_name`: Legal business name
+  - `slug`: URL-friendly identifier
+  - `website`: Organization website
+  - Additional optional fields (logo, brand_color, etc.)
+
+- **`category`**: Receiver category (`"expense"`, `"duty_of_care"`, `"firehose"`)
+
+- **`handling`** (only present when `handles` provided in request):
+  - `sender_registered`: Set to true if the sender has registered one or more of the provided customer handles to this receiver
+  - `receiver_registered`: Set to true if the receiver has registered one or more of the provided customer handles
+
+## Examples
+
+### Basic Query (No Parameters)
+
+You can query all available receivers without filters.
+Note that the `handling` property under each receiver
+in the response will be null if no handles are provided.
+
+```bash
+curl -X POST https://registry.versa.org/receiver/query \
+  -H "Authorization: Basic versa_cid_abc123:versa_csk_xyz789" \
+  -H "Content-Type: application/json"
+```
+
+**Response:**
+```json
+{
+  "mode": "prod",
+  "receivers": [
+    {
+      "org": {
+        "id": "org_abc123e74919435bad07c2e9473dfbb4",
+        "name": "EZ Expenses",
+        "legal_name": "EZ Expenses, Inc.",
+        "slug": "ez-expenses",
+        "website": "https://ez.example.com",
+        "logo": "https://ez.example.com/logo.png",
+        "brand_color": null,
+        "stock_symbol": null,
+        "twitter": null,
+        "isin": null,
+        "lei": null,
+        "naics": null,
+        "vat_number": null
+      },
+      "category": "expense",
+      "handling": null
+    },
+    ...
+  ]
+}
+```
