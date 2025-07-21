@@ -1,23 +1,24 @@
 ---
-title: "Receivers"
+title: "Receiver Query API"
 ---
 
-# Receivers
+# Receiver Query API
 
-Query and discover receiver organizations in the Versa network to understand where receipts can be sent.
+Query and discover receiver organizations in the Versa network.
 
 ## Overview
 
-All Versa receivers are registered clients that have been verified during our onboarding process. Since [sender registration](/customer_registration#receiver-vs-sender-customer-registration) requires explicitly identifying receivers, the Receiver Query API enables you to:
+All Versa receivers are registered clients that have been verified during our onboarding process.
+Since [sender registration](/customer_registration#receiver-vs-sender-customer-registration) requires explicitly identifying receivers, the Receiver Query API enables you to:
 
 - Discover verified receiver organizations in the network
 - Filter receivers by business category (expense management, duty of care)
 - Check routing status for specific customer handles
 - Get receiver details needed for sender registration
 
-## Query Receivers
+## Querying
 
-Query the available receivers in the Versa network with optional filtering.
+Search available receivers with optional filtering.
 
 ```bash
 curl --request POST \
