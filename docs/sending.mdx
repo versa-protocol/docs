@@ -52,7 +52,7 @@ Congratulations! You've sent your first receipt. 💥
 
 ### Self-Hosted Configuration
 
-The fastest way to get started with a self-hosted sender client is to use the official Versa [Docker image](https://hub.docker.com/r/versa/client-sender). This image includes a simple sender client that you can run on your own infrastructure. You'll need to provide your `CLIENT_ID` and `CLIENT_SECRET` as environment variables. You'll still need to do the work of mapping your schema to ours before posting receipts to the service, but the Dockerized service will automatically handle all the remaining steps (see below). Or, if you prefer, you can implement a client from scratch in your language of choice, as outlined in the [Sender Implementation Guide](/sending_client).
+The fastest way to get started with a self-hosted sender client is to use the official Versa [Docker image](https://hub.docker.com/r/versa/client-sender). This image includes a simple sender client that you can run on your own infrastructure. You'll need to provide your `CLIENT_ID` and `CLIENT_SECRET` as environment variables. You'll still need to do the work of mapping your schema to ours before posting receipts to the service, but the Dockerized service will automatically handle all the remaining steps (see below). Or, if you prefer, you can implement a client from scratch in your language of choice, as outlined in the [Sender Implementation Guide](/sender_implementation).
 
 There are three steps:
 
@@ -102,7 +102,7 @@ Example response:
 
 ```json
 {
-  "env": "prod",
+  "mode": "prod",
   "encryption_key": "jZt54/mk2RjP4qtNekQQyamu4qoEaxCE/qk5fhi5LuQ=",
   "receipt_id": "rct_5ed073abbf3a4b49a8c03191f87d8ffe",
   "transaction_id": "txn_458a58b2dd7a4fe3a9ad3165a511ac2a",
@@ -125,7 +125,7 @@ Example response:
 
 | Field            | Type     | Description                                                                    |
 | ---------------- | -------- | ------------------------------------------------------------------------------ |
-| `env`            | `enum`   | One of `test` or `prod`.                                                       |
+| `mode`           | `enum`   | One of `test` or `prod`.                                                       |
 | `encryption_key` | `string` | The key you'll use to encrypt your receipt.                                    |
 | `receipt_id`     | `string` | The id of the specific receipt being sent.                                     |
 | `transaction_id` | `string` | The parent of the receipt — used for [updating receipts](#updating-a-receipt). |
@@ -146,7 +146,7 @@ If there are no authorized receivers for the given handles, Versa will return an
 
 Receipts are encrypted with the AES-GCM-SIV 256 bit encryption algorithm, using the registry-provided key and a unique nonce generated for each receiver.
 
-For a language-specific example client implementations, see the [Sending Client Implementation](/sending_client) doc.
+For a language-specific example client implementations, see the [Sending Client Implementation](/sender_implementation) doc.
 
 #### 3. Send the Receipt
 
