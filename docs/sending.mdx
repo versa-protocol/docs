@@ -21,9 +21,9 @@ The receipt object itself must conform to Versa's [Receipt Schema](/receipt). Th
 When you're ready to send receipts, there are two configuration options to pick from:
 
 1. Via a **[custodial configuration](#custodial-configuration)**: With this arrangement, sending a receipt is as simple as a standard HTTP `POST` request. You make a single call per receipt, passing up the receipt JSON to Versa.
-2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, the sender never sends Versa the receipt. Instead, you check Versa for registered customers, and when Versa returns matches, you manage the encryption and peer-to-peer receipt transfer directly.
+2. Via a **[self-hosted configuration](#self-hosted-configuration)**: With this arrangement, you don't send Versa the raw receipt data to be distributed. Instead, you check Versa for registered customers, and when Versa returns matches, you manage the encryption and peer-to-peer receipt transfer directly.
 
-The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development, then switch to self-hosted.
+The custodial configuration is typically a faster implementation; the self-hosted configuration gives you more control. At any point you can 'eject' from a custodial to a self-hosted configuration. Most developers start with a custodial configuration during development.
 
 ### Custodial Configuration
 
