@@ -4,7 +4,7 @@ title: "Sending Client Implementation"
 
 # Sending Client Implementation
 
-Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client), [Java](https://github.com/versa-protocol/java-sender), and [NodeJS](https://github.com/versa-protocol/nodejs-client). Contact us if you'd like assistance with another language.
+Developer documentation for implementing a self-hosted Versa sender client, using the [Versa REST API](/sending). We currently maintain example client implementations for [Rust](https://github.com/versa-protocol/rust-client), [Java](https://github.com/versa-protocol/java-sender), and [NodeJS](https://github.com/versa-protocol/nodejs-client). Contact us if you’d like assistance with another language.
 
 > [!TIP]
 > Looking for a quick start? You can use our [custodial configuration](/sending#custodial-configuration) for faster onboarding.
@@ -17,7 +17,7 @@ There are three actions a Versa sender client performs:
 
 ## 1. Register the Transaction
 
-Upon completing a sale, you'll register the transaction with Versa. You'll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URLs indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
+Upon completing a sale, you’ll register the transaction with Versa. You’ll pass the relevant customer handles, via a standard `POST` request, to the '/register' endpoint. If there are matched receivers, Versa will return the URLs indicating where to post the receipt. Review the [registration specification](/sending#1-register-the-transaction) for details.
 
 <TabGroup>
   <Tab title="Rust">
@@ -162,7 +162,7 @@ The 32-byte key is provided by the registry. Generate a 12-byte nonce for each r
   </Tab>
 </TabGroup>
 
-Once you have an envelope with the encrypted data and nonce, you're ready to send a payload to the receiver.
+Once you have an envelope with the encrypted data and nonce, you’re ready to send a payload to the receiver.
 
 ## 3. Send the Receipt
 
@@ -314,7 +314,7 @@ In this final step, the client makes a `POST` request to each receiver, with an 
   </Tab>
 </TabGroup>
 
-Congratulations! You've successfully sent a receipt to an authorized receiver on the Versa network. The receiver will complete the process by checking out the key from the registry and decrypting the data on behalf of your customer.
+Congratulations! You’ve successfully sent a receipt to an authorized receiver on the Versa network. The receiver will complete the process by checking out the key from the registry and decrypting the data on behalf of your customer.
 
 ## Customer Registration (Optional)
 

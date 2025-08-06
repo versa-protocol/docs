@@ -4,13 +4,13 @@ title: "Misuse Reporting"
 
 # Misuse Reporting
 
-Part of the receiver client specification is the logging of unexpected or undesirable behavior back to the registry. Since Versa does not handle the receipt data directly, it relies upon network receivers to report misuse. This process should be automated and should not require human intervention on the receiver's part — rather the automated reports from the receiver will be handled by humans on the Versa team. If necessary, we will reach out to the partner on the sending side to resolve the issue.
+Part of the receiver client specification is the logging of unexpected or undesirable behavior back to the registry. Since Versa does not handle the receipt data directly, it relies upon network receivers to report misuse. This process should be automated and should not require human intervention on the receiver’s part — rather the automated reports from the receiver will be handled by humans on the Versa team. If necessary, we will reach out to the partner on the sending side to resolve the issue.
 
 ## Types of Misuse
 
 There are three broad categories of misuse that a receiver should report:
 
-1. **Protocol Errors:** Generally, this would suggest a bug in the sender's client implementation, causing missing or malformed data or data that cannot be decrypted.
+1. **Protocol Errors:** Generally, this would suggest a bug in the sender’s client implementation, causing missing or malformed data or data that cannot be decrypted.
 2. **Schema Validation:** This category covers JSON schema validation of the receipt data after it has been successfully decrypted.
 3. **Semantic Validation:** This category covers warning signs in the data itself, such as subtotals not adding up to the header total.
 
@@ -53,7 +53,7 @@ curl --request POST \
     },
     {
       "code": "semantic_validation_failed",
-      "description": "All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business.",
+      "description": "All receipts should include a timezone that best represents either the customer’s physical location at the time of purchase, or the merchant’s region of business.",
       "rule": "all_headers_should_have_tz"
     }],
   }'
@@ -67,7 +67,7 @@ The following is a list of misuse codes that can be reported back to the registr
 | --------------------------------- | --------------------------------------------------------------------------------------- |
 | `protocol_decryption_failed`      | Decrypting the received receipt JSON failed.                                            |
 | `protocol_deserialization_failed` | Decryption succeeded, but the payload was not valid JSON.                               |
-| `schema_validation_failed`        | Schema validation of the receipt based on the receipt's provided schema version failed. |
+| `schema_validation_failed`        | Schema validation of the receipt based on the receipt’s provided schema version failed. |
 | `schema_version_invalid`          | The schema version provided is invalid.                                                 |
 | `schema_version_unknown`          | The schema version provided was vaild but not recognized.                               |
 | `semantic_validation_failed`      | Semantic validation returned one or more violations.                                    |
@@ -84,9 +84,9 @@ Below is the list of semantic validation rules we currently support:
 
 | Rule                                           | Description                                                                                                                                                        |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `all_headers_should_have_tz`                   | All receipts should include a timezone that best represents either the customer's physical location at the time of purchase, or the merchant's region of business. |
+| `all_headers_should_have_tz`                   | All receipts should include a timezone that best represents either the customer’s physical location at the time of purchase, or the merchant’s region of business. |
 | `flight_fare_at_ticket_or_segment_exclusively` | Flight receipts should set the fare at the ticket level, or the segment level, but not both.                                                                       |
-| `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header's 'paid' field.                                                                               |
+| `header_paid_should_be_sum_of_payments`        | The sum of all payments should always equal the amount in the header’s 'paid' field.                                                                               |
 | `header_total_should_be_sum_of_itemization`    | The header total should equal the sum of all line items, taxes, and adjustments.                                                                                   |
 | `schema_version_should_be_current`             | The schema should be updated to the latest version.                                                                                                                |
 

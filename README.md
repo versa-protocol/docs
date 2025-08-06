@@ -4,7 +4,7 @@ Public docs for the Versa Protocol
 
 ## Local development
 
-It's recommended that you install [pnpm](https://pnpm.io/) and add the following pre-commit hook to your `.git/hooks/pre-commit`:
+It’s recommended that you install [pnpm](https://pnpm.io/) and add the following pre-commit hook to your `.git/hooks/pre-commit`:
 
 ```sh
 #!/bin/sh

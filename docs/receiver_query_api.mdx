@@ -39,26 +39,26 @@ curl --request POST \
 
 ### Request Parameters
 
-| Field     | Type    | Description                                                          |
-| --------- | ------- | -------------------------------------------------------------------- |
-| `filters` | `array` | Optional. Array of [filter objects](#filter-object) to limit results |
+| Field     | Type     | Description                                                          |
+| --------- | -------- | -------------------------------------------------------------------- |
+| `filters` | `array`  | Optional. Array of [filter objects](#filter-object) to limit results |
 | `handles` | `object` | Optional. [Transaction handles](#handles-object) for routing queries |
 
 #### Filter Object
 
-| Field      | Type    | Description                                                             |
-| ---------- | ------- | ----------------------------------------------------------------------- |
-| `category` | `array` | Filter by receiver categories: `expense`, `duty_of_care`, `firehose`   |
-| `region`   | `array` | Filter by geographic regions (future use)                               |
+| Field      | Type    | Description                                                          |
+| ---------- | ------- | -------------------------------------------------------------------- |
+| `category` | `array` | Filter by receiver categories: `expense`, `duty_of_care`, `firehose` |
+| `region`   | `array` | Filter by geographic regions (future use)                            |
 
 #### Handles Object
 
-| Field                   | Type              | Description                                                |
-| ----------------------- | ----------------- | ---------------------------------------------------------- |
-| `customer_email`        | `nullable string` | Specific customer email (e.g., 'jane@acme.com')           |
-| `customer_email_domain` | `nullable string` | Customer's email domain (e.g., 'acme.com')                |
-| `merchant_group_code`   | `nullable string` | Merchant-specific identifier for corporate entity          |
-| `merchant_user_code`    | `nullable string` | Merchant-specific identifier for individual user           |
+| Field                   | Type              | Description                                       |
+| ----------------------- | ----------------- | ------------------------------------------------- |
+| `customer_email`        | `nullable string` | Specific customer email (e.g., 'jane@acme.com')   |
+| `customer_email_domain` | `nullable string` | Customer’s email domain (e.g., 'acme.com')        |
+| `merchant_group_code`   | `nullable string` | Merchant-specific identifier for corporate entity |
+| `merchant_user_code`    | `nullable string` | Merchant-specific identifier for individual user  |
 
 ### Response Format
 
@@ -101,11 +101,11 @@ curl --request POST \
 
 #### Receiver Query Result
 
-| Field      | Type     | Description                                                                      |
-| ---------- | -------- | -------------------------------------------------------------------------------- |
-| `org`      | `object` | [Organization details](#org)                                                     |
-| `category` | `enum`   | Receiver category: `expense`, `duty_of_care`, or `firehose`                      |
-| `handling` | `object` | [Handling status](#handling-object) (only present when handles provided)         |
+| Field      | Type     | Description                                                              |
+| ---------- | -------- | ------------------------------------------------------------------------ |
+| `org`      | `object` | [Organization details](#org)                                             |
+| `category` | `enum`   | Receiver category: `expense`, `duty_of_care`, or `firehose`              |
+| `handling` | `object` | [Handling status](#handling-object) (only present when handles provided) |
 
 #### Org
 
@@ -127,10 +127,10 @@ curl --request POST \
 
 #### Handling Object
 
-| Field                 | Type      | Description                                                                   |
-| --------------------- | --------- | ----------------------------------------------------------------------------- |
-| `sender_registered`   | `boolean` | `true` if sender has registered the provided handles to this receiver         |
-| `receiver_registered` | `boolean` | `true` if receiver has registered the provided handles                        |
+| Field                 | Type      | Description                                                           |
+| --------------------- | --------- | --------------------------------------------------------------------- |
+| `sender_registered`   | `boolean` | `true` if sender has registered the provided handles to this receiver |
+| `receiver_registered` | `boolean` | `true` if receiver has registered the provided handles                |
 
 ## Common Use Cases
 
@@ -164,7 +164,7 @@ curl --request POST \
 
 ### Check Routing Status
 
-Query receivers and check if they're configured to receive receipts for a specific customer domain:
+Query receivers and check if they’re configured to receive receipts for a specific customer domain:
 
 ```bash
 curl --request POST \
