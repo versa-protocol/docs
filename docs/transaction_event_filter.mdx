@@ -1,0 +1,85 @@
+---
+title: "Transaction Event Filter"
+---
+
+# Transaction Event Filter
+
+Filter receivers by the specific transaction event data you are prepared to send. This allows senders to target only receivers that are interested in specific event types (receipts, itineraries, etc.) and are prepared to handle the corresponding data payload.
+
+## Overview
+
+The transaction event filtering feature allows you to specify which type of event data you will send when registering a receipt with the Versa Registry. This ensures that only receivers configured to handle your specific event type will receive the webhook delivery, which may be necessary for complex scenarios where data becomes available in chunks.
+
+## Event Types
+
+Currently supported transaction event types:
+
+- **`itinerary`** - Itinerary data events containing travel booking information
+- **`receipt`** - Receipt data events containing purchase/transaction details (a superset of itinerary data)
+
+## API Usage
+
+### Receipt Registration with Event Filtering
+
+Include the `transaction_event_filter` parameter in your receipt registration request to filter receivers by event type:
+
+```bash
+curl -X POST https://registry.versa.org/register \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "schema_version": "2.0.0",
+    "handles": {
+      "customer_email_domain": "acme.co"
+    },
+    "transaction_event_filter": "receipt"
+  }'
+```
+
+### Request Parameters
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `transaction_event_filter` | `string` | **Optional.** Filter receivers by transaction event type. Valid values: `"receipt"`, `"itinerary"` |
+
+When `transaction_event_filter` is provided, only receivers that have registered to handle the specified event type will be included in the response.
+
+### Example Response
+
+```json
+{
+  "mode": "prod",
+  "receipt_id": "rcpt_abc123def456",
+  "transaction_id": "txn_789xyz012",
+  "receivers": [
+    {
+      "org_id": "org_expense_tracker",
+      "endpoint_url": "https://api.expensetracker.com/webhooks/versa",
+      "secret": "whsec_abc123...",
+      "event_type": "receipt"
+    }
+  ],
+  "encryption_key": "pk_live_abc123..."
+}
+```
+
+Note that receivers in the response will only include those configured to handle the specified `transaction_event_filter` type.
+
+## Common Use Cases
+
+### Itinerary-Only Filtering
+
+When sending travel booking confirmations:
+
+```json
+{
+  "schema_version": "2.0.0",
+  "handles": {
+    "customer_email": "traveler@company.com",
+    "merchant_group_code": "ABC789Z1"
+  },
+  "transaction_event_filter": "itinerary"
+}
+```
+
+This targets only travel management and duty-of-care receivers, excluding general expense tools that don't handle travel data.
