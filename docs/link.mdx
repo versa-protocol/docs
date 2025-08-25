@@ -55,7 +55,7 @@ This will return a response object including the following fields:
 {
   "token": "link_test_wnYq4f2YjWsvHq4ffI2FYydOMQjMmJVpadUFlBWd",
   "mode": "test",
-  "expired": 1754020800,
+  "expired": 1754020800
 }
 ```
 
@@ -72,14 +72,13 @@ await VersaLink.initialize({
       console.log('VersaLink success:', result);
       showDemoToast(`Successfully connected: ${result.integrations.map(i => i.name).join(', ')}`);
     },
-    
     onExit: () => {
       console.log('User exited VersaLink');
     }
   });
 ```
 
-## Handle the Success Event
+## Handle Success Events
 
 If you are checking all bookings with the Versa Registry, no more action is required.
 Otherwise, when the user successfully links their account, you'll need to flag the customer in your system as "Versa-enabled" in the onSuccess callback.
