@@ -12,4 +12,74 @@ Versa Link is one method of customer registration, in which most of the work is 
 
 ## Quick Start
 
-Currently, Versa Link is in private beta. To get access, please contact us at [support@versa.org](mailto:support@versa.org).
+You'll need to make an account at https://app.versa.org and issue yourself test credentials.
+
+## Installation
+
+Drop the script tag into your HTML to include the Versa Link widget. You'll need to configure your CSP to allow the `https://cdn.versa.org` source.
+
+```html
+  <script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
+```
+
+## Generate a Link Token
+
+When a user navigates to Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client.
+Do not expose your client secret in your front-end code.
+
+```bash
+curl -X POST https://registry.versa.org/link_token \
+    -H "Authorization: Basic {CLIENT_ID}:{CLIENT_SECRET}" \
+    -H "Content-Type: application/json" \
+    -d '[
+      {
+        "model": "org",
+        "operations": ["read"],
+        "associated_handles": []
+      },
+      {
+        "model": "customer_reference",
+        "operations": ["read", "write"],
+        "associated_handles": [{ handle: "acme.co", handle_type: "customer_email_domain" }, { handle: "CORPORATE_DISCOUNT_XYZ", handle_type: "merchant_group_code" }]
+      },
+      {
+        "model": "receiver",
+        "operations": ["read"],
+        "associated_handles": []
+      }
+    ]'
+```
+
+This will return a response object including the following fields:
+```json
+{
+  "token": "link_test_wnYq4f2YjWsvHq4ffI2FYydOMQjMmJVpadUFlBWd",
+  "mode": "test",
+  "expired": 1754020800,
+}
+```
+
+## Configuration
+
+Call `VersaLink.initialize()` to configure the widget with the response from the `/link_token` endpoint above.
+
+```js
+await VersaLink.initialize({
+    linkToken: data.token,
+    expires: data.expires,
+    customerHandles: [{ handle: "acme.co", handle_type: "customer_email_domain" },{ handle: "CORPORATE_DISCOUNT_XYZ", handle_type: "merchant_group_code" }],
+    onSuccess: (result) => {
+      console.log('VersaLink success:', result);
+      showDemoToast(`Successfully connected: ${result.integrations.map(i => i.name).join(', ')}`);
+    },
+    
+    onExit: () => {
+      console.log('User exited VersaLink');
+    }
+  });
+```
+
+## Handle the Success Event
+
+If you are checking all bookings with the Versa Registry, no more action is required.
+Otherwise, when the user successfully links their account, you'll need to flag the customer in your system as "Versa-enabled" in the onSuccess callback.
