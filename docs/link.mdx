@@ -39,7 +39,10 @@ curl -X POST https://registry.versa.org/link_token \
       {
         "model": "customer_reference",
         "operations": ["read", "write"],
-        "associated_handles": [{ handle: "acme.co", handle_type: "customer_email_domain" }, { handle: "CORPORATE_DISCOUNT_XYZ", handle_type: "merchant_group_code" }]
+        "associated_handles": [
+          { handle: "acme.co", handle_type: "customer_email_domain" },
+          { handle: "CORPORATE_DISCOUNT_CODE_XYZ", handle_type: "merchant_group_code" }
+        ]
       },
       {
         "model": "receiver",
@@ -65,12 +68,15 @@ Call `VersaLink.initialize()` to configure the widget with the response from the
 ```js
 await VersaLink.initialize({
     linkToken: data.token,
-    customerHandles: [{ handle: "acme.co", handle_type: "customer_email_domain" },{ handle: "CORPORATE_DISCOUNT_XYZ", handle_type: "merchant_group_code" }],
+    customerHandles: [
+      { handle: "acme.co", handle_type: "customer_email_domain" },
+      { handle: "CORPORATE_DISCOUNT_CODE_XYZ", handle_type: "merchant_group_code" }
+    ],
     onSuccess: (result) => {
-      console.log('VersaLink success:', result.integrations.map(i => i.name).join(', '));
+      console.log('Versa Link success:', result.integrations.map(i => i.name).join(', '));
     },
     onExit: () => {
-      console.log('User exited VersaLink');
+      console.log('User exited Versa Link');
     }
   });
 ```
@@ -80,5 +86,5 @@ await VersaLink.initialize({
 Once initialized, you can launch the Versa Link widget by calling the `open` method.
 
 ```js
-  VersaLink.open();
+VersaLink.open();
 ```
