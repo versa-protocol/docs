@@ -24,8 +24,7 @@ Drop the script tag into your HTML to include the Versa Link widget. You'll need
 
 ## Generate a Link Token
 
-When a user navigates to Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client.
-Do not expose your client secret in your front-end code.
+Before you initialize Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client.
 
 ```bash
 curl -X POST https://registry.versa.org/link_token \
@@ -66,11 +65,9 @@ Call `VersaLink.initialize()` to configure the widget with the response from the
 ```js
 await VersaLink.initialize({
     linkToken: data.token,
-    expires: data.expires,
     customerHandles: [{ handle: "acme.co", handle_type: "customer_email_domain" },{ handle: "CORPORATE_DISCOUNT_XYZ", handle_type: "merchant_group_code" }],
     onSuccess: (result) => {
-      console.log('VersaLink success:', result);
-      showDemoToast(`Successfully connected: ${result.integrations.map(i => i.name).join(', ')}`);
+      console.log('VersaLink success:', result.integrations.map(i => i.name).join(', '));
     },
     onExit: () => {
       console.log('User exited VersaLink');
@@ -78,7 +75,10 @@ await VersaLink.initialize({
   });
 ```
 
-## Handle Success Events
+## Launch the Widget
 
-If you are checking all bookings with the Versa Registry, no more action is required.
-Otherwise, when the user successfully links their account, you'll need to flag the customer in your system as "Versa-enabled" in the onSuccess callback.
+Once initialized, you can launch the Versa Link widget by calling the `open` method.
+
+```js
+  VersaLink.open();
+```
