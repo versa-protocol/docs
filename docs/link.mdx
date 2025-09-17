@@ -24,7 +24,8 @@ Drop the script tag into your HTML to include the Versa Link widget. You'll need
 
 ## Generate a Link Token
 
-Before you initialize Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client.
+Before you initialize Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client (tokens expire after 10 minutes).
+In production, you will need to create a secure endpoint on your server that generates this token and returns it to your client application on behalf of the logged-in customer.
 
 ```bash
 curl -X POST https://registry.versa.org/link_token \
