@@ -144,7 +144,7 @@ View a complete [lodging itinerary](https://raw.githubusercontent.com/versa-prot
 lodging: {
   "check_in": 1713196492,
   "check_out": 1713473361,
-  "guests": "Sue Shmoe",
+  "guests": [ ... ],
   "room": "806",
   "location": { ... },
   "items": [ ... ],
@@ -156,7 +156,7 @@ lodging: {
 | ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
 | `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
 | `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
-| `guests`    | `nullable string` |                                                                                                              |
+| `guests`    | `array`           | Array of [person](#person) objects.                                                                          |
 | `room`      | `nullable string` | Room number.                                                                                                 |
 | `location`  | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
 | `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
