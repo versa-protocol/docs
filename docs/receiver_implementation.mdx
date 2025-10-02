@@ -197,3 +197,30 @@ Using the key from the registry and the nonce provided in the received envelope,
   </Tab>
 </TabGroup>
 You can now store the decrypted data, forward it to an internal service, or display it to your customer using our React library.
+
+
+## Client Metadata
+
+If you've implemented your own self-hosted client
+(rather than using the official Versa [Docker image](https://hub.docker.com/r/versa/client-receiver))
+it's a recommended best practice to identify your implementation version. 
+To do this, set the `client_string` field in the optional `client_metadata` object
+when checking out a key.
+
+A client string should be formatted as `{CLIENT_NAME}/{CLIENT_VERSION}`,
+where client_name should be a short, lowercase, human-readable business name like 'good-software-company'
+and client_version should identify the build of your software,
+such as '1.0.0' or '2.3.4-beta' if you use semver, or else a datetime or timestamp.
+
+A good `client_string` should be automatically configured to represent the latest, sequential build, e.g. `good-software-company/1.2.3` or `good-software-company/2025-10-01T12:00:00Z`.
+This provides useful information for quality assurance and incident management.
+
+See an example of a complete key checkout request body with client metadata below:
+
+```json
+{
+  "receipt_id": "rct_18ca9414f4084b959045d3f1cf6c973b",
+  "client_metadata": {
+    "client_string": "good-software-company/1.0.0"
+  }
+}
