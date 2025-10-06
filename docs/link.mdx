@@ -60,7 +60,8 @@ await VersaLink.initialize({
         merchant_group_code: "CORPORATE_DISCOUNT_CODE_XYZ"
       },
     onSuccess: (result) => {
-      console.log('Versa Link success:', result.integrations.map(i => i.name).join(', '));
+      // callback with the list of active connections for the provided customer handles
+      console.log('Versa Link success:', result.connections.map(org => org.name).join(', '));
     },
     onExit: () => {
       console.log('User exited Versa Link');
