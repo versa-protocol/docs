@@ -51,7 +51,7 @@ This will return a response object including the following fields:
 
 ## Configuration
 
-Call `VersaLink.initialize()` to configure the widget with the response from the `/link_token` endpoint above.
+Call `VersaLink.initialize()` to configure the widget with the response from the `/link_token` endpoint above. You must include a [valid handles object](/sending#handles-object) for the current customer.
 
 ```js
 await VersaLink.initialize({
@@ -74,6 +74,8 @@ await VersaLink.initialize({
 ```
 
 ### Advanced Configuration Options
+
+The following fields are optional:
 
 | Field           | Type    | Description                                                                                                  |
 | --------------- | ------- | ------------------------------------------------------------------------------------------------------------ |

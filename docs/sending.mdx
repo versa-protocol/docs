@@ -87,12 +87,13 @@ curl --request POST \
 | `schema_version` | `string` | The schema version of the receipt that you will send. |
 | `handles`        | `object` | The customer [handle](#handle-object).                |
 
-##### Handle Object
+##### Handles Object
 
 | Field                   | Type              | Description             |
 | ----------------------- | ----------------- | ----------------------- |
 | `customer_email`        | `nullable string` | E.g. 'jshmoe@acme.com'. |
 | `customer_email_domain` | `nullable string` | E.g. 'acme.com'.        |
+| `merchant_group_code`   | `nullable string` | E.g. 'ACME_123'.        |
 
 > [!NOTE]
 > Versa also supports `payment_account_reference` (PAR), `merchant_group_code`, and `merchant_user_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
