@@ -40,6 +40,7 @@ curl -X POST https://registry.versa.org/link_token \
 ```
 
 This will return a response object including the following fields:
+
 ```json
 {
   "token": "link_test_wnYq4f2YjWsvHq4ffI2FYydOMQjMmJVpadUFlBWd",
@@ -54,20 +55,30 @@ Call `VersaLink.initialize()` to configure the widget with the response from the
 
 ```js
 await VersaLink.initialize({
-    linkToken: data.token,
-    handles: {
-        customer_email_domain: "acme.co",
-        merchant_group_code: "CORPORATE_DISCOUNT_CODE_XYZ"
-      },
-    onSuccess: (result) => {
-      // callback with the list of active connections for the provided customer handles
-      console.log('Versa Link success:', result.connections.map(org => org.name).join(', '));
-    },
-    onExit: () => {
-      console.log('User exited Versa Link');
-    }
-  });
+  linkToken: data.token,
+  handles: {
+    customer_email_domain: "acme.co",
+    merchant_group_code: "CORPORATE_DISCOUNT_CODE_XYZ",
+  },
+  onSuccess: (result) => {
+    // callback with the list of active connections for the provided customer handles
+    console.log(
+      "Versa Link success:",
+      result.connections.map((org) => org.name).join(", ")
+    );
+  },
+  onExit: () => {
+    console.log("User exited Versa Link");
+  },
+});
 ```
+
+### Advanced Configuration Options
+
+| Field           | Type    | Description                                                                                                  |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| `viewMode`      | `enum`  | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`.                                                |
+| `whitelistOrgs` | `array` | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered. |
 
 ## Launch the Widget
 
