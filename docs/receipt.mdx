@@ -248,7 +248,7 @@ View a complete [flight receipt](https://versa.org/studio?sender=generic&receipt
 | ---------------- | ------------------ | -------------------------------------------------------------------------- |
 | `segments`       | `array`            | Array of [segments](#segments).                                            |
 | `number`         | `nullable string`  |                                                                            |
-| `record_locator` | `nullable string`  |                                                                            |
+| `record_locator` | `nullable string`  | PNR.                                                                       |
 | `passenger`      | `nullable object`  | A [person](#person) object.                                                |
 | `metadata`       | `array`            | Array of [metadata](#metadata) objects, for any additional info.           |
 | `fare`           | `nullable integer` | Optional, only needed if fares are not included on the contained segments. |
@@ -361,7 +361,7 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 | `subscription_type`       | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
 | `description`             | `string`           | Description of the good / service.                                                                                                                                  |
 | `amount`                  | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
-| `interval`                | `nullable enum`    | One of `day`, `week`, `month` or `year`.                                                                                                                             |
+| `interval`                | `nullable enum`    | One of `day`, `week`, `month` or `year`.                                                                                                                            |
 | `interval_count`          | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start_at` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
 | `current_period_end_at`   | `nullable integer` | End of the current period.                                                                                                                                          |
