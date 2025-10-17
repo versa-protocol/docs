@@ -210,6 +210,14 @@ curl --request GET \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
 
+### IP Whitelisting
+
+If you are a self-hosted client, it is not recommended that you whitelist IP addresses for inbound requests to your webhooks,
+as senders in the Versa network may be posting events from any number of regions and IP addresses.
+
+If you are a custodial client, you may whitelist the IP addresses of Versa's servers to ensure that only Versa can send you events.
+All requests originating from Versa's servers currently come from the following IP address: `104.154.56.158`
+
 ## Testing Your Integration
 
 Once you’ve set up your client, you can test your integration by sending a test receipt object from the Versa web app.
