@@ -179,6 +179,14 @@ The token should be generated with the HMAC-SHA1 algorithm, and base64 encoded.
 
 You can review example code in our [client implementation doc](/receiving_client#1-receive-the-encrypted-receipt).
 
+### IP Whitelisting
+
+If you are a self-hosted client, it is not recommended that you whitelist IP addresses for inbound requests to your webhooks,
+as senders in the Versa network may be posting events from any number of regions and IP addresses.
+
+If you are a custodial client, you may whitelist the IP addresses of Versa's servers to ensure that only Versa can send you events.
+All requests originating from Versa's servers currently come from the following IP address: `104.154.56.158`
+
 ## Rendering Receipts
 
 Once decrypted, you can store and render the receipt as you see fit. You can roll your own renderer, or you can use a Versa frontend library to render the receipt.
@@ -209,14 +217,6 @@ curl --request GET \
   --url 'https://custodial.versa.org/pdf/RECEIPT_ID' \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
-
-### IP Whitelisting
-
-If you are a self-hosted client, it is not recommended that you whitelist IP addresses for inbound requests to your webhooks,
-as senders in the Versa network may be posting events from any number of regions and IP addresses.
-
-If you are a custodial client, you may whitelist the IP addresses of Versa's servers to ensure that only Versa can send you events.
-All requests originating from Versa's servers currently come from the following IP address: `104.154.56.158`
 
 ## Testing Your Integration
 
