@@ -2,18 +2,19 @@
 title: "Transaction Event Filter"
 ---
 
-# Transaction Event Filter
+# Event Type
 
-Filter receivers by the specific transaction event data you are prepared to send. This allows senders to target only receivers that are interested in specific event types (receipts, itineraries, etc.) and are prepared to handle the corresponding data payload.
+Register a specific type of event and filter receivers by the specific transaction data you are prepared to send.
+This allows senders to target only receivers that are interested in specific event types (receipts, itineraries, etc.) and are prepared to handle the corresponding data payload.
 **This is an advanced usecase and your account must be opted in to enable this feature. Contact support@versa.org if interested.**
 
 ## Overview
 
-The transaction event filtering feature allows you to specify which type of event data you will send when registering a receipt with the Versa Registry. This ensures that only receivers configured to handle your specific event type will receive the webhook delivery, which may be necessary for complex scenarios where data becomes available in chunks.
+The transaction event filtering feature allows you to specify which type of event data you will send when registering a receipt with the Versa Registry. This ensures that only receivers configured to handle your specific event type will receive the webhook delivery, which may be necessary for complex scenarios.
 
 ## Event Types
 
-Currently supported transaction event types:
+Currently supported event types:
 
 - **`itinerary`** - Itinerary data events containing travel booking information
 - **`receipt`** - Receipt data events containing purchase/transaction details (a superset of itinerary data)
@@ -22,7 +23,7 @@ Currently supported transaction event types:
 
 ### Receipt Registration with Event Filtering
 
-Include the `transaction_event_filter` parameter in your receipt registration request to filter receivers by event type:
+Include the `event_type` parameter in your receipt registration request to filter receivers by event type:
 
 ```bash
 curl -X POST https://registry.versa.org/register \
@@ -33,7 +34,7 @@ curl -X POST https://registry.versa.org/register \
     "handles": {
       "customer_email_domain": "acme.co"
     },
-    "transaction_event_filter": "receipt"
+    "event_type": "receipt"
   }'
 ```
 
@@ -41,9 +42,11 @@ curl -X POST https://registry.versa.org/register \
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `transaction_event_filter` | `string` | **Optional.** Filter receivers by transaction event type. Valid values: `"receipt"`, `"itinerary"` |
+| `event_type` | `string` | **Optional.** Filter receivers by transaction event type. Valid values: `"receipt"`, `"itinerary"` |
 
-When `transaction_event_filter` is provided, only receivers that have registered to handle the specified event type will be included in the response.
+When `event_type` is provided, only receivers that have registered to handle the specified event type will be included in the response.
+If the `event_type` parameter is not specified, it is assumed that a fully qualified receipt is available according to the Versa schema,
+and all receivers will be included regardless of their event type configuration.
 
 ### Example Response
 
@@ -64,11 +67,11 @@ When `transaction_event_filter` is provided, only receivers that have registered
 }
 ```
 
-Note that receivers in the response will only include those configured to handle the specified `transaction_event_filter` type.
+Note that receivers in the response will only include those configured to handle the specified `event_type` type.
 
 ## Common Use Cases
 
-### Itinerary-Only Filtering
+### Itinerary-Only Events
 
 When sending travel booking confirmations:
 
@@ -79,7 +82,7 @@ When sending travel booking confirmations:
     "customer_email": "traveler@company.com",
     "merchant_group_code": "ABC789Z1"
   },
-  "transaction_event_filter": "itinerary"
+  "event_type": "itinerary"
 }
 ```
 
