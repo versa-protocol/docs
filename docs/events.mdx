@@ -121,13 +121,13 @@ Instead, the payload is encrypted and sent as part of the webhook delivery to re
 
 #### Transit Route Status Updated
 
-* Event Type: `transit_route.status.updated`
+Event Type: `transit_route.status.updated`
 
 ```json
 {
   status: "departed",
   transit_route_item_index: 0,
-  updated_at: 1713196492,
+  updated_at: 1713196492
 }
 ```
 
@@ -140,13 +140,14 @@ Instead, the payload is encrypted and sent as part of the webhook delivery to re
 
 #### Transit Route Location Updated
 
-* Event Type: `transit_route.location.updated`
+Event Type: `transit_route.location.updated`
 
 ```json
 {
   lat: 37.7749,
-  lon: -122.4194
-  updated_at: 1713196492,
+  lon: -122.4194,
+  transit_route_item_index: 0,
+  updated_at: 1713196492
 }
 ```
 
@@ -154,4 +155,5 @@ Instead, the payload is encrypted and sent as part of the webhook delivery to re
 |-------|------|-------------|
 | `lat` | `number` | Latitude, represented as a floating point number. |
 | `lon` | `number` | Longitude, represented as a floating point number. |
+| `transit_route_item_index` | `integer` | The ordered index of the route item to be updated from the original receipt or itinerary. |
 | `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
