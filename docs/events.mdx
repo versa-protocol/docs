@@ -71,21 +71,41 @@ and all receivers will be included regardless of their event type configuration.
 
 Note that receivers in the response will only include those configured to handle the specified `event_type` type.
 
-## Common Use Cases
+## Use-Cases
 
-### Itinerary-Only Events
+Beyond receipts, events can be leveraged to send additional or alternative representations of the data.
 
-When sending travel booking confirmations:
+### Itineraries
+
+When sending travel booking confirmations that do not have payment details attached, you can register an `itinerary` event:
 
 ```json
 {
+  "event_type": "itinerary",
   "schema_version": "2.0.0",
   "handles": {
     "customer_email": "traveler@company.com",
     "merchant_group_code": "ABC789Z1"
-  },
-  "event_type": "itinerary"
+  }
 }
 ```
 
 This targets only travel management and duty-of-care receivers, excluding general expense tools that don't handle travel data.
+
+## Update Events
+
+After an initial `receipt` or `itinerary` has been posted, you can send update events.
+
+```json
+{
+  "event_type": "transit_route.status.updated",
+  "schema_version": "2.0.0",
+  "transaction_id": "txn_6b408ba7406b4754b7b7d287e0ca9fdf",
+  "handles": {
+    "customer_email": "traveler@company.com",
+    "merchant_group_code": "ABC789Z1"
+  }
+}
+```
+
+A `transaction_id` is required for updates; update events will not be accepted without one.
