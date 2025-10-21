@@ -12,7 +12,7 @@ This allows senders to target only receivers that are interested in specific eve
 
 ## Overview
 
-The transaction event filtering feature allows you to specify which type of event data you will send when registering a receipt with the Versa Registry. This ensures that only receivers configured to handle your specific event type will receive the webhook delivery, which may be necessary for complex scenarios.
+The transaction event filtering feature allows you to specify which type of event data you will send when registering a receipt with the Versa Registry. This ensures that only receivers configured to handle your specific event type will receive the webhook delivery, which is recommended best practice.
 
 ## Event Types
 
@@ -73,7 +73,7 @@ and all receivers will be included regardless of their event type configuration.
 
 Note that receivers in the response will only include those configured to handle the specified `event_type` type.
 
-## Use-Cases
+## Advanced Use-Cases
 
 Beyond receipts, events can be leveraged to send additional or alternative representations of the data.
 
