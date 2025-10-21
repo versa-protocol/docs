@@ -119,6 +119,10 @@ At this time, all update events are organized hierarchically by itemization type
 As with receipt registration, update event data payloads are not included with the event registration.
 Instead, the payload is encrypted and sent as part of the webhook delivery to receivers returned by the registry.
 
+<details>
+<summary>Transit Route Status Updated</summary>
+<article>
+
 #### Transit Route Status Updated
 
 Event Type: `transit_route.status.updated`
@@ -134,9 +138,16 @@ Event Type: `transit_route.status.updated`
 | Field | Type | Description |
 |-------|------|-------------|
 | `status` | `enum` | One of `departed` or `arrived`. |
-| `transit_route_item_index` | `integer` | The ordered index of the route item to be updated from the original receipt or itinerary. |
+| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original receipt or itinerary. If left null, it should be interpreted as `0`. |
 | `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
 
+
+</article>
+</details>
+
+<details>
+<summary>Transit Route Location Updated</summary>
+<article>
 
 #### Transit Route Location Updated
 
@@ -155,5 +166,9 @@ Event Type: `transit_route.location.updated`
 |-------|------|-------------|
 | `lat` | `number` | Latitude, represented as a floating point number. |
 | `lon` | `number` | Longitude, represented as a floating point number. |
-| `transit_route_item_index` | `integer` | The ordered index of the route item to be updated from the original receipt or itinerary. |
+| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original receipt or itinerary. If left null, it should be interpreted as `0`. |
 | `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
+
+
+</article>
+</details>
