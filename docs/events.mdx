@@ -20,10 +20,12 @@ Currently supported event types:
 
 - **`itinerary`** - Itinerary data events containing travel booking information
 - **`receipt`** - Receipt data events containing purchase/transaction details (a superset of itinerary data)
+- **`transit_route.status.updated`** - Updates to the status of a transit route
+- **`transit_route.location.updated`** - Updates to the location of a transit route
 
 ## API Usage
 
-### Receipt Registration with Event Filtering
+### Receipt Registration with Event Specification
 
 Include the `event_type` parameter in your receipt registration request to filter receivers by event type:
 
@@ -32,11 +34,11 @@ curl -X POST https://registry.versa.org/register \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
+    "event_type": "receipt",
     "schema_version": "2.0.0",
     "handles": {
       "customer_email_domain": "acme.co"
-    },
-    "event_type": "receipt"
+    }
   }'
 ```
 
@@ -109,3 +111,47 @@ After an initial `receipt` or `itinerary` has been posted, you can send update e
 ```
 
 A `transaction_id` is required for updates; update events will not be accepted without one.
+
+At this time, all update events are organized hierarchically by itemization type.
+
+### Transit Route
+
+As with receipt registration, update event data payloads are not included with the event registration.
+Instead, the payload is encrypted and sent as part of the webhook delivery to receivers returned by the registry.
+
+#### Transit Route Status Updated
+
+* Event Type: `transit_route.status.updated`
+
+```json
+{
+  status: "departed",
+  transit_route_item_index: 0,
+  updated_at: 1713196492,
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | `enum` | One of `departed` or `arrived`. |
+| `transit_route_item_index` | `integer` | The ordered index of the route item to be updated from the original receipt or itinerary. |
+| `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
+
+
+#### Transit Route Location Updated
+
+* Event Type: `transit_route.location.updated`
+
+```json
+{
+  lat: 37.7749,
+  lon: -122.4194
+  updated_at: 1713196492,
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `lat` | `number` | Latitude, represented as a floating point number. |
+| `lon` | `number` | Longitude, represented as a floating point number. |
+| `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
