@@ -8,7 +8,7 @@ Itemized receipts are the core data model of Versa. They include both “header�
 
 Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain pre-purchase scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
 
-A JSON Schema docuemnt and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versa/schema](https://www.npmjs.com/package/@versa/schema) package.
+A JSON Schema document and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versa/schema](https://www.npmjs.com/package/@versa/schema) package.
 
 Versa receipts are composed of four sections:
 
@@ -558,7 +558,7 @@ A merchant, third party, or employer profile.
 | `name`        | `string`          | The organization’s common name.                                    |
 | `legal_name`  | `nullable string` | The organization’s legal name.                                     |
 | `brand_color` | `nullable string` | Hex color.                                                         |
-| `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommmend size 400x400. |
+| `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommend size 400x400. |
 | `website`     | `nullable string` | Organization’s primary website url.                                |
 | `vat_number`  | `nullable string` |                                                                    |
 | `address`     | `nullable object` | An [address](#address) object.                                     |
@@ -764,7 +764,7 @@ Use line item metadata to track things not otherwise in the schema. E.g. SKU, Si
 
 ### Adjustment
 
-To be used for discounts, tip, fees, surchages, tolls.
+To be used for discounts, tip, fees, surcharges, tolls.
 
 ```JSON
 {
