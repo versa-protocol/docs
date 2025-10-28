@@ -13,7 +13,7 @@ A JSON Schema document and corresponding TypeScript Types are available [on GitH
 Versa receipts are composed of four sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, subscription.
+2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, service.
 3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 4. [**Payments**](#payments): Payment status and details.
 
@@ -118,7 +118,7 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 
 ## Itemization
 
-The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Subscription](#subscription), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Service](#service), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
 
 ```json
 "itemization": {
@@ -127,7 +127,7 @@ The Itemization section describes the goods and services that compose the purcha
   "ecommerce": null,
   "flight": null,
   "lodging": null,
-  "subscription": null,
+  "service": null,
   "transit_route": null
 }
 ```
@@ -322,17 +322,14 @@ lodging: {
 <summary>Subscription Object</summary>
 <article>
 
-### Subscription
+### Service
 
-For SaaS bills, phone bills, etc. View a complete [subscription receipt](https://versa.org/studio?sender=generic&receipt=subscription) example.
-
-> [!NOTE]
-> At least one subscription item within your subscription array must be a `subscription_type` of `recurring`.
+For airport parking, SaaS subscriptions, phone bills, etc. View a complete [service receipt](https://versa.org/studio?sender=generic&receipt=subscription) example.
 
 ```JSON
-"subscription": {
-  "subscription_items": [{
-    "subscription_type": "recurring",
+"service": {
+  "service_items": [{
+    "recurring": true,
     "description": "Pro monthly plan",
     "amount": 1000,
     "interval": "month",
@@ -351,19 +348,19 @@ For SaaS bills, phone bills, etc. View a complete [subscription receipt](https:/
 
 | Field                       | Type    | Description                                                                                                                                                     |
 | --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscription_items`        | `array` | An array of [subscription item](#subscription-item) objects.                                                                                                    |
+| `service_items`             | `array` | An array of [service item](#service-item) objects.                                                                                                              |
 | `invoice_level_adjustments` | `array` | Array of [adjustments](#adjustment) applied at the top (invoice) level. These are independent of line item adjustments, which are added at the line item level. |
 
-#### Subscription Item
+#### Service Item
 
 | Field                     | Type               | Description                                                                                                                                                         |
 | ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subscription_type`       | `enum`             | One of `one_time` or `recurring`. If `recurring` add interval and period fields.                                                                                    |
+| `recurring`               | `boolean`          |                                                                                                                                                                     |
 | `description`             | `string`           | Description of the good / service.                                                                                                                                  |
 | `amount`                  | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
 | `interval`                | `nullable enum`    | One of `day`, `week`, `month` or `year`.                                                                                                                            |
 | `interval_count`          | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
-| `current_period_start_at` | `nullable integer` | Start of the current period of the subscription. Measured in seconds since the Unix epoch.                                                                          |
+| `current_period_start_at` | `nullable integer` | Start of the current period of the service. Measured in seconds since the Unix epoch.                                                                               |
 | `current_period_end_at`   | `nullable integer` | End of the current period.                                                                                                                                          |
 | `quantity`                | `nullable number`  | Quantity of items.                                                                                                                                                  |
 | `unit_cost`               | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
@@ -553,15 +550,15 @@ A merchant, third party, or employer profile.
 }
 ```
 
-| Field         | Type              | Description                                                        |
-| ------------- | ----------------- | ------------------------------------------------------------------ |
-| `name`        | `string`          | The organization’s common name.                                    |
-| `legal_name`  | `nullable string` | The organization’s legal name.                                     |
-| `brand_color` | `nullable string` | Hex color.                                                         |
+| Field         | Type              | Description                                                       |
+| ------------- | ----------------- | ----------------------------------------------------------------- |
+| `name`        | `string`          | The organization’s common name.                                   |
+| `legal_name`  | `nullable string` | The organization’s legal name.                                    |
+| `brand_color` | `nullable string` | Hex color.                                                        |
 | `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommend size 400x400. |
-| `website`     | `nullable string` | Organization’s primary website url.                                |
-| `vat_number`  | `nullable string` |                                                                    |
-| `address`     | `nullable object` | An [address](#address) object.                                     |
+| `website`     | `nullable string` | Organization’s primary website url.                               |
+| `vat_number`  | `nullable string` |                                                                   |
+| `address`     | `nullable object` | An [address](#address) object.                                    |
 
 </article>
 </details>
