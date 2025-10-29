@@ -62,9 +62,25 @@ Receivers register customers to receive receipts from _any_ sender. For example,
 
 Senders, on the other hand, can only register customers to receive the receipts from their direct sales. E.g. a travel manager admin who is logged in to the company settings screen on the 'Nimbus Airlines' website could opt to push their Nimbus Airlines receipts to their expense management app, but they would not be able to turn on universal receipt sync from within the Nimbus Airlines website.
 
-Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_org_id` parameter on the /customer endpoint. Receiver clients do not need to specify a `receiver_org_id` — they can either skip the parameter, or set the value to their own `client_id` (anything else will error). Sender clients attempting to register customers must include a `receiver_org_id`, and that `receiver_org_id` must reference an active receiver client. If a sender client excludes the `receiver_org_id` parameter, the registration attempt will error.
+Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_org_id` parameter on the /customer endpoint. Receiver clients do not need to specify a `receiver_org_id` — they can either skip the parameter, or set the value to their own `org_id` (anything else will error). Sender clients attempting to register customers must include a `receiver_org_id`, and that `receiver_org_id` must reference an active receiver client. If a sender client excludes the `receiver_org_id` parameter, the registration attempt will error.
 
 Sender and receiver registrations are not mutually exclusive. For instance: if Sender A registers a customer for Receiver B, and Receiver B also registers that same customer, Versa will match against both registrations, and return a single reference to Receiver B.
+
+### Example Sender Registration Request
+
+Below is an example curl request that registers the customer domain `acme.com` to send receipts to the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
+
+```bash
+curl --request POST \
+  --url 'https://registry.versa.org/customer' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "handle_type": "customer_email_domain",
+    "handle": "acme.com",
+    "receiver_org_id": "org_2608b08d60f34075bbb36539883bb17f"
+  }'
+```
 
 ## Sender Registration, "Merchant Group Codes", and "Merchant User Codes"
 
