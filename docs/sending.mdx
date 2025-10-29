@@ -33,14 +33,16 @@ You’re now ready to send your first receipt. Add your `CLIENT_ID`, `CLIENT_SEC
 
 ```bash
 curl --request POST \
-  --url 'https://custodial.versa.org/sender/send' \
+  --url 'https://custodial.versa.org/send' \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
+    "event_data": { ... },
+    "event_type": "receipt",
     "handles": {
-      "customer_email": "jshmoe@acme.com"
+      "customer_email": "jshmoe@sandbox-firehose.versa.org"
     },
-    "receipt": { ... }
+    "schema_version": "2.0.0"
   }'
 ```
 
@@ -237,14 +239,15 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url 'https://custodial.versa.org/sender/send' \
+  --url 'https://custodial.versa.org/send' \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
+    "event_data": { ... },
+    "event_type": "receipt",
     "handles": {
       "customer_email_domain": "sandbox-firehose.versa.org"
     },
-    "receipt": { ... },
     "schema_version": "2.0.0"
   }'
 ```
