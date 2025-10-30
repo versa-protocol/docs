@@ -220,6 +220,7 @@ For online orders, with shipping info. If items have not been assigned to a ship
 | Field                  | Type              | Description                                          |
 | ---------------------- | ----------------- | ---------------------------------------------------- |
 | `items`                | `array`           | An array of [item](#item) objects at shipment level. |
+| `carrier`              | `nullable string` | Shipping carrier name (e.g., "FedEx", "UPS").        |
 | `tracking_number`      | `nullable string` | Label that appears on the button.                    |
 | `expected_delivery_at` | `nullable int`    | Measured in seconds since the Unix epoch.            |
 | `shipment_status`      | `nullable enum`   | One of `prep`, `in_transit`, `delivered`.            |
@@ -319,7 +320,7 @@ lodging: {
 </details>
 
 <details>
-<summary>Subscription Object</summary>
+<summary>Service Object</summary>
 <article>
 
 ### Service
@@ -355,15 +356,16 @@ For airport parking, SaaS subscriptions, phone bills, etc. View a complete [serv
 
 | Field                     | Type               | Description                                                                                                                                                         |
 | ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `recurring`               | `boolean`          |                                                                                                                                                                     |
-| `description`             | `string`           | Description of the good / service.                                                                                                                                  |
 | `amount`                  | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                                                          |
+| `service_location`        | `nullable object`  | A [place](#place) object describing the location where the service was provided (e.g., parking lot, service center).                                                |
+| `recurring`               | `boolean`          | Whether this is a recurring service.                                                                                                                                |
+| `description`             | `string`           | Description of the service.                                                                                                                                         |
 | `interval`                | `nullable enum`    | One of `day`, `week`, `month` or `year`.                                                                                                                            |
 | `interval_count`          | `nullable integer` | The number of intervals (specified in the interval attribute) between subscription billings. For example, interval=month and interval_count=3 bills every 3 months. |
 | `current_period_start_at` | `nullable integer` | Start of the current period of the service. Measured in seconds since the Unix epoch.                                                                               |
-| `current_period_end_at`   | `nullable integer` | End of the current period.                                                                                                                                          |
+| `current_period_end_at`   | `nullable integer` | End of the current period. Measured in seconds since the Unix epoch.                                                                                                |
 | `quantity`                | `nullable number`  | Quantity of items.                                                                                                                                                  |
-| `unit_cost`               | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                                                       |
+| `unit_cost`               | `nullable integer` | Cost of the service in the [smallest currency unit](#currency-values).                                                                                              |
 | `taxes`                   | `array`            | Array of [tax](#tax) objects.                                                                                                                                       |
 | `metadata`                | `array`            | Array of key/value [metadata pairs](#metadata), e.g. SKU.                                                                                                           |
 | `adjustments`             | `array`            | Array of [adjustment](#adjustment) objects.                                                                                                                         |
@@ -544,21 +546,23 @@ A merchant, third party, or employer profile.
   "legal_name": "Some Co, Inc.",
   "brand_color": "#f0C14B",
   "logo": "https://static.platform.co/image_url.png",
+  "logo_asset_id": "asset_6dbca44449094eb28aaa6b3c6b2aa4",
   "website": "platform.co",
   "vat_number": null,
   "address": null
 }
 ```
 
-| Field         | Type              | Description                                                       |
-| ------------- | ----------------- | ----------------------------------------------------------------- |
-| `name`        | `string`          | The organization’s common name.                                   |
-| `legal_name`  | `nullable string` | The organization’s legal name.                                    |
-| `brand_color` | `nullable string` | Hex color.                                                        |
-| `logo`        | `nullable string` | Logo image url, in a square aspect ratio. Recommend size 400x400. |
-| `website`     | `nullable string` | Organization’s primary website url.                               |
-| `vat_number`  | `nullable string` |                                                                   |
-| `address`     | `nullable object` | An [address](#address) object.                                    |
+| Field            | Type              | Description                                                                                                |
+| ---------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `name`           | `string`          | The organization's common name.                                                                            |
+| `legal_name`     | `nullable string` | The organization's legal name.                                                                             |
+| `brand_color`    | `nullable string` | Hex color.                                                                                                 |
+| `logo`           | `nullable string` | ⚠️ **Deprecated:** Logo image url, in a square aspect ratio. Use `logo_asset_id` instead.                 |
+| `logo_asset_id`  | `nullable string` | [Asset](/assets) id of uploaded logo image. Recommended size 400x400 in a square aspect ratio.             |
+| `website`        | `nullable string` | Organization's primary website url.                                                                        |
+| `vat_number`     | `nullable string` |                                                                                                            |
+| `address`        | `nullable object` | An [address](#address) object.                                                                             |
 
 </article>
 </details>

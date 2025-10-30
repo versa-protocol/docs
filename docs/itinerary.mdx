@@ -4,7 +4,7 @@ title: "Itinerary Schema"
 
 # Itinerary Schema
 
-The itinerary object is a subset of the [receipt](/receipt) object. It excludes all the financial data from receipts (total, taxes, payment, etc.), and is focused only on travel information (e.g. no e-commerce or subscription itemizations).
+The itinerary object is a subset of the [receipt](/receipt) object. It excludes all the financial data from receipts (total, taxes, payment, etc.), and is focused only on travel information (e.g. no e-commerce itemizations).
 
 A JSON Schema document and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/itinerary.schema.json) or via the [@versa/schema](https://www.npmjs.com/package/@versa/schema) package.
 
@@ -30,13 +30,14 @@ The header is the same as a [receipt header](/receipt#header), but with all the 
 
 ## Itemization
 
-The Itemization section describes the record of services that compose the itinerary. Based on the type of purchase, the object conforms to one of four templates: [Car Rental](#car-rental), [Flight](#flight), [Lodging](#lodging), or [Transit Route](#transit-route). Exactly one itemization template must be non-null.
+The Itemization section describes the record of services that compose the itinerary. Based on the type of purchase, the object conforms to one of five templates: [Car Rental](#car-rental), [Flight](#flight), [Lodging](#lodging), [Service](#service), or [Transit Route](#transit-route). Exactly one itemization template must be non-null.
 
 ```json
 "itemization": {
   "car_rental": null,
   "flight": { ... },
   "lodging": null,
+  "service": null,
   "transit_route": null
 }
 ```
@@ -141,7 +142,7 @@ View a complete [flight itinerary](https://raw.githubusercontent.com/versa-proto
 View a complete [lodging itinerary](https://raw.githubusercontent.com/versa-protocol/schema/refs/heads/main/examples/itinerary/lodging.json) example.
 
 ```JSON
-lodging: {
+"lodging": {
   "check_in": 1713196492,
   "check_out": 1713473361,
   "guests": [ ... ],
@@ -161,6 +162,55 @@ lodging: {
 | `location`  | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
 | `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
 | `metadata`  | `array`           | Array of [metadata](/receipts#metadata) objects, for any additional info.                                    |
+
+</article>
+</details>
+
+<details>
+<summary>Service Object</summary>
+<article>
+
+### Service
+
+For airport parking, SaaS subscriptions, phone bills, etc. View a complete [service itinerary](https://raw.githubusercontent.com/versa-protocol/schema/refs/heads/main/examples/itinerary/service.json) example.
+
+```JSON
+"service": {
+  "service_items": [{
+    "service_location": {
+      "name": "Cars R Park'd",
+      "address": {
+        "street_address": "2741 Camp Creek Parkway",
+        "city": "College Park",
+        "region": "GA",
+        "postal_code": "30337",
+        "country": "US",
+        "tz": "America/New_York"
+      }
+    },
+    "recurring": true,
+    "description": "Uncovered parking (1 month)",
+    "current_period_start_at": 1679609767,
+    "current_period_end_at": 1682288167,
+    "quantity": 30,
+    "metadata": []
+  }]
+}
+```
+
+| Field           | Type    | Description                                             |
+| --------------- | ------- | ------------------------------------------------------- |
+| `service_items` | `array` | An array of [service item](#service-item) objects.      |
+
+#### Service Item
+
+| Field                     | Type               | Description                                                                                                                                                         |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `service_location`        | `nullable object`  | A [place](/receipts#place) object describing the location where the service was provided (e.g., parking lot, service center).                                       |
+| `description`             | `string`           | Description of the service.                                                                                                                                         |
+| `current_period_start_at` | `nullable integer` | Start of the current period of the service. Measured in seconds since the Unix epoch.                                                                               |
+| `current_period_end_at`   | `nullable integer` | End of the current period. Measured in seconds since the Unix epoch.                                                                                                |
+| `metadata`                | `array`            | Array of key/value [metadata pairs](/receipts#metadata), e.g. SKU.                                                                                                  |
 
 </article>
 </details>
