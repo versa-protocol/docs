@@ -35,7 +35,7 @@ curl -X POST https://registry.versa.org/register \
   -H 'Content-Type: application/json' \
   -d '{
     "event_type": "receipt",
-    "schema_version": "2.0.0",
+    "schema_version": "2.1.0",
     "handles": {
       "customer_email_domain": "acme.co"
     }
@@ -84,7 +84,7 @@ When sending travel booking confirmations that do not have payment details attac
 ```json
 {
   "event_type": "itinerary",
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "handles": {
     "customer_email": "traveler@company.com",
     "merchant_group_code": "ABC789Z1"
@@ -101,7 +101,7 @@ After an initial `receipt` or `itinerary` has been posted, you can send update e
 ```json
 {
   "event_type": "transit_route.status.updated",
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "transaction_id": "txn_6b408ba7406b4754b7b7d287e0ca9fdf"
 }
 ```

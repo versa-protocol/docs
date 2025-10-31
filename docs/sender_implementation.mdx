@@ -27,7 +27,7 @@ Upon completing a sale, you’ll register the transaction with Versa. You’ll p
     let versa_client =
       versa::client::VersaClient::new(client_id, client_secret)
         .with_client_string("example-client/1.0.0")
-        .sending_client("2.0.0".into());
+        .sending_client("2.1.0".into());
     let transaction_id: Option<String> = None;
     versa_client.register_receipt(handles, None).await;
     ```
@@ -71,7 +71,7 @@ Upon completing a sale, you’ll register the transaction with Versa. You’ll p
 
       ```ts
       const payload: ReceiptRegistrationRequest = {
-        schema_version: "2.0.0",
+        schema_version: "2.1.0",
         handles,
         transaction_id,
         client_metadata: {
@@ -416,7 +416,7 @@ See an example of a complete receipt registration request body with client metad
 
 ```json
 {
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "handles": {
     "customer_email_domain": "acme.com",
     "merchant_group_code": "ABC789"
