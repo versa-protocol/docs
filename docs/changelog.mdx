@@ -20,6 +20,13 @@ title: "Changelog"
 - The `subscription` itemization has been deprecated and will be removed in a future release. The `service` itemization should be used instead.
 - The `logo` field has been deprecated and will be removed in a future release. The `logo_asset_id` field should be used instead.
 
+## 2025-10-20 - Protocol Update
+
+Beta release of [Update Events](/events).
+
+- Specifying the `event_type` in the event registration payload filters receivers by subscription.
+- Registration payloads of update events can exclude transaction `handles`; the handles will be looked up from the original event registration by `transaction_id`.
+
 ## 2025-07-18 - Protocol Update
 
 Added the [Receiver Query API](/receiver_query_api) to replace 'check registry' (now deprecated).
