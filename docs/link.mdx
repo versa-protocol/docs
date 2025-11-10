@@ -81,12 +81,40 @@ await VersaLink.initialize({
 
 The following fields are optional:
 
-| Field           | Type    | Description                                                                                                                  |
-| --------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `viewMode`      | `enum`  | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
-| `whitelistOrgs` | `array` | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered.                 |
+| Field           | Type     | Description                                                                                                                  |
+| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `viewMode`      | `enum`   | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
+| `whitelistOrgs` | `array`  | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered.                 |
+| `language`      | `string` | Language code for the widget UI (e.g., `en`, `es`, `fr`). Defaults to `en`. Controls the display language for all text in the widget interface. |
 
 ![A comparison of the 'modal' and 'inline' themes.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/link_viewmode.png)
+
+#### Supported Languages
+
+Link currently supports the following locales:
+
+| Code | Language   |
+| ---- | ---------- |
+| `en` | English    |
+| `da` | Danish     |
+| `de` | German     |
+| `es` | Spanish    |
+| `et` | Estonian   |
+| `fr` | French     |
+| `hi` | Hindi      |
+| `it` | Italian    |
+| `lt` | Lithuanian |
+| `lv` | Latvian    |
+| `nl` | Dutch      |
+| `no` | Norwegian  |
+| `pl` | Polish     |
+| `pt` | Portuguese |
+| `ro` | Romanian   |
+| `sv` | Swedish    |
+| `vi` | Vietnamese |
+
+> [!TIP]
+> Localization is a Beta feature. See something that doesn't make sense? Let us know at `support@versa.org`.
 
 ## Launch the Widget
 
