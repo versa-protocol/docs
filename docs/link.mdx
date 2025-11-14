@@ -77,19 +77,39 @@ await VersaLink.initialize({
 });
 ```
 
-### Theming and Advanced Configuration Options
+## Theming and Advanced Configuration
 
 The following fields are optional:
 
-| Field           | Type     | Description                                                                                                                  |
-| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `viewMode`      | `enum`   | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
-| `whitelistOrgs` | `array`  | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered.                 |
-| `language`      | `string` | Language code for the widget UI (e.g., `en`, `es`, `fr`). Defaults to `en`. Controls the display language for all text in the widget interface. |
+| Field           | Type              | Description                                                                                                                                     |
+| --------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme`         | `nullable object` | See [Theming](#theme) for details.                                                                                                              |
+| `whitelistOrgs` | `nullable array`  | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered.                                    |
+| `language`      | `nullable string` | Language code for the widget UI (e.g., `en`, `es`, `fr`). Defaults to `en`. Controls the display language for all text in the widget interface. |
+
+### Theme
+
+If you would like to customize the appearance of the Versa Link widget, you can do so by passing an optional `theme` object to the `initialize` method. If there are additional themeing customizations you would like to make, please reach out to the Versa team.
+
+```js
+...
+theme: {
+  viewMode: "inline"
+}
+...
+```
+
+| Field      | Type   | Description                                                                                                                  |
+| ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `viewMode` | `enum` | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
 
 ![A comparison of the 'modal' and 'inline' themes.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/link_viewmode.png)
 
-#### Supported Languages
+### Whitelist Orgs
+
+By default, Versa Link will offer all available integrations to the user. If you would like to limit the integrations that are offered, you can do so by passing an optional `whitelistOrgs` array to the `initialize` method. Reach out to the Versa team if you would like help identifying the org ids of the integrations you would like to offer.
+
+### Language
 
 Link currently supports the following locales:
 
