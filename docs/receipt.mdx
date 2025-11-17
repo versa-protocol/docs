@@ -309,7 +309,7 @@ lodging: {
 | --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
 | `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
-| `guests`                    | `array`           | Array of [person](#person) objects.                                                                                                                             |
+| `guests`                    | `nullable array`  | Array of [person](#person) objects.                                                                                                                             |
 | `room`                      | `nullable string` | Room number.                                                                                                                                                    |
 | `location`                  | `nullable object` | A [place](#place) object describing the hotel / lodging.                                                                                                        |
 | `items`                     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio.                                                    |
@@ -553,16 +553,16 @@ A merchant, third party, or employer profile.
 }
 ```
 
-| Field            | Type              | Description                                                                                                |
-| ---------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
-| `name`           | `string`          | The organization's common name.                                                                            |
-| `legal_name`     | `nullable string` | The organization's legal name.                                                                             |
-| `brand_color`    | `nullable string` | Hex color.                                                                                                 |
-| `logo`           | `nullable string` | ⚠️ **Deprecated:** Logo image url, in a square aspect ratio. Use `logo_asset_id` instead.                 |
-| `logo_asset_id`  | `nullable string` | [Asset](/assets) id of uploaded logo image. Recommended size 400x400 in a square aspect ratio.             |
-| `website`        | `nullable string` | Organization's primary website url.                                                                        |
-| `vat_number`     | `nullable string` |                                                                                                            |
-| `address`        | `nullable object` | An [address](#address) object.                                                                             |
+| Field           | Type              | Description                                                                                    |
+| --------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `name`          | `string`          | The organization's common name.                                                                |
+| `legal_name`    | `nullable string` | The organization's legal name.                                                                 |
+| `brand_color`   | `nullable string` | Hex color.                                                                                     |
+| `logo`          | `nullable string` | **Deprecated:** Logo image url, in a square aspect ratio. Use `logo_asset_id` instead.         |
+| `logo_asset_id` | `nullable string` | [Asset](/assets) id of uploaded logo image. Recommended size 400x400 in a square aspect ratio. |
+| `website`       | `nullable string` | Organization's primary website url.                                                            |
+| `vat_number`    | `nullable string` |                                                                                                |
+| `address`       | `nullable object` | An [address](#address) object.                                                                 |
 
 </article>
 </details>
