@@ -62,7 +62,7 @@ This will return a response object including the following fields:
 }
 ```
 
-## Configuration
+## Initialize Versa Link
 
 Call `VersaLink.initialize()` to configure the widget with the token string provided in the response from the `/link_token` endpoint above.
 
@@ -82,7 +82,15 @@ await VersaLink.initialize({
 });
 ```
 
-## Theming and Advanced Configuration
+## Launch the Widget
+
+Once initialized, you can launch the Versa Link widget by calling the `open` method.
+
+```js
+VersaLink.open();
+```
+
+## Configuration and Theming
 
 Link can be customized in a few different ways.
 
@@ -164,11 +172,3 @@ Link currently supports the following languages:
 | `ro` | Romanian   |
 | `sv` | Swedish    |
 | `vi` | Vietnamese |
-
-## Launch the Widget
-
-Once initialized, you can launch the Versa Link widget by calling the `open` method.
-
-```js
-VersaLink.open();
-```
