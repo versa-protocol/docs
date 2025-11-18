@@ -104,20 +104,14 @@ Link can be customized in a few different ways.
 
 If you would like to customize the appearance of the Versa Link widget, you can do so by passing an optional `theme` object to the `initialize` method. If there are additional theming customizations you would like to make, please reach out to the Versa team.
 
-```json
-"theme": {
-  "viewMode": "inline"
-}
-```
-
 | Field      | Type   | Description                                                                                                                  |
 | ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `viewMode` | `enum` | One of `modal`, `inline`, or `dropdown`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
+| `viewMode` | `enum` | One of `modal` or `inline`. Defaults to `modal`. See below for a comparison of the `modal` and `inline` themes. |
 
 ![A comparison of the 'modal' and 'inline' themes.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/link_viewmode.png)
 
 > [!IMPORTANT]
-> For the 'inline' and 'dropdown' view modes, you must specify a container element in your HTML with the id `versa-canvas`. The Versa Link script will query for this element by id and render the widget inside. See example below:
+> For the 'inline' view mode, you must include a container element in your HTML with the id `versa-canvas`. The Versa Link script will query for this element by id and render the widget inside. See example below:
 
 ```html
 <body>
