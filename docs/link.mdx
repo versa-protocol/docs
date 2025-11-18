@@ -19,10 +19,20 @@ You'll need to make an account at https://app.versa.org and issue yourself test 
 
 ## Installation
 
-Drop the script tag into your HTML to include the Versa Link widget. You'll need to configure your CSP to allow the `https://cdn.versa.org` source.
+Drop the script tag into your HTML to include the Versa Link widget. You'll need to configure your Content-Security-Policy to allow the `cdn.versa.org` source.
+Since inline-script execution is required, you will also need to enable the `unsafe-inline` directive or use a nonce-based approach (see example below).
 
 ```html
 <script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
+```
+
+### Script embedded with nonce
+
+```html
+<meta http-equiv="Content-Security-Policy" content="
+  script-src 'self' 'nonce-rAnd0m123abc';
+" />
+<script nonce="rAnd0m123abc" src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
 ```
 
 ## Generate a Link Token
