@@ -98,6 +98,32 @@ If you would like to customize the appearance of the Versa Link widget, you can 
 
 ![A comparison of the 'modal' and 'inline' themes.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/link_viewmode.png)
 
+> [!IMPORTANT]
+> For the 'inline' and 'dropdown' view modes, you must specify a container element in your HTML with the id `versa-canvas`. The Versa Link script will query for this element by id and render the widget inside. See example below:
+
+```html
+<body>
+  <div id="versa-canvas" style="padding: 0; margin: 0">
+    <!-- Versa Link widget will render inside this canvas -->
+  </div>
+  <script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
+  <script>
+    (async function initInline() {
+      const response = await fetch("/api/link-token");
+      await VersaLink.initialize({
+        linkToken: data.token,
+        theme: {
+          viewMode: "inline"
+        }
+      });
+
+      // Immediately open; widget will render into #versa-canvas
+      VersaLink.open();
+    })();
+  </script>
+</body>
+```
+
 ### Whitelist Orgs
 
 By default, Versa Link will offer all available integrations to the user. If you would like to limit the integrations that are offered, you can do so by passing an optional `whitelistOrgs` array to the `initialize` method. Reach out to the Versa team if you would like help identifying the org ids of the integrations you would like to offer.
