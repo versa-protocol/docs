@@ -19,16 +19,27 @@ You'll need to make an account at https://app.versa.org and issue yourself test 
 
 ## Installation
 
-Drop the script tag into your HTML to include the Versa Link widget. You'll need to configure your Content-Security-Policy to allow the `cdn.versa.org` source.
-Since inline-script execution is required, you will also need to enable the `unsafe-inline` directive or use a nonce-based approach.
+Drop the script tag into your HTML to include the Versa Link widget.
 
 ```html
 <script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
 ```
 
+### CSP directives
+
+If you make use of a Content Security Policy (CSP), the following directives will allow Link traffic:
+
+```
+default-src https://cdn.versa.org/;
+script-src 'unsafe-inline' https://cdn.versa.org/link/stable/versa-link.iife.js;
+connect-src https://cdn.versa.org/ https://registry.versa.org/ https://custodial.versa.org/ ;
+```
+
+If your organization does not allow the use of unsafe-inline, you can use a [CSP nonce](https://content-security-policy.com/nonce/) instead.
+
 ## Generate a Link Token
 
-Before you initialize Versa Link, use your server-side credentials to acquire a short-lived token to pass to the client (tokens expire after 10 minutes).
+Before you can initialize Versa Link, you need to first create a link token. Use your server-side credentials to acquire a short-lived token to pass to the client (tokens expire after 10 minutes).
 In production, you will need to create a secure endpoint on your server that generates this token and returns it to your client application on behalf of the logged-in customer.
 
 ```bash
