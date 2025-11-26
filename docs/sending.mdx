@@ -206,6 +206,10 @@ curl --request POST \
 
 This will associate the new receipt record with the original receipt.
 
+## Canceling a Transaction
+
+To update a receipt or booking as canceled, an update event should be sent with an [empty itemization](/receipt#Cancelations).
+
 ## Registering Customers
 
 In certain cases, senders may wish to proactively push their receipts to specific receivers. See the [Customer Registration](/customer_registration) overview and the section on [sender registration](/customer_registration#receiver-vs-sender-customer-registration) for details.

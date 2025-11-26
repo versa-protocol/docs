@@ -795,3 +795,29 @@ All API requests expect amounts to be provided in a currency’s smallest unit. 
 ### Images
 
 Images must be hosted at public URLs. The images are likely to be indexed by the receiver. For best results, no image dimension should be less than 400px, or greater than 2,000px.
+
+## Cancelations
+
+To mark a transaction as canceled, an update event should be sent with an empty itemization. See example:
+
+```JSON
+{
+  "schema_version": "2.1.0",
+  "header": {
+    "invoiced_at": 1713295619,
+    "currency": "usd",
+    "total": 0,
+    "subtotal": 0,
+    "paid": 0,
+    "location": {
+      "name": null,
+      "address": {
+        "tz": "America/New_York"
+      }
+    }
+  },
+  "itemization": {},
+  "footer": {},
+  "payments": []
+}
+```
