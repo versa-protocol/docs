@@ -49,7 +49,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 
 ```json
 "header": {
-  "currency": "USD",
+  "currency": "usd",
   "subtotal": 5928,
   "total": 6332,
   "paid": 6332,
@@ -66,7 +66,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the â€
 
 | Field              | Type              | Description                                                                                                         |
 | ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `currency`         | `string`          | An [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `USD`.                          |
+| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.                          |
 | `subtotal`         | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
 | `total`            | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `paid`             | `integer`         | Sum of all payments. Will equal `total` if the invoice is paid in full.                                             |
@@ -166,7 +166,7 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
     "license_plate_number": null,
     "vehicle_class": "EDAE"
   },
-  "driver_name": "Henry Ford",
+  "drivers": [{ ... }],
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
   "items": [ ... ],
@@ -182,7 +182,7 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 | `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
 | `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
 | `vehicle`                   | `object`           | A [vehicle](#vehicle) object.                                                                                                                                   |
-| `driver_name`               | `nullable string`  |                                                                                                                                                                 |
+| `drivers`                   | `nullable array`   | Array of [person](#person) objects.                                       |
 | `odometer_reading_in`       | `nullable integer` |                                                                                                                                                                 |
 | `odometer_reading_out`      | `nullable integer` |                                                                                                                                                                 |
 | `items`                     | `array`            | An array of generic [item](#item) objects.                                                                                                                      |

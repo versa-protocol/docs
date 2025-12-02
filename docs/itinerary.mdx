@@ -60,7 +60,7 @@ View a complete [car rental itinerary](https://raw.githubusercontent.com/versa-p
     "description": "Polestar 2",
     "image": null
   },
-  "driver_name": "Henry Ford",
+  "drivers": [{ ... }],
   "odometer_reading_in": 100,
   "odometer_reading_out": 210,
   "items": [ ... ],
@@ -75,7 +75,7 @@ View a complete [car rental itinerary](https://raw.githubusercontent.com/versa-p
 | `rental_location`      | `object`           | A [place](/receipts#place) describing the rental location.                |
 | `return_location`      | `object`           | A [place](/receipts#place) describing the return location.                |
 | `vehicle`              | `object`           | A [vehicle](#vehicle) object.                                             |
-| `driver_name`          | `nullable string`  |                                                                           |
+| `drivers`              | `nullable array`   | Array of [person](#person) objects.                                       |
 | `odometer_reading_in`  | `nullable integer` |                                                                           |
 | `odometer_reading_out` | `nullable integer` |                                                                           |
 | `items`                | `array`            | An array of generic [item](#item) objects.                                |
@@ -157,7 +157,7 @@ View a complete [lodging itinerary](https://raw.githubusercontent.com/versa-prot
 | ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
 | `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
 | `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
-| `guests`    | `array`           | Array of [person](#person) objects.                                                                          |
+| `guests`    | `nullable array`  | Array of [person](#person) objects.                                                                          |
 | `room`      | `nullable string` | Room number.                                                                                                 |
 | `location`  | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
 | `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |

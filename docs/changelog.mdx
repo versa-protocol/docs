@@ -11,7 +11,7 @@ This is a patch update to correct small inconsistencies in the 2.x channel. For 
 - Fixes non-optional tax `rate` (all nullable fields should be optional and vice versa)
 - Accept any ISO 4217 lower-case `currency` code using a regex pattern instead of an enum
 - Apply the `person` object migration to alpha `car_rental` schema
-  - `driver_name` dropped from `car_rental` itemization
+  - Removed `driver_name` from `car_rental` itemization
   - Added nullable `drivers` array of `person` objects to `car_rental` itemization
 
 ## 2025-10-30 - Schema Version 2.1.0
