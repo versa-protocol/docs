@@ -198,3 +198,58 @@ onSuccess: (res) => {
   console.log(`Total active connections: ${res.connections.length}`);
 };
 ```
+
+
+The `onSuccess` callback is invoked when a user successfully completes a connection flow in the Versa Link widget. It receives a single parameter containing information about what changed and the current state of all connections.
+
+### Callback Signature
+
+```typescript
+onSuccess?: (data: SuccessData) => void;
+```
+
+#### SuccessData Object
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `changes` | `ConnectionChange[]` | Array of changes made during this session |
+| `connections` | `Connection[]` | Array of all currently active connections |
+
+#### ConnectionChange
+
+Describes a single connection change that occurred during the session.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `org` | `Org` | Details about the receiver organization |
+| `oauth` | `boolean` | Whether this connection uses OAuth for setting up the connection |
+| `category` | `ReceiverCategory` | The category of the receiver: `'expense'`, `'firehose'`, or `'duty_of_care'` |
+| `action` | `'enabled' \| 'disabled'` | The action performed on this connection |
+
+#### Connection
+
+Represents an active connection to a receiver organization.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `org` | `Org` | Details about the receiver organization |
+| `oauth` | `boolean` | Whether this connection uses OAuth for setting up the connection |
+| `category` | `ReceiverCategory` | The category of the receiver: `'expense'`, `'firehose'`, or `'duty_of_care'` |
+| `handling` | `Handling` | Registration status information |
+
+#### Org
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `string` | Unique identifier for the organization |
+| `slug` | `string` | URL-friendly organization identifier |
+| `name` | `string` | Display name of the organization |
+| `website` | `string` | Organization's website URL |
+| `logo` | `string` | URL to the organization's logo |
+
+#### Handling
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `receiver_registered` | `boolean` | Whether registered by the receiver |
+| `sender_registered` | `boolean` | Whether registered by the sender |
