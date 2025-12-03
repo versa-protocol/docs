@@ -14,7 +14,7 @@ Versa receipts are composed of four sections:
 
 1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
 2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, service.
-3. [**Actions**](#actions): Optional merchant-defined links, pivoting off the purchase. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
+3. [**Footer**](#footer): Optional merchant-defined actions, pivoting off the purchase, and supplemental text. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
 4. [**Payments**](#payments): Payment status and details.
 
 ![Rough diagram of receipt elements.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/receipt_structure.png)
@@ -66,7 +66,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the �
 
 | Field              | Type              | Description                                                                                                         |
 | ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.                          |
+| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.                 |
 | `subtotal`         | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
 | `total`            | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
 | `paid`             | `integer`         | Sum of all payments. Will equal `total` if the invoice is paid in full.                                             |
@@ -182,7 +182,7 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 | `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
 | `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
 | `vehicle`                   | `object`           | A [vehicle](#vehicle) object.                                                                                                                                   |
-| `drivers`                   | `nullable array`   | Array of [person](#person) objects.                                       |
+| `drivers`                   | `nullable array`   | Array of [person](#person) objects.                                                                                                                             |
 | `odometer_reading_in`       | `nullable integer` |                                                                                                                                                                 |
 | `odometer_reading_out`      | `nullable integer` |                                                                                                                                                                 |
 | `items`                     | `array`            | An array of generic [item](#item) objects.                                                                                                                      |
@@ -443,17 +443,17 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 
 ## Footer
 
-| Field               | Type              | Description                                            |
-| ------------------- | ----------------- | ------------------------------------------------------ |
-| `actions`           | `array`           | List of [actions](#actions).                           |
-| `supplemental_text` | `nullable string` | Terms and conditions or other info. Supports Markdown. |
+| Field               | Type              | Description                                                                     |
+| ------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `actions`           | `array`           | List of [actions](#actions).                                                    |
+| `supplemental_text` | `nullable string` | Terms and conditions or other info. Supports [Markdown](https://commonmark.org) |
 
-## Actions
+### Actions
 
 Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant’s website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions per receipt.
 
 > [!NOTE]
-> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Action URLs that don’t share a domain with the sending merchant may be filtered by the receiver.
+> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Authoritative social media sites like Instagram and Facebook are also common. Action URLs that don’t share a domain with the sending merchant, and aren’t to an authoritative site, may be filtered by the receiver.
 
 ```JSON
 "actions": [
@@ -462,8 +462,12 @@ Merchants have the option to provide useful next actions in the Actions section.
     "url": "https://yourco.com/support/be1e1b57-8fe9-4729-8b7d-f9a4690bb2cd"
   },
   {
-    "name": "Rebook",
+    "name": "Re-book",
     "url": "https://yourco.com/buy/ad058b82-d0dd-4534-a915-d448df098167"
+  },
+  {
+    "name": "Instagram: yourco",
+    "url": "https://instagram.com/yourco"
   }
 ]
 ```
@@ -697,7 +701,7 @@ A generic line item.
 | Field                    | Type               | Description                                                                                                                  |
 | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `description`            | `string`           | Description of the good / service.                                                                                           |
-| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes`.                   |
+| `amount`                 | `integer`          | Subtotal for the line item (typically `quantity` × `unit_cost` + `adjustments`). Does not include `taxes` or `adjustments`.  |
 | `quantity`               | `nullable number`  | Quantity of items.                                                                                                           |
 | `unit_cost`              | `nullable integer` | Cost of the good / service in the [smallest currency unit](#currency-values).                                                |
 | `unit`                   | `nullable string`  | Field describing the unit type, typically for weight or volume -based values, e.g. 'kg' or 'gallons'. Leave null for 'each'. |
