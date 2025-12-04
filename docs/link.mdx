@@ -171,7 +171,28 @@ Link currently supports the following languages:
 
 ## Response Handling
 
-When a user completes the Link flow, your onSuccess callback receives a response object:
+When a user successfully completes a connection via the Link flow, the `onSuccess` callback receives a response object. This object contains information about the changes that occurred during the Link session and the current state of all connections.
+
+Example:
+
+```js
+VersaLink.initialize({
+  linkToken: data.token,
+  onSuccess: (res) => {
+    res.changes.forEach((change) => {
+      if (change.action === "enabled") {
+        console.log(`Connected to ${change.org.name}`);
+      } else {
+        console.log(`Disconnected from ${change.org.name}`);
+      }
+    });
+    console.log(`Total active connections: ${res.connections.length}`);
+  },
+  ...
+});
+```
+
+### onSuccess Response
 
 ```json
 {
@@ -179,29 +200,6 @@ When a user completes the Link flow, your onSuccess callback receives a response
   "connections": [...]
 }
 ```
-
-- changes → What changed in this Link session.
-- connections → All currently active connections.
-
-Example:
-
-```js
-onSuccess: (res) => {
-  res.changes.forEach((change) => {
-    if (change.action === "enabled") {
-      console.log(`Connected to ${change.org.name}`);
-    } else {
-      console.log(`Disconnected from ${change.org.name}`);
-    }
-  });
-
-  console.log(`Total active connections: ${res.connections.length}`);
-};
-```
-
-The `onSuccess` callback is invoked when a user successfully completes a connection flow in the Versa Link widget. It receives a single parameter containing information about what changed and the current state of all connections.
-
-### Success Object
 
 | Property      | Type    | Description                                                                                       |
 | ------------- | ------- | ------------------------------------------------------------------------------------------------- |
