@@ -214,12 +214,12 @@ VersaLink.initialize({
 
 Describes a single connection change that occurred during the session.
 
-| Property   | Type      | Description                                                             |
-| ---------- | --------- | ----------------------------------------------------------------------- |
-| `org`      | `object`  | A partial [Org](#org) object describing the receiver organization.      |
-| `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.       |
-| `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`. |
-| `action`   | `enum`    | The action performed on this connection: `enabled` or `disabled`.       |
+| Property   | Type      | Description                                                                |
+| ---------- | --------- | -------------------------------------------------------------------------- |
+| `org`      | `object`  | A [Partial Org](#partial-org) object describing the receiver organization. |
+| `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.          |
+| `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`.    |
+| `action`   | `enum`    | The action performed on this connection: `enabled` or `disabled`.          |
 
 </article>
 </details>
@@ -234,7 +234,7 @@ Represents an active connection to a receiver organization.
 
 | Property   | Type      | Description                                                                    |
 | ---------- | --------- | ------------------------------------------------------------------------------ |
-| `org`      | `object`  | A partial [Org](#org) object describing the receiver organization.             |
+| `org`      | `object`  | A [Partial Org](#partial-org) object describing the receiver organization.     |
 | `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.              |
 | `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`.        |
 | `handling` | `object`  | A [Handling](#handling) object describing the registration status information. |
@@ -246,7 +246,7 @@ Represents an active connection to a receiver organization.
 <summary>Partial Org Object</summary>
 <article>
 
-#### Org
+#### PartialOrg
 
 | Property  | Type     | Description                             |
 | --------- | -------- | --------------------------------------- |
