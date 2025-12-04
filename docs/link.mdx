@@ -13,9 +13,17 @@ Versa Link is one method of customer registration, in which most of the work is 
 > [!IMPORTANT]
 > The only way to support OAuth-based connections (including Brex, QuickBooks, and Xero) is via Versa Link. The customer registration API does not support OAuth connections. Versa Link is the best way to ensure the broadest compatibility.
 
-## Quick Start
+## Link Overview
 
 You'll need to make an account at https://app.versa.org and issue yourself test credentials.
+
+The Link flow begins when your user wants to connect their expense management account or duty-of-care account to your app.
+
+1. You’ll [generate a link token](#generate-a-link-token) and pass the temporary token to your app's client.
+2. Use the link token to [initialize the Versa Link widget](#initialize-versa-link).
+3. You’ll [launch the widget](#launch-the-widget) by calling the `open` method.
+4. The user will select the account they want to connect.
+5. Your app will receive the account details via the [onSuccess callback](#response-handling).
 
 ## Installation
 
@@ -29,10 +37,10 @@ Drop the script tag into your HTML to include the Versa Link widget.
 
 If you make use of a Content Security Policy (CSP), the following directives will allow Link traffic:
 
-```
+```conf
 default-src https://cdn.versa.org/;
 script-src 'unsafe-inline' https://cdn.versa.org/link/stable/versa-link.iife.js;
-connect-src https://cdn.versa.org/ https://registry.versa.org/ https://custodial.versa.org/ ;
+connect-src https://cdn.versa.org/ https://registry.versa.org/ https://custodial.versa.org/;
 ```
 
 If your organization does not allow the use of unsafe-inline, you can use a [CSP nonce](https://content-security-policy.com/nonce/) instead.
@@ -40,6 +48,7 @@ If your organization does not allow the use of unsafe-inline, you can use a [CSP
 ## Generate a Link Token
 
 Before you can initialize Versa Link, you need to first create a link token. Use your server-side credentials to acquire a short-lived token to pass to the client (tokens expire after 10 minutes).
+
 In production, you will need to create a secure endpoint on your server that generates this token and returns it to your client application on behalf of the logged-in customer.
 
 ```bash
@@ -71,16 +80,8 @@ Call `VersaLink.initialize()` to configure the widget with the token string prov
 ```js
 await VersaLink.initialize({
   linkToken: data.token,
-  onSuccess: (result) => {
-    // callback with the list of active connections for the provided customer handles
-    console.log(
-      "Versa Link success:",
-      result.connections.map((org) => org.name).join(", ")
-    );
-  },
-  onExit: () => {
-    console.log("User exited Versa Link");
-  },
+  onSuccess: () => {},
+  onExit: () => {},
 });
 ```
 
@@ -92,19 +93,19 @@ Once initialized, you can launch the Versa Link widget by calling the `open` met
 VersaLink.open();
 ```
 
-## Configuration & Theming
+## Customizing Link
 
-Link can be customized in a few different ways.
+Link can be customized in a few different ways:
 
-| Field           | Type              | Description                                                                                                                                     |
-| --------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `theme`         | `nullable object` | See [Theme](#theme) for the available options.                                                                                                  |
-| `whitelistOrgs` | `nullable array`  | An explicit list of integrations to offer. If not provided, the default set of integrations will be offered.                                    |
-| `language`      | `nullable string` | Language code for the widget UI (e.g., `en`, `es`, `fr`). Defaults to `en`. Controls the display language for all text in the widget interface. |
+| Field           | Type              | Description                                                                                                                                                  |
+| --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `theme`         | `nullable object` | Specify available [themes](#theme) options.                                                                                                                  |
+| `whitelistOrgs` | `nullable array`  | An explicit list of [integrations to offer](#whitelist-orgs). If not provided, the default set of integrations will be offered.                              |
+| `language`      | `nullable string` | [Language code](#language) for the widget UI (e.g., `en`, `es`, `fr`). Defaults to `en`. Controls the display language for all text in the widget interface. |
 
 ### Theme
 
-If you would like to customize the appearance of the Versa Link widget, you can do so by passing an optional `theme` object to the `initialize` method. If there are additional theming customizations you would like to make, please reach out to the Versa team.
+If you would like to customize the appearance of the Versa Link widget, you can do so by passing an optional `theme` object to the `initialize` method.
 
 | Field      | Type   | Description                                                                                                     |
 | ---------- | ------ | --------------------------------------------------------------------------------------------------------------- |
@@ -138,6 +139,8 @@ If you would like to customize the appearance of the Versa Link widget, you can 
 </body>
 ```
 
+If there are additional theming customizations you would like to make, please reach out to the Versa team.
+
 ### Whitelist Orgs
 
 By default, Versa Link will offer all available integrations to the user. If you would like to limit the integrations that are offered, you can do so by passing an optional `whitelistOrgs` array to the `initialize` method. Reach out to the Versa team if you would like help identifying the org ids of the integrations you would like to offer.
@@ -145,7 +148,7 @@ By default, Versa Link will offer all available integrations to the user. If you
 ### Language
 
 > [!CAUTION]
-> Localization is a Beta feature. See a bad translation? Let us know at support@versa.org.
+> Localization is a beta feature. See a bad translation? Let us know at support@versa.org.
 
 Link currently supports the following languages:
 
@@ -171,7 +174,7 @@ Link currently supports the following languages:
 
 ## Response Handling
 
-When a user successfully completes a connection via the Link flow, the `onSuccess` callback receives a response object. This object contains information about the changes that occurred during the Link session and the current state of all connections.
+When a user completes a connection, the `onSuccess` callback receives a response object. This object contains information about the changes that occurred during the Link session, and the current state of all connections.
 
 Example:
 
@@ -272,3 +275,7 @@ Represents an active connection to a receiver organization.
 
 </article>
 </details>
+
+## Link Updates
+
+Versa periodically updates Link to add new functionality and improve conversion. These changes will be automatically deployed. Any test suites and business logic in your app should be robust to the possibility of changes to the user-facing Link flow. Any major changes, especially those related to the `inline` view mode, will be shared with partners well in advance of deployment.
