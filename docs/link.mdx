@@ -195,7 +195,7 @@ VersaLink.initialize({
 });
 ```
 
-The response object includes changes and connections:
+The response object includes `changes` and `connections`:
 
 ```json
 {
@@ -204,10 +204,10 @@ The response object includes changes and connections:
 }
 ```
 
-| Property      | Type    | Description                                                                                       |
-| ------------- | ------- | ------------------------------------------------------------------------------------------------- |
-| `changes`     | `array` | Array of [change](#change-object) objects made during this session.                               |
-| `connections` | `array` | Array of [connection](#connection-object) objects, representing all currently active connections. |
+| Property      | Type    | Description                                                                     |
+| ------------- | ------- | ------------------------------------------------------------------------------- |
+| `changes`     | `array` | What changed in this Link session. See [change](#change-object) objects.        |
+| `connections` | `array` | All currently active connections. See [connection](#connection-object) objects. |
 
 <details>
 <summary>Change Object</summary>
@@ -219,7 +219,7 @@ Describes a single connection change that occurred during the session.
 
 | Property   | Type      | Description                                                                |
 | ---------- | --------- | -------------------------------------------------------------------------- |
-| `org`      | `object`  | A [Partial Org](#partial-org) object describing the receiver organization. |
+| `org`      | `object`  | A [partial org](#partial-org) object describing the receiver organization. |
 | `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.          |
 | `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`.    |
 | `action`   | `enum`    | The action performed on this connection: `enabled` or `disabled`.          |
@@ -237,10 +237,10 @@ Represents an active connection to a receiver organization.
 
 | Property   | Type      | Description                                                                    |
 | ---------- | --------- | ------------------------------------------------------------------------------ |
-| `org`      | `object`  | A [Partial Org](#partial-org) object describing the receiver organization.     |
+| `org`      | `object`  | A [partial org](#partial-org) object describing the receiver organization.     |
 | `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.              |
 | `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`.        |
-| `handling` | `object`  | A [Handling](#handling) object describing the registration status information. |
+| `handling` | `object`  | A [handling](#handling) object describing the registration status information. |
 
 </article>
 </details>
