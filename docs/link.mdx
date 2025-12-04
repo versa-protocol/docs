@@ -201,16 +201,12 @@ onSuccess: (res) => {
 
 The `onSuccess` callback is invoked when a user successfully completes a connection flow in the Versa Link widget. It receives a single parameter containing information about what changed and the current state of all connections.
 
-```typescript
-onSuccess?: (data: SuccessData) => void;
-```
+### Success Object
 
-### SuccessData Object
-
-| Property      | Type    | Description                                                                                      |
-| ------------- | ------- | ------------------------------------------------------------------------------------------------ |
-| `changes`     | `array` | Array of [change](#change-object) objects made during this session                               |
-| `connections` | `array` | Array of [connection](#connection-object) objects, representing all currently active connections |
+| Property      | Type    | Description                                                                                       |
+| ------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| `changes`     | `array` | Array of [change](#change-object) objects made during this session.                               |
+| `connections` | `array` | Array of [connection](#connection-object) objects, representing all currently active connections. |
 
 <details>
 <summary>Change Object</summary>
@@ -254,13 +250,13 @@ Represents an active connection to a receiver organization.
 
 #### Org
 
-| Property  | Type     | Description                            |
-| --------- | -------- | -------------------------------------- |
-| `id`      | `string` | Unique identifier for the organization |
-| `slug`    | `string` | URL-friendly organization identifier   |
-| `name`    | `string` | Display name of the organization       |
-| `website` | `string` | Organization's website URL             |
-| `logo`    | `string` | URL to the organization's logo         |
+| Property  | Type     | Description                             |
+| --------- | -------- | --------------------------------------- |
+| `id`      | `string` | Unique identifier for the organization. |
+| `slug`    | `string` | URL-friendly organization identifier.   |
+| `name`    | `string` | Display name of the organization.       |
+| `website` | `string` | Organization's website URL.             |
+| `logo`    | `string` | URL to the organization's logo.         |
 
 </article>
 </details>
@@ -271,10 +267,10 @@ Represents an active connection to a receiver organization.
 
 #### Handling
 
-| Property              | Type      | Description                        |
-| --------------------- | --------- | ---------------------------------- |
-| `receiver_registered` | `boolean` | Whether registered by the receiver |
-| `sender_registered`   | `boolean` | Whether registered by the sender   |
+| Property              | Type      | Description                         |
+| --------------------- | --------- | ----------------------------------- |
+| `receiver_registered` | `boolean` | Whether registered by the receiver. |
+| `sender_registered`   | `boolean` | Whether registered by the sender.   |
 
 </article>
 </details>
