@@ -199,57 +199,82 @@ onSuccess: (res) => {
 };
 ```
 
-
 The `onSuccess` callback is invoked when a user successfully completes a connection flow in the Versa Link widget. It receives a single parameter containing information about what changed and the current state of all connections.
-
-### Callback Signature
 
 ```typescript
 onSuccess?: (data: SuccessData) => void;
 ```
 
-#### SuccessData Object
+### SuccessData Object
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `changes` | `ConnectionChange[]` | Array of changes made during this session |
-| `connections` | `Connection[]` | Array of all currently active connections |
+| Property      | Type    | Description                                                                                      |
+| ------------- | ------- | ------------------------------------------------------------------------------------------------ |
+| `changes`     | `array` | Array of [change](#change-object) objects made during this session                               |
+| `connections` | `array` | Array of [connection](#connection-object) objects, representing all currently active connections |
 
-#### ConnectionChange
+<details>
+<summary>Change Object</summary>
+<article>
+
+### Change Object
 
 Describes a single connection change that occurred during the session.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `org` | `Org` | Details about the receiver organization |
-| `oauth` | `boolean` | Whether this connection uses OAuth for setting up the connection |
-| `category` | `ReceiverCategory` | The category of the receiver: `'expense'`, `'firehose'`, or `'duty_of_care'` |
-| `action` | `'enabled' \| 'disabled'` | The action performed on this connection |
+| Property   | Type      | Description                                                             |
+| ---------- | --------- | ----------------------------------------------------------------------- |
+| `org`      | `object`  | A partial [Org](#org) object describing the receiver organization.      |
+| `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.       |
+| `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`. |
+| `action`   | `enum`    | The action performed on this connection: `enabled` or `disabled`.       |
 
-#### Connection
+</article>
+</details>
+
+<details>
+<summary>Connection Object</summary>
+<article>
+
+### Connection Object
 
 Represents an active connection to a receiver organization.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `org` | `Org` | Details about the receiver organization |
-| `oauth` | `boolean` | Whether this connection uses OAuth for setting up the connection |
-| `category` | `ReceiverCategory` | The category of the receiver: `'expense'`, `'firehose'`, or `'duty_of_care'` |
-| `handling` | `Handling` | Registration status information |
+| Property   | Type      | Description                                                                    |
+| ---------- | --------- | ------------------------------------------------------------------------------ |
+| `org`      | `object`  | A partial [Org](#org) object describing the receiver organization.             |
+| `oauth`    | `boolean` | Whether this connection uses OAuth for setting up the connection.              |
+| `category` | `enum`    | The category of the receiver: `expense`, `firehose`, or `duty_of_care`.        |
+| `handling` | `object`  | A [Handling](#handling) object describing the registration status information. |
+
+</article>
+</details>
+
+<details>
+<summary>Partial Org Object</summary>
+<article>
 
 #### Org
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | `string` | Unique identifier for the organization |
-| `slug` | `string` | URL-friendly organization identifier |
-| `name` | `string` | Display name of the organization |
-| `website` | `string` | Organization's website URL |
-| `logo` | `string` | URL to the organization's logo |
+| Property  | Type     | Description                            |
+| --------- | -------- | -------------------------------------- |
+| `id`      | `string` | Unique identifier for the organization |
+| `slug`    | `string` | URL-friendly organization identifier   |
+| `name`    | `string` | Display name of the organization       |
+| `website` | `string` | Organization's website URL             |
+| `logo`    | `string` | URL to the organization's logo         |
+
+</article>
+</details>
+
+<details>
+<summary>Handling Object</summary>
+<article>
 
 #### Handling
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property              | Type      | Description                        |
+| --------------------- | --------- | ---------------------------------- |
 | `receiver_registered` | `boolean` | Whether registered by the receiver |
-| `sender_registered` | `boolean` | Whether registered by the sender |
+| `sender_registered`   | `boolean` | Whether registered by the sender   |
+
+</article>
+</details>
