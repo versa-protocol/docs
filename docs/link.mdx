@@ -27,16 +27,19 @@ The Link flow begins when your user wants to connect their expense management ac
 
 Drop the script tag into your HTML to include the Versa Link widget.
 
+<!-- prettier-ignore-start -->
 <CodeWrap title="index.html">
-```html
-<script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
-```
+  ```html
+  <script src="https://cdn.versa.org/link/stable/versa-link.iife.js"></script>
+  ```
 </CodeWrap>
+<!-- prettier-ignore-end -->
 
 ### CSP directives
 
 If you make use of a Content Security Policy (CSP), the following directives will allow Link traffic:
 
+<!-- prettier-ignore-start -->
 <CodeWrap title="CSP Directives">
 ```conf
 default-src https://cdn.versa.org/;
@@ -44,6 +47,7 @@ script-src 'unsafe-inline' https://cdn.versa.org/link/stable/versa-link.iife.js;
 connect-src https://cdn.versa.org/ https://registry.versa.org/ https://custodial.versa.org/;
 ```
 </CodeWrap>
+<!-- prettier-ignore-end -->
 
 If your organization does not allow the use of unsafe-inline, you can use a [CSP nonce](https://content-security-policy.com/nonce/) instead.
 
@@ -120,6 +124,7 @@ If you would like to customize the appearance of the Versa Link widget, you can 
 > [!IMPORTANT]
 > For the 'inline' view mode, you must include a container element in your HTML with the id `versa-canvas`. The Versa Link script will query for this element by id and render the widget inside. See example below:
 
+<!-- prettier-ignore-start -->
 <CodeWrap title="index.html">
 ```html
 <body>
@@ -145,6 +150,7 @@ If you would like to customize the appearance of the Versa Link widget, you can 
 </body>
 ```
 </CodeWrap>
+<!-- prettier-ignore-end -->
 
 If there are additional theming customizations you would like to make, please reach out to the Versa team.
 
@@ -183,6 +189,7 @@ Link currently supports the following languages:
 
 When a user completes a connection, the `onSuccess` callback receives a response object. This object contains information about the changes that occurred during the Link session, and the current state of all connections.
 
+<!-- prettier-ignore-start -->
 <CodeWrap title="onSuccess Example">
 ```js
 VersaLink.initialize({
@@ -201,6 +208,7 @@ VersaLink.initialize({
 });
 ```
 </CodeWrap>
+<!-- prettier-ignore-end -->
 
 The response object includes `changes` and `connections`:
 
