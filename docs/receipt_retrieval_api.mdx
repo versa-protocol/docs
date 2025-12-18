@@ -1,0 +1,155 @@
+---
+title: "Receipt Retrieval API"
+---
+
+# Receipt Retrieval API
+
+Post a card transaction to request a receipt retrieval. 
+
+## Overview
+
+Custodial receivers may post a card transaction to their account to trigger an attempted receipt retrieval. 
+
+The receipt retrieval process may take some time to complete. Versa uses card transaction details to identify the merchant and source the receipt either through in-network channels or through an external request flow.
+
+When the receipt retrieval is complete, we will send the receipt data, in the format of valid Versa receipt JSON, to your receiving webhook.
+
+
+## API Request
+
+Request a receipt for a specific card transaction by providing its details.
+
+```bash
+curl --request POST \
+  --url 'https://custodial.versa.org/card_transaction/receipt_retrieval' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "card_transaction": {
+      "id": "1234567890",
+      "address": {
+        "city": "Boston",
+        "state": "MA",
+        "zip": "02101",
+        "country": "US"
+      },
+      "amount_authorized": 15599,
+      "amount_posted": 15599,
+      "currency": "USD",
+      "date_authorized": "2025-01-01",
+      "date_posted": "2025-01-02",
+      "description": "ARK HOTELS BOSTON",
+      "last_four": "5555",
+      "mcc": "3555",
+      "cardholder": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john.doe@versa.org",
+        "phone": "1234567890",
+        "address": {
+          "street": "123 Main St",
+          "city": "Anytown",
+          "state": "CA",
+          "zip": "12345",
+          "country": "US"
+        }
+      }
+    }
+  }'
+```
+
+While more data can produce better results, a request can be as simple as this:
+
+```bash
+curl --request POST \
+  --url 'https://custodial.versa.org/card_transaction/receipt_retrieval' \
+  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "card_transaction": {
+      "address": {
+        "zip": "02101",
+        "country": "US"
+      },
+      "amount_authorized": 15599,
+      "amount_posted": 15599,
+      "currency": "USD",
+      "date_authorized": "2025-01-01",
+      "description": "ARK HOTELS BOSTON",
+      "last_four": "5555",
+      "mcc": "3555",
+      "cardholder": {
+        "first_name": "John",
+        "last_name": "Doe"
+      }
+    }
+  }'
+```
+
+
+### Request Parameters
+
+| Field     | Type     | Description                                                          |
+| --------- | -------- | -------------------------------------------------------------------- |
+| `card_transaction` | `object` | Card transaction to request an attempted receipt retrieval. |
+
+#### Card Transaction Object
+
+| Field               | Type               | Description                                                                   |
+| ------------------- | ------------------ | ----------------------------------------------------------------------------- |
+| `id`                | `string`           | Unique identifier for the card transaction.                                   |
+| `address`           | `nullable object`  | [Merchant address](#address-object) where the transaction occurred.           |
+| `amount_authorized` | `integer`          | Authorized amount in minor units (e.g., 15599 for $155.99).                   |
+| `amount_posted`     | `nullable integer` | Settled amount in minor units (e.g., 15599 for $155.99).                      |
+| `currency`          | `string`           | 3-letter currency code (ISO 4217).                                            |
+| `date_authorized`   | `string`           | Transaction date in `YYYY-MM-DD` format.                                      |
+| `date_posted`       | `nullable string`  | Settled date in `YYYY-MM-DD` format.                                          |
+| `description`       | `string`           | Merchant description or transaction name.                                     |
+| `last_four`         | `string`           | Last four digits of the payment card used.                                    |
+| `mcc`               | `string`           | Merchant Category Code (4 digits).                                            |
+| `cardholder`        | `object`           | [Cardholder information](#cardholder-object) associated with the transaction. |
+
+#### Cardholder Object
+
+| Field        | Type              | Description                        |
+| ------------ | ----------------- | ---------------------------------- |
+| `first_name` | `string`          | Cardholder's given name.           |
+| `last_name`  | `string`          | Cardholder's family name.          |
+| `email`      | `nullable string` | Email address of the cardholder.   |
+| `phone`      | `nullable string` | Phone number of the cardholder.    |
+| `address`    | `nullable object` | [Cardholder's address](#address-object). |
+
+#### Address Object
+
+| Field            | Type               | Description                                  |
+| ---------------- | ------------------ | -------------------------------------------- |
+| `street_address` | `nullable string`  | Street and building number.                  |
+| `city`           | `nullable string`  | City or municipality.                        |
+| `region`         | `nullable string`  | State, province, or region code.              |
+| `country`        | `string`           | 2-letter country code (ISO 3166-1).          |
+| `postal_code`    | `nullable string`  | ZIP or postal code.                          |
+| `lat`            | `nullable decimal` | Latitude coordinate.                         |
+| `lon`            | `nullable decimal` | Longitude coordinate.                        |
+| `tz`             | `nullable string`  | IANA timezone ID (e.g., "America/New_York"). |
+
+### Response Format
+
+```json
+{
+  "card_transaction_id": "ctx_8bfc16eb9d034a009ce3a1d9b445f471",
+  "retrieval_id": "ret_8bfc16eb9d034a009ce3a1d9b445f471"
+}
+```
+
+When the receipt retrieval is complete, we will post to your receiving webhook with a `receipt_retrieval.completed` event.
+
+```json
+{
+  "event": "receipt_retrieval",
+  "data": {
+    "card_transaction_id": "ctx_8bfc16eb9d034a009ce3a1d9b445f471",
+    "retrieval_id": "ret_8bfc16eb9d034a009ce3a1d9b445f471",
+    "receipt": { ... }
+  }
+}
+```
