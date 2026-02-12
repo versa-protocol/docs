@@ -63,6 +63,24 @@ curl -X POST https://registry.versa.org/link_token \
     }'
 ```
 
+...or use a references array.
+
+```bash
+curl -X POST https://registry.versa.org/link_token \
+    -H "Authorization: Basic {CLIENT_ID}:{CLIENT_SECRET}" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "references": [{
+        "handle_type": "merchant_group_code",
+        "handle": "CORPORATE_DISCOUNT_CODE_XYZ"
+      },
+      {
+        "handle_type": "customer_email_domain"
+        "handle": "acme.co"
+      }]
+    }'
+```
+
 This will return a response object including the following fields:
 
 ```json
