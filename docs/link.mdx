@@ -291,7 +291,7 @@ Versa periodically updates Link to add new functionality and improve conversion.
 The following configuration options are not necessary for a basic Link integration, but may be useful in certain cases.
 
 ### Read-Only Access Mode
-To use Link for viewing active connections without allowing users to make changes, you may create the link token with an optional `access_mode` parameter set to `read_only`. This will cause the Link widget to render in a read-only mode, hiding any buttons or other interactivity for making changes to connections.
+To use Link for viewing active connections without allowing users to make changes, you may create the link token with an optional `access_mode` parameter set to `read_only`. This will cause the Link widget to render in a read-only mode, hiding any buttons or other interactivity for making changes to connections. The `access_mode` parameter accepts either `read_only` or `read_write` as values, but defaults to `read_write` if not specified.
 
 ```bash
 curl -X POST https://registry.versa.org/link_token \
