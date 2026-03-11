@@ -56,20 +56,6 @@ curl -X POST https://registry.versa.org/link_token \
     -H "Authorization: Basic {CLIENT_ID}:{CLIENT_SECRET}" \
     -H "Content-Type: application/json" \
     -d '{
-      "handles": {
-        "customer_email_domain": "acme.co",
-        "merchant_group_code": "CORPORATE_DISCOUNT_CODE_XYZ"
-      }
-    }'
-```
-
-...or use a references array.
-
-```bash
-curl -X POST https://registry.versa.org/link_token \
-    -H "Authorization: Basic {CLIENT_ID}:{CLIENT_SECRET}" \
-    -H "Content-Type: application/json" \
-    -d '{
       "references": [{
         "handle_type": "merchant_group_code",
         "handle": "CORPORATE_DISCOUNT_CODE_XYZ"
@@ -300,3 +286,26 @@ Represents an active connection to a receiver organization.
 ## Link Updates
 
 Versa periodically updates Link to add new functionality and improve conversion. These changes will be automatically deployed. Any test suites and business logic in your app should be robust to the possibility of changes to the user-facing Link flow. Any major changes, especially those related to the `inline` view mode, will be shared with partners well in advance of deployment.
+
+## Advanced Use
+The following configuration options are not necessary for a basic Link integration, but may be useful in certain cases.
+
+### Read-Only Access Mode
+To use Link for viewing active connections without allowing users to make changes, you may create the link token with an optional `access_mode` parameter set to `read_only`. This will cause the Link widget to render in a read-only mode, hiding any buttons or other interactivity for making changes to connections.
+
+```bash
+curl -X POST https://registry.versa.org/link_token \
+    -H "Authorization: Basic {CLIENT_ID}:{CLIENT_SECRET}" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "access_mode": "read_only",
+      "references": [{
+        "handle_type": "merchant_group_code",
+        "handle": "CORPORATE_DISCOUNT_CODE_XYZ"
+      },
+      {
+        "handle_type": "customer_email_domain"
+        "handle": "acme.co"
+      }]
+    }'
+```
