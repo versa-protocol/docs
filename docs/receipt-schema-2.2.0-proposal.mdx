@@ -4,7 +4,7 @@ title: "Receipt Schema 2.2.0 Proposal"
 
 # Receipt Schema 2.2.0 Proposal
 
-> **Proposal:** This document describes a non-breaking version bump (2.1.0 → 2.2.0) adding four new optional fields to the lodging object, and `booker` to the customer object in the header.
+> **Proposal:** This document describes a non-breaking version bump (2.1.0 → 2.2.0) adding four new optional fields to the lodging object, three new optional fields to the car rental object, and `booker` to the customer object in the header.
 
 Itemized receipts are the core data model of Versa. They include both "header" information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as "line item" details — the quantity, description, and cost of each item purchased.
 
@@ -159,10 +159,15 @@ The Itemization section describes the goods and services that compose the purcha
 
 View a complete [car rental receipt](https://versa.org/studio?sender=generic&receipt=car_rental) example.
 
+**New in 2.2.0:** Three optional fields for booking reference and vendor identification: `confirmation_number`, `record_locator`, and `vendor_code`.
+
 ```JSON
 "car_rental": {
   "rental_at": 1713196492,
   "return_at": 1713415500,
+  "confirmation_number": null,
+  "record_locator": null,
+  "vendor_code": null,
   "rental_location": { ... },
   "return_location": { ... },
   "vehicle": {
@@ -184,6 +189,9 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 | --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `rental_at`                 | `integer`          | Rental time. Measured in seconds since the Unix epoch.                                                                                                          |
 | `return_at`                 | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                          |
+| `confirmation_number`       | `nullable string`  | **New in 2.2.0.** Rental confirmation number.                                                                                                                   |
+| `record_locator`            | `nullable string`  | **New in 2.2.0.** PNR or booking record locator.                                                                                                                |
+| `vendor_code`               | `nullable string`  | **New in 2.2.0.** Two-letter GDS vendor code, e.g. `ZI` for Avis, `ZD` for Budget.                                                                              |
 | `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
 | `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
 | `vehicle`                   | `object`           | A [vehicle](#vehicle) object.                                                                                                                                   |
