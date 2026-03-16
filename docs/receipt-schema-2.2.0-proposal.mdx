@@ -4,7 +4,7 @@ title: "Receipt Schema 2.2.0 Proposal"
 
 # Receipt Schema 2.2.0 Proposal
 
-> **Proposal:** This document describes a non-breaking version bump (2.1.0 → 2.2.0) adding four new optional fields to the lodging object.
+> **Proposal:** This document describes a non-breaking version bump (2.1.0 → 2.2.0) adding four new optional fields to the lodging object, and `booker` to the customer object in the header.
 
 Itemized receipts are the core data model of Versa. They include both "header" information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as "line item" details — the quantity, description, and cost of each item purchased.
 
@@ -106,14 +106,17 @@ Use the optional third party object in cases where the sender is a platform / br
 
 Used in cases where the merchant has a profile for the customer. Can be left null i.e. for guest checkout flows.
 
-| Field      | Type              | Description                                                              |
-| ---------- | ----------------- | ------------------------------------------------------------------------ |
-| `name`     | `string`          |                                                                          |
-| `email`    | `nullable string` |                                                                          |
-| `website`  | `nullable string` |                                                                          |
-| `address`  | `nullable object` | An [address](#address) object.                                           |
-| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164). |
-| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.         |
+**New in 2.2.0:** `booker` — the person who arranged the purchase (e.g. who booked the flight or hotel, or who bought the items from Amazon).
+
+| Field      | Type              | Description                                                                                             |
+| ---------- | ----------------- | ------------------------------------------------------------------------------------------------------- |
+| `name`     | `string`          |                                                                                                          |
+| `email`    | `nullable string` |                                                                                                          |
+| `website`  | `nullable string` |                                                                                                          |
+| `address`  | `nullable object` | An [address](#address) object.                                                                           |
+| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).                                 |
+| `booker`   | `nullable object` | **New in 2.2.0.** A [person](#person) object for the person who arranged the purchase (booked, bought). |
+| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.                                         |
 
 </article>
 </details>
