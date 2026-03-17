@@ -8,51 +8,13 @@ Versa routes receipts by matching against registered customers. Every time a sen
 
 ## How It Works
 
-Customers explicitly grant permission to senders or receivers to collect receipts on their behalf.
+Customers must explicitly grant clients permission to share receipts on their behalf.
 
-Registering and de-registering handles is typically performed via API. The Versa web app also includes a user interface to perform this action.
+Registering and de-registering is typically performed via [Versa Link](/link). The Versa developer portal also provides a [user interface](https://app.versa.org/customer-registration) to perform this action, which can be especially useful for whitelisting customers in early phases of implementation.
 
-To register a handle via API:
+### API Access
 
-```bash
-curl --request POST \
-  --url 'https://registry.versa.org/customer' \
-  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "handle_type": "customer_email_domain",
-    "handle": "acme.com"
-  }'
-```
-
-| Field             | Type              | Description                                                                                |
-| ----------------- | ----------------- | ------------------------------------------------------------------------------------------ |
-| `handle_type`     | `enum`            | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
-| `handle`          | `string`          | The handle value.                                                                          |
-| `receiver_org_id` | `nullable string` | The org id of the intended receiver. Required for any sender registration.                 |
-
-> [!NOTE]
-> Versa also supports `payment_account_reference` (PAR), `merchant_group_code`, and `merchant_user_code` handles, but to enable these forms of matching, you’ll need to be opted in by the Versa support team.
-> (See the [Visa](https://developer.visa.com/capabilities/visa-par-inquiry), [Mastercard](https://developer.mastercard.com/payment-account-reference-inquiry/documentation/), and [AmEx](https://developer.americanexpress.com/products/payment-account-reference-public/overview) documentation on using PAR)
-
-You’re responsible for collecting the necessary permission when registering customers. For `customer_email` registrations, the email addresses you add will also be subject to a verification step. When you initiate an email address registration, that registration will be put into a pending state. Versa sends a verification email to the address; you will start to receive matching receipts only after the recipient clicks the verification link contained in that email.
-
-When you lose a customer, you will de-register them. To remove a registered profile:
-
-```bash
-curl --request DELETE \
-  --url 'https://registry.versa.org/customer' \
-  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "handle_type": "customer_email_domain",
-    "handle": "acme.com"
-  }'
-```
-
-Typically, you’ll do a batch registration when you initially onboard to Versa, and from that point forward, you’ll manage your list of authorized customers synchronously, registering and de-registering handles as you add and remove customers.
-
-In 'test' mode, 'production' receipts will not be sent. Your client will need to be set to 'production' mode to send or receive production receipts. Contact Versa Support for details.
+Not seeing what you're looking for? We grant programmatic access to customer registration APIs on an as-needed basis. Contact us at support@versa.org if you'd like to learn more about this feature.
 
 ## Receiver vs. Sender Customer Registration
 
@@ -62,25 +24,7 @@ Receivers register customers to receive receipts from _any_ sender. For example,
 
 Senders, on the other hand, can only register customers to receive the receipts from their direct sales. E.g. a travel manager admin who is logged in to the company settings screen on the 'Nimbus Airlines' website could opt to push their Nimbus Airlines receipts to their expense management app, but they would not be able to turn on universal receipt sync from within the Nimbus Airlines website.
 
-Technically speaking, these receiver vs. sender registration scopes are configured via the `receiver_org_id` parameter on the /customer endpoint. Receiver clients do not need to specify a `receiver_org_id` — they can either skip the parameter, or set the value to their own `org_id` (anything else will error). Sender clients attempting to register customers must include a `receiver_org_id`, and that `receiver_org_id` must reference an active receiver client. If a sender client excludes the `receiver_org_id` parameter, the registration attempt will error.
-
 Sender and receiver registrations are not mutually exclusive. For instance: if Sender A registers a customer for Receiver B, and Receiver B also registers that same customer, Versa will match against both registrations, and return a single reference to Receiver B.
-
-### Example Sender Registration Request
-
-Below is an example curl request that registers the customer domain `acme.com` to send receipts to the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
-
-```bash
-curl --request POST \
-  --url 'https://registry.versa.org/customer' \
-  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "handle_type": "customer_email_domain",
-    "handle": "acme.com",
-    "receiver_org_id": "org_2608b08d60f34075bbb36539883bb17f"
-  }'
-```
 
 ## Sender Registration, "Merchant Group Codes", and "Merchant User Codes"
 

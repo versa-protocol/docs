@@ -28,25 +28,7 @@ The custodial configuration is typically easier for developers to implement. The
 
 Before you can start receiving receipts, you’ll need to register the customers who have authorized you as their receipt receiver. When you register a customer, you add their 'handle' — the identifier that Versa uses to know if and where to send receipts.
 
-You are only able to receive receipts on behalf of customers who have explicitly granted you that permission.
-
-To register a handle via API:
-
-```bash
-curl --request POST \
-  --url 'https://registry.versa.org/customer' \
-  --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "handle_type": "customer_email_domain",
-    "handle": "acme.com"
-  }'
-```
-
-| Field         | Type     | Description                                                                                |
-| ------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `handle_type` | `enum`   | One of `customer_email_domain` (e.g. acme.com) or `customer_email` (e.g. jshmoe@acme.com). |
-| `handle`      | `string` | The handle value.                                                                          |
+You are only able to receive receipts on behalf of customers who have explicitly granted you that permission. The best way to start is by whitelisting customers in the Versa [developer portal](https://app.versa.org/customer-registration).
 
 See [Customer Registration](/customer_registration) for full details on keeping your customer roster synced.
 
