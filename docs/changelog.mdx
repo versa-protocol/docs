@@ -4,6 +4,13 @@ title: "Changelog"
 
 # Changelog
 
+## 2026-03-18 - Schema Version 2.2.0
+
+- Added nullable `confirmation_number` and `record_locator` to both the `lodging` and `car_rental` objects
+- Added nullable `chain_code` and `property_id` to the `lodging` object
+- Added nullable `vendor_code` to the `car_rental` object
+- Added nullable `booker` ([Person](https://docs.versa.org/receipt#person) object) to the `customer` object
+
 ## 2025-12-01 - Schema Version 2.1.1
 
 This is a patch update to correct small inconsistencies in the 2.x channel. For most clients, no changes will be required to support this schema version.
