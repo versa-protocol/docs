@@ -54,6 +54,9 @@ View a complete [car rental itinerary](https://raw.githubusercontent.com/versa-p
 "car_rental": {
   "rental_at": 1713196492,
   "return_at": 1713415500,
+  "confirmation_number": null,
+  "record_locator": null,
+  "vendor_code": null,
   "rental_location": { ... },
   "return_location": { ... },
   "vehicle": {
@@ -72,6 +75,9 @@ View a complete [car rental itinerary](https://raw.githubusercontent.com/versa-p
 | ---------------------- | ------------------ | ------------------------------------------------------------------------- |
 | `rental_at`            | `integer`          | Rental time. Measured in seconds since the Unix epoch.                    |
 | `return_at`            | `integer`          | Return time. Measured in seconds since the Unix epoch.                    |
+| `confirmation_number`  | `nullable string`  | Rental confirmation number.                                               |
+| `record_locator`       | `nullable string`  | PNR or booking record locator.                                            |
+| `vendor_code`          | `nullable string`  | Two-letter GDS vendor code, e.g. `ZI` for Avis, `ZD` for Budget.         |
 | `rental_location`      | `object`           | A [place](/receipts#place) describing the rental location.                |
 | `return_location`      | `object`           | A [place](/receipts#place) describing the return location.                |
 | `vehicle`              | `object`           | A [vehicle](#vehicle) object.                                             |
@@ -145,6 +151,10 @@ View a complete [lodging itinerary](https://raw.githubusercontent.com/versa-prot
 "lodging": {
   "check_in": 1713196492,
   "check_out": 1713473361,
+  "confirmation_number": null,
+  "chain_code": null,
+  "property_id": null,
+  "record_locator": null,
   "guests": [ ... ],
   "room": "806",
   "location": { ... },
@@ -153,15 +163,19 @@ View a complete [lodging itinerary](https://raw.githubusercontent.com/versa-prot
 }
 ```
 
-| Field       | Type              | Description                                                                                                  |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check_in`  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
-| `check_out` | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
-| `guests`    | `nullable array`  | Array of [person](#person) objects.                                                                          |
-| `room`      | `nullable string` | Room number.                                                                                                 |
-| `location`  | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
-| `items`     | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
-| `metadata`  | `array`           | Array of [metadata](/receipts#metadata) objects, for any additional info.                                    |
+| Field                 | Type              | Description                                                                                                  |
+| --------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| `check_in`            | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                |
+| `check_out`           | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                               |
+| `confirmation_number` | `nullable string` | Hotel confirmation number.                                                                                   |
+| `chain_code`          | `nullable string` | Two-character chain code, e.g. `mc` for Marriott, `HY` for Hyatt.                                            |
+| `property_id`         | `nullable string` | Property identifier. Examples: `gds.sabre:19835`, `gds.amadeus:BWNYCMQ`, `chain.marriott:NYCMQ`, `giata:17324`. |
+| `record_locator`      | `nullable string` | PNR or booking record locator.                                                                               |
+| `guests`              | `nullable array`  | Array of [person](#person) objects.                                                                          |
+| `room`                | `nullable string` | Room number.                                                                                                 |
+| `location`            | `nullable object` | A [place](/receipts#place) object describing the hotel / lodging.                                            |
+| `items`               | `array`           | An array of generic [item](#item) objects. This includes the room rate, as well as incidentals / full folio. |
+| `metadata`            | `array`           | Array of [metadata](/receipts#metadata) objects, for any additional info.                                    |
 
 </article>
 </details>
