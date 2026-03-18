@@ -104,15 +104,15 @@ Use the optional third party object in cases where the sender is a platform / br
 
 Used in cases where the merchant has a profile for the customer. Can be left null i.e. for guest checkout flows.
 
-| Field      | Type              | Description                                                                     |
-| ---------- | ----------------- | ------------------------------------------------------------------------------- |
-| `name`     | `string`          |                                                                                  |
-| `email`    | `nullable string` |                                                                                  |
-| `website`  | `nullable string` |                                                                                  |
-| `address`  | `nullable object` | An [address](#address) object.                                                   |
-| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).         |
+| Field      | Type              | Description                                                                           |
+| ---------- | ----------------- | ------------------------------------------------------------------------------------- |
+| `name`     | `string`          |                                                                                       |
+| `email`    | `nullable string` |                                                                                       |
+| `website`  | `nullable string` |                                                                                       |
+| `address`  | `nullable object` | An [address](#address) object.                                                        |
+| `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).              |
 | `booker`   | `nullable object` | A [person](#person) object for the person who arranged the purchase (booked, bought). |
-| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.                 |
+| `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.                      |
 
 </article>
 </details>
@@ -185,7 +185,7 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 | `return_at`                 | `integer`          | Return time. Measured in seconds since the Unix epoch.                                                                                                          |
 | `confirmation_number`       | `nullable string`  | Rental confirmation number.                                                                                                                                     |
 | `record_locator`            | `nullable string`  | PNR or booking record locator.                                                                                                                                  |
-| `vendor_code`               | `nullable string`  | Two-letter GDS vendor code, e.g. `ZI` for Avis, `ZD` for Budget.                                                                                                |
+| `vendor_code`               | `nullable string`  | Two-letter GDS vendor code, e.g. `ZI` for Avis, `ZB` for Budget.                                                                                                |
 | `rental_location`           | `object`           | A [place](#place) describing the rental location.                                                                                                               |
 | `return_location`           | `object`           | A [place](#place) describing the return location.                                                                                                               |
 | `vehicle`                   | `object`           | A [vehicle](#vehicle) object.                                                                                                                                   |
@@ -321,7 +321,7 @@ lodging: {
 | `check_in`                  | `int`             | Check-in date-time. Measured in seconds since the Unix epoch.                                                                                                   |
 | `check_out`                 | `int`             | Check-out date-time. Measured in seconds since the Unix epoch.                                                                                                  |
 | `confirmation_number`       | `nullable string` | Hotel confirmation number.                                                                                                                                      |
-| `chain_code`                | `nullable string` | Two-character chain code, e.g. `mc` for Marriott, `HY` for Hyatt.                                                                                               |
+| `chain_code`                | `nullable string` | Two-character chain code, e.g. `MC` for Marriott, `HY` for Hyatt.                                                                                               |
 | `property_id`               | `nullable string` | Property identifier. Examples: `gds.sabre:19835`, `gds.amadeus:BWNYCMQ`, `chain.marriott:NYCMQ`, `giata:17324`.                                                 |
 | `record_locator`            | `nullable string` | PNR or booking record locator.                                                                                                                                  |
 | `guests`                    | `nullable array`  | Array of [person](#person) objects.                                                                                                                             |
