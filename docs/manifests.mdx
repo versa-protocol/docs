@@ -47,7 +47,7 @@ curl -X POST https://custodial.versa.org/manifest \
 | `data` | `object` | Data, must validate against the Versa receipt schema |
 | `direct_account_id` | `nullable string` | The ID of the direct account this manifest is associated with. Defaults to the client's direct account. |
 | `dryrun` | `nullable boolean` | If `true`, evaluates the manifest without persisting it or triggering any actions. Defaults to `false` |
-| `event` | `string` | The event type that triggered this manifest (e.g. `booking`, `transaction`) |
+| `event` | `string` | The event type that triggered this manifest (e.g. `booking`) |
 | `handles` | `nullable TransactionHandles` | Optional transaction handles for routing any receipts |
 | `origin` | `nullable OriginDescription` | Optional identifier of the source object in your system that generated this manifest; can be used for updating the manifest record. |
 
@@ -96,7 +96,7 @@ The response contains the manifest ID, its state, and any actions that were trig
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `type` | `string` | The type of action (e.g. `receipt_retrieval`, `enrichment`) |
+| `type` | `string` | The type of action (e.g. `receipt_retrieval`, `receipt_forwarding`) |
 | `status` | `string` | The current status of the action (e.g. `pending`, `completed`) |
 
 ## Updating or Canceling a Manifest
