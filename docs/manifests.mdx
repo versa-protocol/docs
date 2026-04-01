@@ -38,11 +38,16 @@ curl -X POST https://custodial.versa.org/manifest \
         }
       },
       "itemization": {
-        "general": null,
         "lodging": {
           "check_in": 1787115600,
           "check_out": 1787288400,
-          "room": "0830",
+          "guests": [
+            {
+              "first_name": "Anna",
+              "last_name": "Chen",
+              "email": "anna.chen@acme.co"
+            }
+          ],
           "location": {
             "name": "Courtland Grand Hotel",
             "address": {
@@ -74,22 +79,7 @@ curl -X POST https://custodial.versa.org/manifest \
   }'
 ```
 
-This manifest tells Versa to retrieve the full folio from the Courtland Grand Hotel after the guest checks out on August 23. The API responds immediately with the manifest ID and a `pending` receipt retrieval action:
-
-```json
-{
-  "id": "man_abc123def456",
-  "state": "pending",
-  "actions": [
-    {
-      "type": "receipt_retrieval",
-      "status": "pending"
-    }
-  ]
-}
-```
-
----
+This manifest tells Versa to retrieve the full folio from the Courtland Grand Hotel after the guest checks out on August 23.
 
 ## API Reference
 
@@ -122,43 +112,13 @@ curl -X POST https://custodial.versa.org/manifest \
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `event` | `string` | Yes | The event type (e.g. `booking`, `transaction`). |
+| `event` | `string` | Yes | The event type (e.g. `booking`). |
 | `data` | `object` | Yes | Receipt data. Must validate against the [Versa receipt schema](/schema). |
 | `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the manifest later. |
 | `direct_account_id` | `string` | No | The direct account this manifest belongs to. Defaults to the client's own direct account. |
 | `dryrun` | `boolean` | No | If `true`, evaluates the manifest without persisting it or triggering any actions. Defaults to `false`. |
 
-#### Response
 
-The response confirms the manifest was created and lists any actions Versa has triggered.
-
-```json
-{
-  "id": "man_abc123def456",
-  "state": "pending",
-  "actions": [
-    {
-      "type": "receipt_retrieval",
-      "status": "pending"
-    }
-  ]
-}
-```
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | Unique identifier for the manifest (e.g. `man_abc123def456`). |
-| `state` | `string` | Current state: `pending`, `completed`, or `canceled`. |
-| `actions` | `Action[]` | Actions triggered by the manifest evaluation. |
-
-**Action**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `type` | `string` | The action type: `receipt_retrieval`, `receipt_forwarding`, etc. |
-| `status` | `string` | Current status: `pending` or `completed`. |
-
----
 
 ### Update or Cancel a Manifest
 
@@ -167,6 +127,31 @@ PUT https://custodial.versa.org/manifest
 ```
 
 You can update or cancel a manifest while it is still `pending`. This may prevent a charge for receipt retrieval. Identify the manifest by its `id` or by the `reference_id` you provided at creation.
+
+#### Example Request: Update a Manifest
+
+```bash
+curl -X PUT https://custodial.versa.org/manifest \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": "man_abc123def456",
+    "reference_id": "booking_123456789",
+    "data": {
+      "schema_version": "2.2.0",
+      "itemization": {
+        "lodging": {
+          "check_in": 1787315600,
+          "check_out": 1787488400,
+          ...
+        }
+        ...
+      }
+      ...
+    }'
+```
+
+#### Example Request: Cancel a Manifest
 
 ```bash
 curl -X PUT https://custodial.versa.org/manifest \
@@ -179,7 +164,7 @@ curl -X PUT https://custodial.versa.org/manifest \
   }'
 ```
 
----
+
 
 ## Webhooks
 
