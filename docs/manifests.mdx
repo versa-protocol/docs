@@ -4,72 +4,77 @@ title: "Manifests"
 
 # Manifests
 
-Manifests are a flexible feature for partners to enrich and send data over the Versa network.
+A manifest is a lightweight message you send to Versa when you have partial data about a transaction — like a hotel booking — but not the final receipt. Versa evaluates the manifest and, based on its contents, can retrieve the full receipt from the merchant, enrich the data, or forward it directly over the network.
 
-## Overview
+**Typical flow for hotel bookings:**
 
-Custodial clients may not always have a fully qualified receipt to send over the network.
-A client might have a booking or a card transaction, but not the full itemization or finalized payment details.
-In these cases, clients can create a **manifest**, which is a lightweight message containing the details they do have.
-Based on the contents of the manifest, Versa may kick off a receipt retrieval flow, merchant enrichment, or send the data directly over the network if it is already in a valid state (for example, in the case of a pre-paid flight).
+1. Your system receives a hotel booking (e.g. from a card authorization or travel platform).
+2. You create a manifest with whatever data you have — property name, dates, amount, etc.
+3. Versa evaluates the manifest and kicks off receipt retrieval from the hotel.
+4. When the receipt is ready, you receive a `manifest.action.completed` webhook.
 
-Manifests are exclusively managed via API using your custodial client credentials.
-
-## Creating a Manifest
-
-Specify as much data as possible to ensure the best possible outcome from the manifest evaluation.
+## Quick Example: Hotel Booking
 
 ```bash
 curl -X POST https://custodial.versa.org/manifest \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "data": {
-      ...
-    },
-    "direct_account_id: "acct_123456789",
-    "dryrun": false,
     "event": "booking",
-    "handles": {
-      "customer_email_domain": "acme.co"
-    },
-    "origin": {
-      "id": "booking_123456789",
-      "object": "booking",
+    "reference_id": "booking_123456789",
+    "data": {
+      "schema_version": "2.2.0",
+      "header": {
+        "invoice_number": "auth_1MzFN1K8F4fqH0lBmFq8CjbU",
+        "currency": "usd",
+        "total": 37000,
+        "subtotal": 37000,
+        "paid": 0,
+        "invoiced_at": 1787288400,
+        "location": {
+          "address": {
+            "tz": "America/New_York"
+          }
+        }
+      },
+      "itemization": {
+        "general": null,
+        "lodging": {
+          "check_in": 1787115600,
+          "check_out": 1787288400,
+          "room": "0830",
+          "location": {
+            "name": "Courtland Grand Hotel",
+            "address": {
+              "street_address": "165 Courtland Street NE",
+              "city": "Atlanta",
+              "region": "GA",
+              "country": "US",
+              "postal_code": "30303"
+            },
+            "phone": "+14046596500"
+          },
+          "items": [
+            {
+              "description": "Room Charge",
+              "amount": 18500,
+              "date": "2026-08-21"
+            },
+            {
+              "description": "Room Charge",
+              "amount": 18500,
+              "date": "2026-08-22"
+            }
+          ]
+        }
+      },
+      "payments": [],
+      "footer": {}
     }
   }'
 ```
 
-#### Request Parameters
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `data` | `object` | Data, must validate against the Versa receipt schema |
-| `direct_account_id` | `nullable string` | The ID of the direct account this manifest is associated with. Defaults to the client's direct account. |
-| `dryrun` | `nullable boolean` | If `true`, evaluates the manifest without persisting it or triggering any actions. Defaults to `false` |
-| `event` | `string` | The event type that triggered this manifest (e.g. `booking`) |
-| `handles` | `nullable TransactionHandles` | Optional transaction handles for routing any receipts |
-| `origin` | `nullable OriginDescription` | Optional identifier of the source object in your system that generated this manifest; can be used for updating the manifest record. |
-
-#### TransactionHandles
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `customer_email` | `nullable string` | The email address of the customer organization |
-| `customer_email_domain` | `nullable string` | The email domain of the customer's organization |
-
-#### OriginDescription
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | The authoritative identifier of the source object in your system |
-| `object` | `nullable string` | The model or type of the source object in your system |
-
-
-### Response
-The response contains the manifest ID, its state, and any actions that were triggered as a result of the manifest creation. For example, if the manifest data was sufficient to trigger a receipt retrieval flow, the response would indicate that with a pending `receipt_retrieval` action.
-
-### Example Response
+This manifest tells Versa to retrieve the full folio from the Courtland Grand Hotel after the guest checks out on August 23. The API responds immediately with the manifest ID and a `pending` receipt retrieval action:
 
 ```json
 {
@@ -84,41 +89,98 @@ The response contains the manifest ID, its state, and any actions that were trig
 }
 ```
 
-#### Response
+---
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | The unique identifier for the created manifest |
-| `state` | `string` | The current state of the manifest (e.g. `pending`, `completed`) |
-| `actions` | `Action[]` | List of actions triggered by the manifest evaluation |
+## API Reference
 
-#### Action
+Manifests are managed via API using your custodial client credentials.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `type` | `string` | The type of action (e.g. `receipt_retrieval`, `receipt_forwarding`) |
-| `status` | `string` | The current status of the action (e.g. `pending`, `completed`) |
+### Create a Manifest
 
-## Updating or Canceling a Manifest
+```
+POST https://custodial.versa.org/manifest
+```
 
-You may update or cancel manifests while they are in a pending state, which may prevent a charge for receipt retrieval.
-If you provided an `origin` when creating the manifest, you can use that to identify the manifest to update or cancel; otherwise, you can use the manifest ID returned in the creation response.
+Provide as much data as possible — the more complete the manifest, the better Versa can match and retrieve the receipt.
 
 ```bash
-curl -X PUT https://custodial.versa.org/manifest
+curl -X POST https://custodial.versa.org/manifest \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "id": "man_abc123def456",
-    "state": "canceled",
-    "origin": {
-      "id": "booking_123456789",
-      "object": "booking",
+    "event": "booking",
+    "reference_id": "booking_123456789",
+    "direct_account_id": "acct_123456789",
+    "dryrun": false,
+    "data": {
+      ...
     }
   }'
 ```
 
+#### Request Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `event` | `string` | Yes | The event type (e.g. `booking`, `transaction`). |
+| `data` | `object` | Yes | Receipt data. Must validate against the [Versa receipt schema](/schema). |
+| `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the manifest later. |
+| `direct_account_id` | `string` | No | The direct account this manifest belongs to. Defaults to the client's own direct account. |
+| `dryrun` | `boolean` | No | If `true`, evaluates the manifest without persisting it or triggering any actions. Defaults to `false`. |
+
+#### Response
+
+The response confirms the manifest was created and lists any actions Versa has triggered.
+
+```json
+{
+  "id": "man_abc123def456",
+  "state": "pending",
+  "actions": [
+    {
+      "type": "receipt_retrieval",
+      "status": "pending"
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Unique identifier for the manifest (e.g. `man_abc123def456`). |
+| `state` | `string` | Current state: `pending`, `completed`, or `canceled`. |
+| `actions` | `Action[]` | Actions triggered by the manifest evaluation. |
+
+**Action**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | `string` | The action type: `receipt_retrieval`, `receipt_forwarding`, etc. |
+| `status` | `string` | Current status: `pending` or `completed`. |
+
+---
+
+### Update or Cancel a Manifest
+
+```
+PUT https://custodial.versa.org/manifest
+```
+
+You can update or cancel a manifest while it is still `pending`. This may prevent a charge for receipt retrieval. Identify the manifest by its `id` or by the `reference_id` you provided at creation.
+
+```bash
+curl -X PUT https://custodial.versa.org/manifest \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": "man_abc123def456",
+    "reference_id": "booking_123456789",
+    "state": "canceled"
+  }'
+```
+
+---
+
 ## Webhooks
 
-Subscribe to the `manifest.action.completed` webhook to be notified when actions triggered by the manifest evaluation are completed. The webhook payload will include the manifest ID, the action type, and the results of the action.
-
+Subscribe to the `manifest.action.completed` event to be notified when an action finishes. The webhook payload includes the manifest ID, the action type, and the results.
