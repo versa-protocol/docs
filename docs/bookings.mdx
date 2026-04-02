@@ -8,10 +8,9 @@ A booking is a lightweight object you send to Versa when you may only have parti
 
 **Typical flow for hotel bookings:**
 
-1. Your system receives a hotel booking (e.g. from a card authorization or travel platform).
-2. You create a booking with whatever data you have — property name, dates, amount, etc.
-3. Versa evaluates the booking and kicks off receipt retrieval from the hotel.
-4. When the receipt is ready, you can view it in your dashboard or receive a webhook.
+1. Post a new booking with whatever data you have — property name, dates, amount, etc.
+2. Versa evaluates the booking and, after checkout, kicks off receipt retrieval from the hotel.
+3. When a receipt is ready, you can view it in your dashboard or receive a webhook.
 
 ## Quick Example: Hotel Booking
 
@@ -115,15 +114,13 @@ curl -X POST https://custodial.versa.org/booking \
 | `direct_account_id` | `string` | No | The direct account this booking belongs to. Defaults to the client's own direct account. |
 | `dryrun` | `boolean` | No | If `true`, evaluates the booking without persisting it or triggering any actions. Defaults to `false`. |
 
-
-
 ### Update a booking
 
 ```
 PUT https://custodial.versa.org/booking
 ```
 
-You can update a booking while it is still `booked`. Identify the booking by its `id` or by the `reference_id` you provided at creation.
+You can update a booking while it is still pending. Identify the booking by its `id` or by the `reference_id` you provided at creation.
 
 #### Example Request: Update a booking
 
@@ -148,14 +145,13 @@ curl -X PUT https://custodial.versa.org/booking \
     }'
 ```
 
-
 ### Cancel a booking
 
 ```
 DELETE https://custodial.versa.org/booking/{id}
 ```
 
-You can cancel a booking while it is still `booked`. This may prevent a charge for receipt retrieval. Identify the booking by its `id` or by the `reference_id` you provided at creation.
+You can cancel a booking while it is still pending. This may prevent a charge for receipt retrieval. Identify the booking by its `id` or by the `reference_id` you provided at creation.
 
 #### Example Request: Cancel a booking by Id
 
@@ -170,4 +166,3 @@ curl -X DELETE https://custodial.versa.org/booking/bkg_abc123def456 \
 curl -X DELETE https://custodial.versa.org/booking?reference_id=my_booking_123456789 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
-
