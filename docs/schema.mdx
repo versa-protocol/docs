@@ -12,12 +12,12 @@ A JSON Schema document and corresponding TypeScript Types are available [on GitH
 
 All primary event types share the same underlying schema structure, but differ in which fields are expected to be present. Specify the event type via the `event_type` parameter when sending via the custodial API or registering via the registry.
 
-| Event Type | Description |
-| ---------- | ----------- |
-| `receipt` | A completed transaction. Includes [`payments`](#payments) and `header.paid` is greater than zero. Receipts are the most common event type. |
-| `booking` | A pre-purchase reservation. Payments are not required, and `header.paid` is typically zero. Bookings are only valid for travel itemization types: `car_rental`, `flight`, `lodging`, or `transit_route`. |
-| `invoice` | An outstanding bill. Structurally identical to a receipt, but `header.paid` is less than `header.total`, indicating payment is still due. |
-| `itinerary` | Travel information without financial data. Excludes totals, taxes, and payments. Focused on travel details only — no e-commerce itemizations. See the [Itinerary Schema](/itinerary) for details. |
+| Event Type  | Description                                                                                                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `receipt`   | A completed transaction. Includes [`payments`](#payments). Receipts are the most common event type.                                                                                                |
+| `booking`   | A travel reservation. Payments are not required, and `header.paid` is typically zero. Bookings are only valid for travel itemization types: `car_rental`, `flight`, `lodging`, or `transit_route`. |
+| `invoice`   | An outstanding bill. Structurally identical to a receipt, but `header.paid` is less than `header.total`, indicating payment is still due.                                                          |
+| `itinerary` | Travel information without financial data. Excludes totals, taxes, and payments. Focused on travel details only. See the [Itinerary Schema](/itinerary) for details.                               |
 
 ## Sections
 
@@ -44,13 +44,13 @@ Schema objects are wrapped in a top-level envelope that includes the schema vers
 }
 ```
 
-| Field            | Type             | Description                                                       |
-| ---------------- | ---------------- | ----------------------------------------------------------------- |
-| `schema_version` | `string`         | Version of the schema; useful for validating the object.          |
-| `header`         | `object`         | [Header](#header).                                                |
-| `itemization`    | `object`         | [Itemization](#itemization) object.                               |
-| `payments`       | `nullable array` | List of [payments](#payments).                                    |
-| `footer`         | `object`         | The [footer](#footer) includes actions and supplemental text.     |
+| Field            | Type             | Description                                                   |
+| ---------------- | ---------------- | ------------------------------------------------------------- |
+| `schema_version` | `string`         | Version of the schema; useful for validating the object.      |
+| `header`         | `object`         | [Header](#header).                                            |
+| `itemization`    | `object`         | [Itemization](#itemization) object.                           |
+| `payments`       | `nullable array` | List of [payments](#payments).                                |
+| `footer`         | `object`         | The [footer](#footer) includes actions and supplemental text. |
 
 Below we cover each of these sections in detail.
 
@@ -75,20 +75,20 @@ The header provides a high-level view of the transaction, describing the "who," 
 }
 ```
 
-| Field              | Type              | Description                                                                                                         |
-| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.                 |
-| `subtotal`         | `integer`         | Subtotal (before taxes, fees, tip).                                                                                 |
-| `total`            | `integer`         | Total amount. In the currency specified and in the [smallest currency unit](#currency-values).                      |
-| `paid`             | `integer`         | Sum of all payments. Will equal `total` if paid in full; zero for bookings; less than `total` for invoices.         |
-| `invoiced_at`      | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                                    |
-| `invoice_number`   | `nullable string` | Unique identifier for the invoice / receipt.                                                                        |
-| `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
-| `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
-| `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
-| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                               |
-| `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                               |
-| `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                               |
+| Field              | Type              | Description                                                                                                 |
+| ------------------ | ----------------- | ----------------------------------------------------------------------------------------------------------- |
+| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.         |
+| `subtotal`         | `integer`         | Subtotal (before taxes, fees, tip).                                                                         |
+| `total`            | `integer`         | Total amount. In the currency specified and in the [smallest currency unit](#currency-values).              |
+| `paid`             | `integer`         | Sum of all payments. Will equal `total` if paid in full; zero for bookings; less than `total` for invoices. |
+| `invoiced_at`      | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                            |
+| `invoice_number`   | `nullable string` | Unique identifier for the invoice / receipt.                                                                |
+| `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                              |
+| `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                  |
+| `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                        |
+| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                       |
+| `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                       |
+| `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                       |
 
 <details>
 <summary>Third Party Object</summary>
