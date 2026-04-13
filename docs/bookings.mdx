@@ -111,7 +111,7 @@ curl -X POST https://custodial.versa.org/booking \
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `data` | `object` | Yes | Receipt data. Must validate against the [Versa schema](/receipt). |
+| `data` | `object` | Yes | Receipt data. Must validate against the [Versa schema](/schema). |
 | `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
 | `direct_account_id` | `string` | No | The direct account this booking belongs to. Defaults to the client's own direct account. |
 | `dryrun` | `boolean` | No | If `true`, evaluates the booking without persisting it or triggering any actions. Defaults to `false`. |
