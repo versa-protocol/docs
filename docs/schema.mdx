@@ -12,7 +12,7 @@ A JSON Schema document and corresponding TypeScript Types are available [on GitH
 
 All primary event types share the same underlying schema structure, but differ in which fields are expected to be present. The `event_type` is typically inferred from the data provided, but can be specified in the event registration payload.
 
-- **`receipt`**: A completed transaction. Includes [`payments`](#payments). Receipts are the most common event type.
+- **`receipt`**: A completed transaction. Includes [`payments`](#payments).
 - **`booking`**: A travel reservation. Payments are not required, and `header.paid` is typically zero. Bookings are only valid for travel itemization types: `car_rental`, `flight`, `lodging`, or `transit_route`.
 - **`invoice`**: An outstanding bill. Structurally identical to a receipt, but `header.paid` is less than `header.total`, indicating payment is still due.
 - **`itinerary`**: Travel information without financial data. Excludes totals, taxes, and payments. Focused on travel details only. See the [Itinerary Schema](/itinerary) for details.
