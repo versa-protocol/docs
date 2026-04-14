@@ -12,7 +12,7 @@ Before you can send your first receipt, you’ll need to [create an account](htt
 
 Then, as you make sales, you’ll check if the customers you’re selling to are registered to receive receipts. When Versa returns a positive customer match, you’ll send them the itemized receipt object. Only customers who have explicitly authorized access will receive receipts.
 
-The receipt object itself must conform to Versa’s [Receipt Schema](/receipt). The schema offers a range of formatting options, supporting the representation of different types of goods and services, from physical goods, to ground transportation, to subscriptions, etc. Configure your merchant name, logo, and brand color on the [profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [studio](https://app.versa.org/studio).
+The receipt object itself must conform to Versa’s [Versa Schema](/schema). The schema offers a range of formatting options, supporting the representation of different types of goods and services, from physical goods, to ground transportation, to subscriptions, etc. Configure your merchant name, logo, and brand color on the [profile](https://app.versa.org/profile) settings screen, and then prototype and preview your full, branded receipts in the [studio](https://app.versa.org/studio).
 
 ![A screenshot of the Versa Studio.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/studio_screenshot.png)
 
@@ -48,7 +48,7 @@ curl --request POST \
 
 Versa uses the customer handles you provide to determine if the receipt should be sent, and if so, where. Customers must explicitly authorize 'receivers' (e.g. the expense management app they use) to receive their receipts (see the [Receiving](/receiving) docs for details). When you complete a sale, you check if there are any matching authorized receivers. The receipt is only sent in the case that there is a positive match.
 
-For test sending, you can provide 'sandbox-firehose.versa.org' as the `customer_email_domain` handle, or provide a full `customer_email` with any username, e.g. 'jshmoe@sandbox-firehose.versa.org'. For the receipt, any valid Versa receipt will do; you can copy an example receipt from the [Receipt Schema](/receipt) documentation. Read the [testing](#testing-your-integration) section below for more details.
+For test sending, you can provide 'sandbox-firehose.versa.org' as the `customer_email_domain` handle, or provide a full `customer_email` with any username, e.g. 'jshmoe@sandbox-firehose.versa.org'. For the receipt, any valid Versa receipt will do; you can copy an example receipt from the [Versa Schema](/schema) documentation. Read the [testing](#testing-your-integration) section below for more details.
 
 Congratulations! You’ve sent your first receipt. 💥
 
@@ -208,7 +208,7 @@ This will associate the new receipt record with the original receipt.
 
 ## Canceling a Transaction
 
-To update a receipt or booking as canceled, an update event should be sent with an [empty itemization](/receipt#cancelations).
+To update a receipt or booking as canceled, an update event should be sent with an [empty itemization](/schema#cancelations).
 
 ## Registering Customers
 
@@ -216,7 +216,7 @@ In certain cases, senders may wish to proactively push their receipts to specifi
 
 ## Testing Your Integration
 
-You can test that your receipts are valid, according to the Versa JSON [Receipt Schema](/receipt), using the [Studio](https://app.versa.org/studio).
+You can test that your receipts are valid, according to the Versa JSON [Versa Schema](/schema), using the [Studio](https://app.versa.org/studio).
 
 Once you’re ready to send receipts, you can test your configuration by using test client credentials and our Sandbox Firehose Receiver. The Sandbox Firehose Receiver only accepts receipts sent via a test client, and exposes those receipts to any authorized user via the [Sandbox Firehose](https://app.versa.org/sandbox-firehose).
 

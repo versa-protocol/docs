@@ -9,7 +9,7 @@ title: "Changelog"
 - Added nullable `confirmation_number` and `record_locator` to both the `lodging` and `car_rental` objects
 - Added nullable `chain_code` and `property_id` to the `lodging` object
 - Added nullable `vendor_code` to the `car_rental` object
-- Added nullable `booker` ([Person](https://docs.versa.org/receipt#person) object) to the `customer` object
+- Added nullable `booker` ([Person](https://docs.versa.org/schema#person) object) to the `customer` object
 
 ## 2025-12-01 - Schema Version 2.1.1
 
@@ -60,7 +60,7 @@ The `2.0.0` update incorporates several points of customer feedback. It enables 
 
 ### Breaking Changes
 
-- `passenger` changes from a string to a new nullable `person` object (see the [Person documentation](/receipt#person) for details)
+- `passenger` changes from a string to a new nullable `person` object (see the [Person documentation](/schema#person) for details)
 - `metadata` is removed from flight tickets (and included in the `person` object)
 - `guests` is now an array of `person` objects
 - `current_period_start` and `current_period_end` have been renamed `current_period_start_at` and `current_period_end_at` for consistency

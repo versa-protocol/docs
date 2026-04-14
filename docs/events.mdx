@@ -4,7 +4,7 @@ title: "Events"
 
 # Events
 
-While the Versa protocol's main usecase is the transmission of receipts, other event types and associated payloads can be registered by the same mechanism.
+The Versa protocol supports several primary event types — receipts, bookings, invoices, and itineraries — all sharing the same underlying schema. Beyond these, additional secondary event types can be registered by the same mechanism for real-time updates and status changes.
 
 Register a specific type of event and filter receivers by the specific transaction data you are prepared to send.
 This allows senders to target only receivers that are interested in specific event types (receipts, itineraries, etc.) and are prepared to handle the corresponding data payload.
@@ -18,8 +18,15 @@ The transaction event filtering feature allows you to specify which type of even
 
 Currently supported event types:
 
-- **`itinerary`** - Itinerary data events containing travel booking information
-- **`receipt`** - Receipt data events containing purchase/transaction details (a superset of itinerary data)
+**Primary event types** — all use the [Versa schema](/schema):
+
+- **`receipt`** - A completed transaction with payment. The most common event type.
+- **`booking`** - A pre-purchase reservation; payment not required. Valid for travel itemization types only (`car_rental`, `flight`, `lodging`, `transit_route`).
+- **`invoice`** - An outstanding bill where payment is still due (`header.paid` < `header.total`).
+- **`itinerary`** - Travel information without financial data. See the [Itinerary Schema](/itinerary).
+
+**Secondary (update) event types** — reference an existing transaction:
+
 - **`transit_route.status.updated`** - Updates to the status of a transit route
 - **`transit_route.location.updated`** - Updates to the location of a transit route
 
@@ -46,7 +53,7 @@ curl -X POST https://registry.versa.org/register \
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `event_type` | `string` | **Optional.** Filter receivers by transaction event type. Valid values: `"receipt"`, `"itinerary"` |
+| `event_type` | `string` | **Optional.** Filter receivers by transaction event type. Valid values: `"receipt"`, `"booking"`, `"invoice"`, `"itinerary"` |
 
 When `event_type` is provided, only receivers that have registered to handle the specified event type will be included in the response.
 If the `event_type` parameter is not specified, it is assumed that a fully qualified receipt is available according to the Versa schema,
@@ -77,9 +84,37 @@ Note that receivers in the response will only include those configured to handle
 
 Beyond receipts, events can be leveraged to send additional or alternative representations of the data.
 
+### Bookings
+
+When a reservation is confirmed but payment has not yet been collected (e.g., a hotel hold), send a `booking` event. Bookings are valid for travel itemization types only: `car_rental`, `flight`, `lodging`, or `transit_route`.
+
+```json
+{
+  "event_type": "booking",
+  "schema_version": "2.2.0",
+  "handles": {
+    "customer_email": "traveler@company.com"
+  }
+}
+```
+
+### Invoices
+
+When payment is outstanding — e.g., a net-30 bill — send an `invoice` event. The schema is identical to a receipt, but `header.paid` will be less than `header.total`.
+
+```json
+{
+  "event_type": "invoice",
+  "schema_version": "2.2.0",
+  "handles": {
+    "customer_email": "client@company.com"
+  }
+}
+```
+
 ### Itineraries
 
-When sending travel booking confirmations that do not have payment details attached, you can register an `itinerary` event:
+When sending travel confirmations without payment details attached, you can register an `itinerary` event. See the [Itinerary Schema](/itinerary) for the reduced field set.
 
 ```json
 {
@@ -96,7 +131,7 @@ This targets only travel management and duty-of-care receivers, excluding genera
 
 ## Update Events
 
-After an initial `receipt` or `itinerary` has been posted, you can send update events.
+After an initial primary event (`receipt`, `booking`, `invoice`, or `itinerary`) has been posted, you can send update events.
 
 ```json
 {
@@ -134,7 +169,7 @@ Event Type: `transit_route.status.updated`
 | Field | Type | Description |
 |-------|------|-------------|
 | `status` | `enum` | One of `departed` or `arrived`. |
-| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original receipt or itinerary. If left null, it should be interpreted as `0`. |
+| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original event. If left null, it should be interpreted as `0`. |
 | `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
 
 
@@ -162,7 +197,7 @@ Event Type: `transit_route.location.updated`
 |-------|------|-------------|
 | `lat` | `number` | Latitude, represented as a floating point number. |
 | `lon` | `number` | Longitude, represented as a floating point number. |
-| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original receipt or itinerary. If left null, it should be interpreted as `0`. |
+| `transit_route_item_index` | `nullable integer` | The ordered index of the route item to be updated from the original event. If left null, it should be interpreted as `0`. |
 | `updated_at` | `integer` | The timestamp of the update, measured in seconds since the Unix epoch. |
 
 

@@ -1,27 +1,38 @@
 ---
-title: "Receipt Schema"
+title: "Versa Schema"
 ---
 
-# Receipt Schema
+# Versa Schema
 
-Itemized receipts are the core data model of Versa. They include both “header” information — the merchant name, merchant logo, total purchase amount, purchase date, etc. — as well as “line item” details — the quantity, description, and cost of each item purchased.
-
-Technically, the Versa receipt object is an “invoice” combined with an associated payment. In certain pre-purchase scenarios, the invoice and the payment are decoupled, however in most Versa cases, the invoice and payment confirmation come through together, composing the complete receipt in a single payload.
+The Versa schema is the core data model for structured transaction records in the Versa protocol. Schema objects include "header" information — the merchant name, merchant logo, total amount, transaction date, etc. — as well as "line item" details — the quantity, description, and cost of each item purchased.
 
 A JSON Schema document and corresponding TypeScript Types are available [on GitHub](https://github.com/versa-protocol/schema/blob/main/data/receipt.schema.json) or via the [@versa/schema](https://www.npmjs.com/package/@versa/schema) package.
 
-Versa receipts are composed of four sections:
+## Event Types
 
-1. [**Header**](#header): Top-level fields, e.g. merchant details, receipt total, purchase date.
-2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe special receipt types, e.g. flight, e-commerce purchase, service.
-3. [**Footer**](#footer): Optional merchant-defined actions, pivoting off the purchase, and supplemental text. For example: ‘Contact Support,’ ‘Buy Again,’ ‘Manage Subscription.’
-4. [**Payments**](#payments): Payment status and details.
+All primary event types share the same underlying schema structure, but differ in which fields are expected to be present. The `event_type` is typically inferred from the data provided, but can be specified in the event registration payload.
+
+| Event Type  | Description                                                                                                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `receipt`   | A completed transaction. Includes [`payments`](#payments). Receipts are the most common event type.                                                                                                |
+| `booking`   | A travel reservation. Payments are not required, and `header.paid` is typically zero. Bookings are only valid for travel itemization types: `car_rental`, `flight`, `lodging`, or `transit_route`. |
+| `invoice`   | An outstanding bill. Structurally identical to a receipt, but `header.paid` is less than `header.total`, indicating payment is still due.                                                          |
+| `itinerary` | Travel information without financial data. Excludes totals, taxes, and payments. Focused on travel details only. See the [Itinerary Schema](/itinerary) for details.                               |
+
+## Sections
+
+Schema objects are composed of four sections:
+
+1. [**Header**](#header): Top-level fields, e.g. merchant details, totals, transaction date.
+2. [**Itemization**](#itemization): Description, quantity, unit cost, and total for each line item. Type-specific templates describe different purchase types, e.g. flight, e-commerce purchase, service.
+3. [**Footer**](#footer): Optional merchant-defined actions, pivoting off the purchase, and supplemental text. For example: 'Contact Support,' 'Buy Again,' 'Manage Subscription.'
+4. [**Payments**](#payments): Payment status and details. Required for `receipt` and `invoice` event types; omitted for `itinerary`; optional for `booking`.
 
 ![Rough diagram of receipt elements.](https://raw.githubusercontent.com/versa-protocol/docs/main/assets/receipt_structure.png)
 
 ## Wrapper
 
-Receipts are wrapped in an object that includes the schema version. The overall Versa receipt structure looks like this:
+Schema objects are wrapped in a top-level envelope that includes the schema version:
 
 ```json
 {
@@ -33,19 +44,19 @@ Receipts are wrapped in an object that includes the schema version. The overall 
 }
 ```
 
-| Field            | Type             | Description                                                       |
-| ---------------- | ---------------- | ----------------------------------------------------------------- |
-| `schema_version` | `string`         | Version of the receipt schema; useful for validating the receipt. |
-| `header`         | `object`         | Receipt [header](#header).                                        |
-| `itemization`    | `object`         | Receipt [itemization](#itemization) object.                       |
-| `payments`       | `nullable array` | List of [payments](#payments).                                    |
-| `footer`         | `object`         | The [footer](#footer) includes actions and supplemental text.     |
+| Field            | Type             | Description                                                   |
+| ---------------- | ---------------- | ------------------------------------------------------------- |
+| `schema_version` | `string`         | Version of the schema; useful for validating the object.      |
+| `header`         | `object`         | [Header](#header).                                            |
+| `itemization`    | `object`         | [Itemization](#itemization) object.                           |
+| `payments`       | `nullable array` | List of [payments](#payments).                                |
+| `footer`         | `object`         | The [footer](#footer) includes actions and supplemental text. |
 
 Below we cover each of these sections in detail.
 
 ## Header
 
-The receipt header is the 10,000 foot view of the transaction, describing the “who,” “when,” and “where” (the “what” is covered in the itemization section). An example receipt header:
+The header provides a high-level view of the transaction, describing the "who," "when," and "where" (the "what" is covered in the itemization section). An example header:
 
 ```json
 "header": {
@@ -64,20 +75,20 @@ The receipt header is the 10,000 foot view of the transaction, describing the �
 }
 ```
 
-| Field              | Type              | Description                                                                                                         |
-| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.                 |
-| `subtotal`         | `integer`         | Receipt subtotal (before taxes, fees, tip).                                                                         |
-| `total`            | `integer`         | Receipt total amount. This amount is in the receipt currency and in the [smallest currency unit](#currency-values). |
-| `paid`             | `integer`         | Sum of all payments. Will equal `total` if the invoice is paid in full.                                             |
-| `invoiced_at`      | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                                    |
-| `invoice_number`   | `nullable string` | Unique identifier for the invoice / receipt.                                                                        |
-| `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                                      |
-| `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                          |
-| `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                                |
-| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                               |
-| `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                               |
-| `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                               |
+| Field              | Type              | Description                                                                                                 |
+| ------------------ | ----------------- | ----------------------------------------------------------------------------------------------------------- |
+| `currency`         | `string`          | A lowercase [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) currency code, e.g. `usd`.         |
+| `subtotal`         | `integer`         | Subtotal (before taxes, fees, tip).                                                                         |
+| `total`            | `integer`         | Total amount. In the currency specified and in the [smallest currency unit](#currency-values).              |
+| `paid`             | `integer`         | Sum of all payments. Will equal `total` if paid in full; zero for bookings; less than `total` for invoices. |
+| `invoiced_at`      | `integer`         | Time at which the invoice was created. Measured in seconds since the Unix epoch.                            |
+| `invoice_number`   | `nullable string` | Unique identifier for the invoice / receipt.                                                                |
+| `mcc`              | `nullable string` | Merchant Category Code. This value should match the value on the card network.                              |
+| `third_party`      | `nullable object` | [Third party](#third-party) involved in the transaction, where applicable.                                  |
+| `customer`         | `nullable object` | [Customer](#customer) involved in the transaction, where applicable.                                        |
+| `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                       |
+| `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                       |
+| `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                       |
 
 <details>
 <summary>Third Party Object</summary>
@@ -85,7 +96,7 @@ The receipt header is the 10,000 foot view of the transaction, describing the �
 
 ### Third Party
 
-Use the optional third party object in cases where the sender is a platform / broker. For example, if a coffee shop uses Square to process sales, the ‘sending merchant’ would be Square and the ‘third party merchant’ would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
+Use the optional third party object in cases where the sender is a platform / broker. For example, if a coffee shop uses Square to process sales, the 'sending merchant' would be Square and the 'third party merchant' would be the coffee shop. The `make_primary` flag specifies whether the sending merchant or the third party merchant should get top billing on the receipt.
 
 | Field          | Type              | Description                                                                                         |
 | -------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
@@ -120,6 +131,9 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 ## Itemization
 
 The Itemization section describes the goods and services that compose the purchase. Based on the type of purchase, the object conforms to one of seven templates: [General](#general), [Car Rental](#car-rental), [E-commerce](#e-commerce), [Flight](#flight), [Lodging](#lodging), [Service](#service), or [Transit Route](#transit-route). Exactly one itemization template must be non-null. When in doubt, use the 'general' template.
+
+> [!NOTE]
+> For `booking` event types, only the travel itemization types are valid: `car_rental`, `flight`, `lodging`, or `transit_route`. For `itinerary` event types, `general` and `ecommerce` are also excluded. See the [Itinerary Schema](/itinerary) for the full itinerary itemization spec.
 
 ```json
 "itemization": {
@@ -214,7 +228,7 @@ View a complete [car rental receipt](https://versa.org/studio?sender=generic&rec
 
 ### E-commerce
 
-For online orders, with shipping info. If items have not been assigned to a shipment, add those items to `invoice_level_line_items`. Once they’ve been assigned to a shipment, move them to `shipment.items`. View a complete [E-commerce receipt](https://versa.org/studio?sender=generic&receipt=ecommerce) example.
+For online orders, with shipping info. If items have not been assigned to a shipment, add those items to `invoice_level_line_items`. Once they've been assigned to a shipment, move them to `shipment.items`. View a complete [E-commerce receipt](https://versa.org/studio?sender=generic&receipt=ecommerce) example.
 
 | Field                       | Type    | Description                                                                                                                                                     |
 | --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -267,7 +281,7 @@ View a complete [flight receipt](https://versa.org/studio?sender=generic&receipt
 | Field                    | Type               | Description                                                                                                          |
 | ------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | `departure_airport_code` | `string`           | The three-letter IATA airport code that the flight departed from.                                                    |
-| `arrival_airport_code`   | `string`           | The three-letter IATA airport code of the flight’s destination.                                                      |
+| `arrival_airport_code`   | `string`           | The three-letter IATA airport code of the flight's destination.                                                      |
 | `fare`                   | `nullable integer` | Should be included, unless `fare` is on the parent ticket object instead.                                            |
 | `taxes`                  | `array`            | Array of [tax](#tax) objects.                                                                                        |
 | `departure_at`           | `nullable integer` | Departure time. Measured in seconds since the Unix epoch.                                                            |
@@ -465,10 +479,10 @@ A route, typically used by rideshare / taxi services, or rail / bus / ferry / et
 
 ### Actions
 
-Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant’s website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions per receipt.
+Merchants have the option to provide useful next actions in the Actions section. An action is typically a deep link to a page within the merchant's website. For example 'Buy Again' might deep link to a pre-filled shopping cart. There is a limit of three actions.
 
 > [!NOTE]
-> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Authoritative social media sites like Instagram and Facebook are also common. Action URLs that don’t share a domain with the sending merchant, and aren’t to an authoritative site, may be filtered by the receiver.
+> For security reasons, we recommend that the action urls share the same domain as the sending merchant, wherever possible. Authoritative social media sites like Instagram and Facebook are also common. Action URLs that don't share a domain with the sending merchant, and aren't to an authoritative site, may be filtered by the receiver.
 
 ```JSON
 "actions": [
@@ -546,7 +560,7 @@ Merchants have the option to provide useful next actions in the Actions section.
 
 ## Primitives
 
-Foundational objects used in a variety of locations within the receipt schema.
+Foundational objects used throughout the schema.
 
 <details>
 <summary>Org Primitive</summary>
@@ -809,7 +823,7 @@ To be used for discounts, tip, fees, surcharges, tolls.
 
 ### Currency Values
 
-All API requests expect amounts to be provided in a currency’s smallest unit. For example, to represent 10 USD, provide an amount value of 1000 (that is, 1000 cents). For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to represent ¥500, provide an amount value of 500.
+All API requests expect amounts to be provided in a currency's smallest unit. For example, to represent 10 USD, provide an amount value of 1000 (that is, 1000 cents). For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100. For example, to represent ¥500, provide an amount value of 500.
 
 ### Images
 
