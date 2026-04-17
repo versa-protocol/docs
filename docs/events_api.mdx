@@ -114,7 +114,10 @@ curl -X POST https://custodial.versa.org/events \
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `data` | `object` | Yes | Event data. Must validate against the [Versa schema](/schema). |
-| `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
+| `event_type` | `optional enum` | No | One of 'receipt', 'invoice', 'booking', or 'itinerary'. |
+| `handles` | `optional object` | No | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
+| `reference_id` | `optional string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
+| `transaction_id` | `optional string` | No | The parent identifier of a previous event, if updating an existing arrangement. |
 
 ### Update a transaction
 
