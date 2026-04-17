@@ -19,6 +19,10 @@ curl -X POST https://custodial.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
+    "event_type": "booking",
+    "handles": {
+      "customer_email": "joe@acme.com"
+    },
     "reference_id": "my_booking_123456789",
     "data": {
       "schema_version": "2.2.0",
@@ -85,7 +89,7 @@ This event tells Versa to retrieve the full folio from the Courtland Grand Hotel
 
 Events are managed via API using your custodial client credentials.
 
-### Create a event
+### Create an event
 
 ```
 POST https://custodial.versa.org/events
@@ -112,22 +116,21 @@ curl -X POST https://custodial.versa.org/events \
 | `data` | `object` | Yes | Event data. Must validate against the [Versa schema](/schema). |
 | `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
 
-### Update an event
+### Update a transaction
 
 ```
-PUT https://custodial.versa.org/events
+POST https://custodial.versa.org/events
 ```
 
-You can update a event while it is still in an active lifecycle state. Identify the event by its `id` or by the `reference_id` you provided at creation.
+You can update a transaction while it is still in an active lifecycle state. Events are considered immutable; so you update the booking by posting a new event associated with the Versa `transaction_id` or by the original `reference_id` from your system.
 
-#### Example Request: Update an event
+#### Example Request: Update a booking
 
 ```bash
-curl -X PUT https://custodial.versa.org/events \
+curl -X POST https://custodial.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "id": "bkg_abc123def456",
     "reference_id": "my_booking_123456789",
     "data": {
       "schema_version": "2.2.0",
@@ -143,24 +146,24 @@ curl -X PUT https://custodial.versa.org/events \
     }'
 ```
 
-### Cancel an event
+### Cancel a transaction
 
 ```
-DELETE https://custodial.versa.org/events/{id}
+DELETE https://custodial.versa.org/transactions/{id}
 ```
 
-You can cancel an event while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `id` or by the `reference_id` you provided at creation.
+You can cancel a transaction while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `id` or by the `reference_id` you provided at creation.
 
 #### Example Request: Cancel an event by Id
 
 ```bash
-curl -X DELETE https://custodial.versa.org/events/evt_abc123def456 \
+curl -X DELETE https://custodial.versa.org/transactions/txn_abc123def456 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
 
-#### Example Request: Cancel an event by Reference Id
+#### Example Request: Cancel a transaction by Reference Id
 
 ```bash
-curl -X DELETE https://custodial.versa.org/events?reference_id=my_booking_123456789 \
+curl -X DELETE https://custodial.versa.org/transactions?reference_id=my_booking_123456789 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
