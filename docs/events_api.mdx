@@ -24,7 +24,7 @@ curl -X POST https://custodial.versa.org/events \
       "merchant_group_code": "CUSTOMER_CODE_XYZ",
       "customer_email": "joe@acme.com"
     },
-    "reference_id": "my_booking_123456789",
+    "merchant_transaction_id": "my_booking_123456789",
     "data": {
       "schema_version": "2.2.0",
       "header": {
@@ -103,7 +103,7 @@ curl -X POST https://custodial.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "reference_id": "my_booking_123456789",
+    "merchant_transaction_id": "my_booking_123456789",
     "data": {
       ...
     }
@@ -117,7 +117,7 @@ curl -X POST https://custodial.versa.org/events \
 | `data` | `object` | Yes | Event data. Must validate against the [Versa schema](/schema). |
 | `event_type` | `optional enum` | No | One of 'receipt', 'invoice', 'booking', or 'itinerary'. |
 | `handles` | `optional object` | No | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
-| `reference_id` | `optional string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
+| `merchant_transaction_id` | `optional string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
 | `transaction_id` | `optional string` | No | The parent identifier of a previous event, if updating an existing arrangement. |
 
 ### Update a transaction
@@ -126,7 +126,7 @@ curl -X POST https://custodial.versa.org/events \
 POST https://custodial.versa.org/events
 ```
 
-You can update a transaction while it is still in an active lifecycle state. Events are considered immutable; so you update the booking by posting a new event associated with the Versa `transaction_id` or by the original `reference_id` from your system.
+You can update a transaction while it is still in an active lifecycle state. Events are considered immutable; so you update the booking by posting a new event associated with the Versa `transaction_id` or by the original `merchant_transaction_id` from your system.
 
 #### Example Request: Update a booking
 
@@ -135,7 +135,7 @@ curl -X POST https://custodial.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "reference_id": "my_booking_123456789",
+    "merchant_transaction_id": "my_booking_123456789",
     "data": {
       "schema_version": "2.2.0",
       "itemization": {
@@ -156,7 +156,7 @@ curl -X POST https://custodial.versa.org/events \
 DELETE https://custodial.versa.org/transactions/{id}
 ```
 
-You can cancel a transaction while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `id` or by the `reference_id` you provided at creation.
+You can cancel a transaction while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `id` or by the `merchant_transaction_id` you provided at creation.
 
 #### Example Request: Cancel an event by Id
 
@@ -168,6 +168,6 @@ curl -X DELETE https://custodial.versa.org/transactions/txn_abc123def456 \
 #### Example Request: Cancel a transaction by Reference Id
 
 ```bash
-curl -X DELETE https://custodial.versa.org/transactions?reference_id=my_booking_123456789 \
+curl -X DELETE https://custodial.versa.org/transactions?merchant_transaction_id=my_booking_123456789 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
