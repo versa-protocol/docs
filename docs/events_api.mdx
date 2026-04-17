@@ -158,14 +158,14 @@ DELETE https://custodial.versa.org/transactions/{transaction_id}
 
 You can cancel a transaction while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `transaction_id` or by the `merchant_transaction_id` you provided at creation.
 
-#### Example Request: Cancel an event by Transaction Id
+#### Example Request: Cancel a transaction by `transaction_id`
 
 ```bash
 curl -X DELETE https://custodial.versa.org/transactions/txn_abc123def456 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
 
-#### Example Request: Cancel a transaction by Reference Id
+#### Example Request: Cancel a transaction by `merchant_transaction_id`
 
 ```bash
 curl -X DELETE https://custodial.versa.org/transactions?merchant_transaction_id=my_booking_123456789 \
