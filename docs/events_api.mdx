@@ -1,0 +1,168 @@
+---
+title: "Events API"
+---
+
+# Events API
+
+Custodial clients may post [events](/events) directly to Versa; Versa evaluates the event contents and will enrich the data, forward it directly over the network, or queue retrieval of the full receipt from the merchant.
+
+**Typical flow for hotel bookings:**
+
+1. Post a new booking with whatever data you have — property name, dates, amount, etc.
+2. Versa evaluates the booking and, after checkout, kicks off receipt retrieval from the hotel.
+3. When a receipt is ready, you can view it in your dashboard or receive a webhook.
+
+## Quick Example: Hotel Booking
+
+```bash
+curl -X POST https://custodial.versa.org/events \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "reference_id": "my_booking_123456789",
+    "data": {
+      "schema_version": "2.2.0",
+      "header": {
+        "invoice_number": "auth_1MzFN1K8F4fqH0lBmFq8CjbU",
+        "currency": "usd",
+        "total": 37000,
+        "subtotal": 37000,
+        "paid": 0,
+        "invoiced_at": 1787288400,
+        "location": {
+          "address": {
+            "tz": "America/New_York"
+          }
+        }
+      },
+      "itemization": {
+        "lodging": {
+          "check_in": 1787115600,
+          "check_out": 1787288400,
+          "confirmation_number": "123456789",
+          "chain_code": "WD",
+          "guests": [
+            {
+              "first_name": "Anna",
+              "last_name": "Chen",
+              "email": "anna.chen@acme.co"
+            }
+          ],
+          "location": {
+            "name": "Courtland Grand Hotel",
+            "address": {
+              "street_address": "165 Courtland Street NE",
+              "city": "Atlanta",
+              "region": "GA",
+              "country": "US",
+              "postal_code": "30303"
+            },
+            "phone": "+14046596500"
+          },
+          "items": [
+            {
+              "description": "Room Charge",
+              "amount": 18500,
+              "date": "2026-08-21"
+            },
+            {
+              "description": "Room Charge",
+              "amount": 18500,
+              "date": "2026-08-22"
+            }
+          ]
+        }
+      },
+      "payments": [],
+      "footer": {}
+    }
+  }'
+```
+
+This event tells Versa to retrieve the full folio from the Courtland Grand Hotel after the guest checks out on August 23.
+
+## API Reference
+
+Events are managed via API using your custodial client credentials.
+
+### Create a event
+
+```
+POST https://custodial.versa.org/events
+```
+
+Provide as much data as possible — the more complete the booking, the better Versa can match and retrieve the receipt.
+
+```bash
+curl -X POST https://custodial.versa.org/events \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "reference_id": "my_booking_123456789",
+    "direct_account_id": "acct_123456789",
+    "dryrun": false,
+    "data": {
+      ...
+    }
+  }'
+```
+
+#### Request Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `data` | `object` | Yes | Event data. Must validate against the [Versa schema](/schema). |
+| `reference_id` | `string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
+
+### Update an event
+
+```
+PUT https://custodial.versa.org/events
+```
+
+You can update a event while it is still in an active lifecycle state. Identify the event by its `id` or by the `reference_id` you provided at creation.
+
+#### Example Request: Update an event
+
+```bash
+curl -X PUT https://custodial.versa.org/events \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": "bkg_abc123def456",
+    "reference_id": "my_booking_123456789",
+    "data": {
+      "schema_version": "2.2.0",
+      "itemization": {
+        "lodging": {
+          "check_in": 1787315600,
+          "check_out": 1787488400,
+          ...
+        }
+        ...
+      }
+      ...
+    }'
+```
+
+### Cancel an event
+
+```
+DELETE https://custodial.versa.org/events/{id}
+```
+
+You can cancel an event while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `id` or by the `reference_id` you provided at creation.
+
+#### Example Request: Cancel an event by Id
+
+```bash
+curl -X DELETE https://custodial.versa.org/events/evt_abc123def456 \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
+
+#### Example Request: Cancel an event by Reference Id
+
+```bash
+curl -X DELETE https://custodial.versa.org/events?reference_id=my_booking_123456789 \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
