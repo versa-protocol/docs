@@ -112,13 +112,13 @@ curl -X POST https://custodial.versa.org/events \
 
 #### Request Parameters
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `data` | `object` | Yes | Event data. Must validate against the [Versa schema](/schema). |
-| `event_type` | `optional enum` | No | One of 'receipt', 'invoice', 'booking', or 'itinerary'. |
-| `handles` | `optional object` | No | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
-| `merchant_transaction_id` | `optional string` | No | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
-| `transaction_id` | `optional string` | No | The parent identifier of a previous event, if updating an existing arrangement. |
+| Field | Type | Description |
+|-------|------|-------------|
+| `data` | `object` | Event data. Must validate against the [Versa schema](/schema). |
+| `event_type` | `nullable enum` | One of 'receipt', 'invoice', 'booking', or 'itinerary'. |
+| `handles` | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
+| `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel the booking later. |
+| `transaction_id` | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. |
 
 ### Update a transaction
 
