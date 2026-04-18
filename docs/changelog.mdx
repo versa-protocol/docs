@@ -4,6 +4,12 @@ title: "Changelog"
 
 # Changelog
 
+## 2026-04-18 - Protocol Update
+
+- Migrated event ID generation in the registry from `uuidv4` to `uuidv7` to improve sortability and traceability, conforming to the [typeid spec](https://github.com/jetify-com/typeid/tree/main/spec)
+
+Already issued IDs will continue to be valid and accepted by the registry, but all new objects will be issued v7-based typeids.
+
 ## 2026-03-18 - Schema Version 2.2.0
 
 - Added nullable `confirmation_number` and `record_locator` to both the `lodging` and `car_rental` objects
