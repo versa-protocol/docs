@@ -33,18 +33,19 @@ You’re now ready to send your first receipt. Add your `CLIENT_ID`, `CLIENT_SEC
 
 ```bash
 curl --request POST \
-  --url 'https://custodial.versa.org/send' \
+  --url 'https://custodial.versa.org/events' \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
-    "event_data": { ... },
     "event_type": "receipt",
     "handles": {
       "customer_email": "jshmoe@sandbox-firehose.versa.org"
     },
-    "schema_version": "2.3.0"
+    "data": { ... }
   }'
 ```
+
+See the [Events API](/events_api) reference for the full set of request parameters.
 
 Versa uses the customer handles you provide to determine if the receipt should be sent, and if so, where. Customers must explicitly authorize 'receivers' (e.g. the expense management app they use) to receive their receipts (see the [Receiving](/receiving) docs for details). When you complete a sale, you check if there are any matching authorized receivers. The receipt is only sent in the case that there is a positive match.
 
@@ -245,16 +246,15 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url 'https://custodial.versa.org/send' \
+  --url 'https://custodial.versa.org/events' \
   --header 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   --header 'Content-Type: application/json' \
   --data '{
-    "event_data": { ... },
     "event_type": "receipt",
     "handles": {
       "customer_email_domain": "sandbox-firehose.versa.org"
     },
-    "schema_version": "2.3.0"
+    "data": { ... }
   }'
 ```
 
