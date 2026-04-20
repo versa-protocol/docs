@@ -4,9 +4,13 @@ title: "Webhooks"
 
 # Webhooks
 
-Webhooks are how receiver clients consume Versa events.
+Webhooks are how Versa clients consume asynchronous events.
+Receivers use webhooks to be notified of new encrypted data and customer lifecycle events,
+and senders use webhooks to track the progress of receipt retrievals they have requested.
 
 ## Supported Events
+
+### Receiver events
 
 | Event                             | Description                                                                             |
 | --------------------------------- | --------------------------------------------------------------------------------------- |
@@ -16,6 +20,17 @@ Webhooks are how receiver clients consume Versa events.
 | `itinerary.decrypted`             | As above, the custodial event for itineraries.                                          |
 | `customer.registered_by_sender`   | An event triggered to the receiver client upon sender registration.                     |
 | `customer.deregistered_by_sender` | An event triggered to the receiver client upon sender deregistration.                   |
+
+### Sender events
+
+These events correspond to the lifecycle of a receipt retrieval requested via the [Receipt Retrieval API](/receipt_retrieval_api).
+
+| Event                            | Description                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `receipt_retrieval.scheduled`    | A receipt retrieval process has been scheduled for a transaction.                                                        |
+| `receipt_retrieval.initiated`    | A receipt retrieval has started running for a transaction.                                                               |
+| `receipt_retrieval.completed`    | A receipt was successfully attached to the transaction.                                                                  |
+| `receipt_retrieval.failed`       | The receipt retrieval process for a transaction concluded unsuccessfully and will not be automatically retried.          |
 
 ## Using Webhooks
 
@@ -85,6 +100,42 @@ and take the following format:
 }
 ```
 
+
+## Receipt Retrieval Events
+
+Senders who use the [Receipt Retrieval API](/receipt_retrieval_api) can subscribe to receipt retrieval events to track the progress of each attempted retrieval.
+Every event in this family carries the `card_transaction_id` and `retrieval_id` associated with the original request.
+
+The `receipt_retrieval.scheduled`, `receipt_retrieval.initiated`, and `receipt_retrieval.failed` events share the following shape:
+
+```json
+{
+  "event": "receipt_retrieval.scheduled",
+  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+  "event_at": 1739315358,
+  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
+  "delivery_at": 1739315358,
+  "data": {
+    "merchant_transaction_id": "your_booking_id"
+  }
+}
+```
+
+The `receipt_retrieval.completed` event additionally includes a URL to the retrieved file:
+
+```json
+{
+  "event": "receipt_retrieval.completed",
+  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+  "event_at": 1739315358,
+  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
+  "delivery_at": 1739315358,
+  "data": {
+    "merchant_transaction_id": "your_booking_id",
+    "receipt_url": "https://storage.googleapis.com/..."
+  }
+}
+```
 
 ## API Reference
 
