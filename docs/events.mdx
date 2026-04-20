@@ -42,7 +42,7 @@ curl -X POST https://registry.versa.org/register \
   -H 'Content-Type: application/json' \
   -d '{
     "event_type": "receipt",
-    "schema_version": "2.2.0",
+    "schema_version": "2.3.0",
     "handles": {
       "customer_email_domain": "acme.co"
     }
@@ -91,7 +91,7 @@ When a reservation is confirmed but payment has not yet been collected (e.g., a 
 ```json
 {
   "event_type": "booking",
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "handles": {
     "customer_email": "traveler@company.com"
   }
@@ -105,7 +105,7 @@ When payment is outstanding — e.g., a net-30 bill — send an `invoice` event.
 ```json
 {
   "event_type": "invoice",
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "handles": {
     "customer_email": "client@company.com"
   }
@@ -119,7 +119,7 @@ When sending travel confirmations without payment details attached, you can regi
 ```json
 {
   "event_type": "itinerary",
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "handles": {
     "customer_email": "traveler@company.com",
     "merchant_group_code": "ABC789Z1"
@@ -136,7 +136,7 @@ After an initial primary event (`receipt`, `booking`, `invoice`, or `itinerary`)
 ```json
 {
   "event_type": "transit_route.status.updated",
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "transaction_id": "txn_6b408ba7406b4754b7b7d287e0ca9fdf"
 }
 ```

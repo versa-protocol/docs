@@ -4,6 +4,14 @@ title: "Changelog"
 
 # Changelog
 
+## 2026-04-20 - Schema Version 2.3.0
+
+- Added nullable `trip` object (`id`, `name`, `description`) to the `header`, for grouping related transactions under a broader trip
+- Added nullable `lifecycle_status` enum to the `header`, with values `active`, `canceled`, or `refunded`
+- Added nullable `booked_at` timestamp to the `header`
+- Added dedicated [`booking`](/booking) and `invoice` event schemas
+- Made `odometer_reading_in` and `odometer_reading_out` optional on the `car_rental` object
+
 ## 2026-04-18 - Protocol Update
 
 - Migrated event ID generation in the registry from `uuidv4` to `uuidv7` to improve sortability and traceability, conforming to the [typeid spec](https://github.com/jetify-com/typeid/tree/main/spec)

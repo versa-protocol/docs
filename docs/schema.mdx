@@ -34,7 +34,7 @@ Schema objects are wrapped in a top-level envelope that includes the schema vers
 
 ```json
 {
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "header": { ... },
   "itemization": { ... },
   "payments": [ ... ],
@@ -87,6 +87,9 @@ The header provides a high-level view of the transaction, describing the "who," 
 | `location`         | `nullable object` | [Place](#place) object for the merchant. Also where you can set the primary timezone.                       |
 | `invoice_asset_id` | `nullable string` | [Asset](/assets) id of uploaded invoice PDF or image.                                                       |
 | `receipt_asset_id` | `nullable string` | [Asset](/assets) id of uploaded receipt PDF or image.                                                       |
+| `booked_at`        | `nullable integer`| Time at which the transaction was booked. Measured in seconds since the Unix epoch.                         |
+| `trip`             | `nullable object` | Optional [trip](#trip) grouping — for associating the transaction with a broader trip.                      |
+| `lifecycle_status` | `nullable enum`   | One of `active`, `canceled`, or `refunded`. Used to communicate the current state of the transaction.       |
 
 <details>
 <summary>Third Party Object</summary>
@@ -122,6 +125,23 @@ Used in cases where the merchant has a profile for the customer. Can be left nul
 | `phone`    | `nullable string` | Phone number in the [E.164 format](https://en.wikipedia.org/wiki/E.164).              |
 | `booker`   | `nullable object` | A [person](#person) object for the person who arranged the purchase (booked, bought). |
 | `metadata` | `array`           | Array of [metadata](#metadata) objects, for any additional info.                      |
+
+</article>
+</details>
+
+<details>
+<summary>Trip Object</summary>
+<article>
+
+### Trip
+
+Optional grouping used to associate a transaction with a broader trip (e.g. a multi-leg itinerary composed of flight, lodging, and car rental transactions). All fields are optional — include whichever are useful for your use case.
+
+| Field         | Type              | Description                       |
+| ------------- | ----------------- | --------------------------------- |
+| `id`          | `nullable string` | Stable identifier for the trip.   |
+| `name`        | `nullable string` | Human-readable trip name.         |
+| `description` | `nullable string` | Optional longer trip description. |
 
 </article>
 </details>
@@ -830,7 +850,7 @@ To mark a transaction as canceled, an update event should be sent with an empty 
 
 ```JSON
 {
-  "schema_version": "2.2.0",
+  "schema_version": "2.3.0",
   "header": {
     "invoiced_at": 1713295619,
     "currency": "usd",

@@ -23,10 +23,13 @@ Itineraries use the same top-level wrapper as the [Versa schema](/schema#wrapper
 
 The header mirrors the [schema header](/schema#header), but with all financial info (totals, etc.) removed.
 
-| Field         | Type              | Description                                                                       |
-| ------------- | ----------------- | --------------------------------------------------------------------------------- |
-| `third_party` | `nullable object` | [Third party](/schema#third-party) involved in the transaction, where applicable. |
-| `customer`    | `nullable object` | [Customer](/schema#customer) involved in the transaction, where applicable.       |
+| Field              | Type               | Description                                                                                           |
+| ------------------ | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `third_party`      | `nullable object`  | [Third party](/schema#third-party) involved in the transaction, where applicable.                     |
+| `customer`         | `nullable object`  | [Customer](/schema#customer) involved in the transaction, where applicable.                           |
+| `booked_at`        | `nullable integer` | Time at which the itinerary was booked. Measured in seconds since the Unix epoch.                     |
+| `trip`             | `nullable object`  | Optional [trip](/schema#trip) grouping — for associating the itinerary with a broader trip.           |
+| `lifecycle_status` | `nullable enum`    | One of `active`, `canceled`, or `refunded`. Used to communicate the current state of the itinerary.   |
 
 ## Itemization
 
