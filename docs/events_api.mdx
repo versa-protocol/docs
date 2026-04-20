@@ -22,64 +22,46 @@ curl -X POST https://custodial.versa.org/events \
     "event_type": "booking",
     "handles": {
       "merchant_group_code": "CUSTOMER_CODE_XYZ",
-      "customer_email": "joe@acme.com"
+      "customer_email": "sdoe@acme.com"
     },
     "merchant_transaction_id": "my_booking_123456789",
     "data": {
-      "schema_version": "2.2.0",
+      "schema_version": "2.3.0",
       "header": {
-        "invoice_number": "auth_1MzFN1K8F4fqH0lBmFq8CjbU",
         "currency": "usd",
-        "total": 37000,
-        "subtotal": 37000,
-        "paid": 0,
-        "invoiced_at": 1787288400,
-        "location": {
-          "address": {
-            "tz": "America/New_York"
-          }
+        "total": 39488,
+        "booked_at": 1713295619,
+        "customer": {
+          "name": "Acme Co"
         }
       },
       "itemization": {
         "lodging": {
-          "check_in": 1787115600,
-          "check_out": 1787288400,
-          "confirmation_number": "123456789",
-          "chain_code": "WD",
-          "guests": [
-            {
-              "first_name": "Anna",
-              "last_name": "Chen",
-              "email": "anna.chen@acme.co"
-            }
-          ],
+          "check_in": 1721667600,
+          "check_out": 1721840400,
+          "confirmation_number": "74358222",
+          "chain_code": "FN",
+          "property_id": "tmc.amtrav:prop_847392",
           "location": {
-            "name": "Courtland Grand Hotel",
+            "name": "Fairfield Inn & Suites by Marriott Atlanta Kennesaw",
             "address": {
-              "street_address": "165 Courtland Street NE",
-              "city": "Atlanta",
+              "street_address": "3425 Busbee Drive",
+              "city": "Kennesaw",
               "region": "GA",
               "country": "US",
-              "postal_code": "30303"
+              "postal_code": "30144",
+              "lat": null,
+              "lon": null
             },
-            "phone": "+14046596500"
+            "phone": "+17704279700"
           },
-          "items": [
-            {
-              "description": "Room Charge",
-              "amount": 18500,
-              "date": "2026-08-21"
-            },
-            {
-              "description": "Room Charge",
-              "amount": 18500,
-              "date": "2026-08-22"
-            }
-          ]
+          "guests": [{
+            "first_name": "Susan",
+            "last_name": "Doe",
+            "email": "sdoe@acme.com"
+          }]
         }
-      },
-      "payments": [],
-      "footer": {}
+      }
     }
   }'
 ```
@@ -112,13 +94,13 @@ curl -X POST https://custodial.versa.org/events \
 
 #### Request Parameters
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `data` | `object` | Event data. Must validate against the [Versa schema](/schema). |
-| `event_type` | `nullable enum` | One of 'receipt', 'invoice', 'booking', or 'itinerary'. |
-| `handles` | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
-| `transaction_id` | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later. |
-| `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel later. |
+| Field                     | Type              | Description                                                                                                                                       |
+| ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`                    | `object`          | Event data. Must validate against the [Versa schema](/schema).                                                                                    |
+| `event_type`              | `nullable enum`   | One of 'receipt', 'invoice', 'booking', or 'itinerary'.                                                                                           |
+| `handles`                 | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
+| `transaction_id`          | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later.                               |
+| `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel later.                                     |
 
 ### Update a transaction
 
