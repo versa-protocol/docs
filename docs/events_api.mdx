@@ -14,6 +14,7 @@ Custodial clients may post [events](/events) directly to Versa; Versa evaluates 
 
 ## Quick Example: Hotel Booking
 
+<CodeWrap title="cURL Example">
 ```bash
 curl -X POST https://custodial.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
@@ -65,6 +66,7 @@ curl -X POST https://custodial.versa.org/events \
     }
   }'
 ```
+</CodeWrap>
 
 This event tells Versa to retrieve the full folio from the Courtland Grand Hotel after the guest checks out on August 23.
 
