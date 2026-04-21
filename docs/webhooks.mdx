@@ -18,8 +18,6 @@ and senders use webhooks to track the progress of receipt retrievals they have r
 | `receipt.decrypted`               | The event received by custodial clients at their remote endpoint.                       |
 | `itinerary`                       | The encrypted payload for an itinerary event, which excludes payment data.              |
 | `itinerary.decrypted`             | As above, the custodial event for itineraries.                                          |
-| `customer.registered_by_sender`   | An event triggered to the receiver client upon sender registration.                     |
-| `customer.deregistered_by_sender` | An event triggered to the receiver client upon sender deregistration.                   |
 
 ### Sender events
 
@@ -75,31 +73,6 @@ and then posts a separate webhook event to your remote endpoint, in the followin
   }
 }
 ```
-
-## Customer Events
-
-The `customer.registered_by_sender` and `customer.deregistered_by_sender` events are sent to receivers when a sender registers or deregisters a customer,
-and take the following format:
-
-```json
-{
-  "event": "customer.registered_by_sender",
-  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
-  "event_at": 1739315358,
-  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
-  "delivery_at": 1739315358,
-  "data": {
-    "sender": { ... },
-    "references": [
-      {
-        "handle": "example.com",
-        "handle_type": "customer_email_domain"
-      }
-    ]
-  }
-}
-```
-
 
 ## Receipt Retrieval Events
 
