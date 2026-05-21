@@ -79,7 +79,7 @@ and then posts a separate webhook event to your remote endpoint, in the followin
 Senders who use the [Receipt Retrieval API](/receipt_retrieval_api) can subscribe to receipt retrieval events to track the progress of each attempted retrieval.
 Every event in this family carries the `card_transaction_id` and `retrieval_id` associated with the original request.
 
-The `receipt_retrieval.scheduled`, `receipt_retrieval.initiated`, and `receipt_retrieval.failed` events share the following shape:
+The `receipt_retrieval.scheduled` and `receipt_retrieval.initiated` events share the following shape:
 
 ```json
 {
@@ -89,6 +89,7 @@ The `receipt_retrieval.scheduled`, `receipt_retrieval.initiated`, and `receipt_r
   "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
   "delivery_at": 1739315358,
   "data": {
+    "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
     "merchant_transaction_id": "your_booking_id"
   }
 }
@@ -104,11 +105,40 @@ The `receipt_retrieval.completed` event additionally includes a URL to the retri
   "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
   "delivery_at": 1739315358,
   "data": {
+    "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
     "merchant_transaction_id": "your_booking_id",
     "receipt_file_url": "https://storage.googleapis.com/..."
   }
 }
 ```
+
+And `receipt_retrieval.failed` includes a `failure_code`.
+
+```json
+{
+  "event": "receipt_retrieval.completed",
+  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+  "event_at": 1739315358,
+  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
+  "delivery_at": 1739315358,
+  "data": {
+    "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
+    "merchant_transaction_id": "your_booking_id",
+    "failure_code": "no_show"
+  }
+}
+```
+
+### Failure Codes
+
+The following are our currently supported receipt retrieval failure codes. This list may be updated or expanded; it is not guaranteed to be exhaustive.
+
+| Code                      | Description                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `no_response`             | The property did not respond to retrieval attempts.                          |
+| `no_show`                 | The customer did not show up for the booking                                 |
+| `property_could_not_find` | The property was unable to locate the booking.                               |
+| `property_refused`        | The property declined to provide the receipt.                                |
 
 ## API Reference
 
