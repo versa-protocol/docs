@@ -97,7 +97,7 @@ curl -X POST https://custodial.versa.org/events \
 
 | Field                     | Type              | Description                                                                                                                                       |
 | ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data`                    | `object`          | Event data. Must validate against the [Versa schema](/schema).                                                                                    |
+| `data`                    | `object`          | Event data. Must validate against the Versa schema, e.g. [Booking Schema](/booking)].                                                             |
 | `event_type`              | `nullable enum`   | One of 'receipt', 'invoice', 'booking', or 'itinerary'.                                                                                           |
 | `handles`                 | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
 | `transaction_id`          | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later.                               |
