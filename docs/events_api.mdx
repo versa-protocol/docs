@@ -9,8 +9,8 @@ Custodial clients may post [events](/events) directly to Versa; Versa evaluates 
 **Typical flow for hotel bookings:**
 
 1. Post a new booking with whatever data you have — property name, dates, amount, etc.
-2. Versa evaluates the booking and, after checkout, kicks off receipt retrieval from the hotel.
-3. When a receipt is ready, you can view it in your dashboard or receive a webhook.
+2. Versa evaluates the booking and, after checkout, kicks off receipt retrieval from the merchant / hotel.
+3. When a receipt is ready, you can view it in your dashboard or receive a [webhook](/webhooks).
 
 ## Quick Example: Hotel Booking
 
@@ -42,7 +42,6 @@ curl -X POST https://custodial.versa.org/events \
           "check_out": 1721840400,
           "confirmation_number": "74358222",
           "chain_code": "FN",
-          "property_id": "tmc.amtrav:prop_847392",
           "location": {
             "name": "Fairfield Inn & Suites by Marriott Atlanta Kennesaw",
             "address": {
