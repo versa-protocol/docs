@@ -1,0 +1,25 @@
+---
+title: "No Active Billing Contract"
+---
+
+# No Active Billing Contract
+
+Versa returns this error with status `402 Payment Required` and code `no_active_contract`.
+
+This error means there is no active billing agreement for your organization. It usually means a contract period has expired without renewal, and can happen automatically at the end of a pilot or trial period.
+
+## Example Response
+
+```json
+{
+  "type": "https://docs.versa.org/errors/no-active-contract",
+  "title": "No active billing contract",
+  "status": 402,
+  "code": "no_active_contract",
+  "detail": "This account does not have an active billing contract. Update your billing details or renew your contract to restore access."
+}
+```
+
+## How to Resolve
+
+Update your billing details or renew your contract, or contact us at support@versa.org. Rejected requests are not recorded, so resend them once your contract is active.
