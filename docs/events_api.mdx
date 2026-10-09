@@ -103,6 +103,10 @@ curl -X POST https://custodial.versa.org/events \
 | `transaction_id`          | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later.                               |
 | `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel later.                                     |
 
+#### Errors
+
+If your organization has no active billing contract, `POST /events` returns `402 Payment Required` with code `no_active_contract`. See [No Active Billing Contract](/errors/no-active-contract).
+
 ### Update a transaction
 
 ```
