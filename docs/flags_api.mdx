@@ -16,8 +16,8 @@ curl -X POST https://api.versa.org/flags \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
-    "kind": "booking",
-    "id": "bkg_7f3a2c1e9b4d4e6f8a1b2c3d4e5f6a7b",
+    "identifier_key": "merchant_transaction_id",
+    "identifier_value": "my_booking_123456789",
     "notes": "The folio is missing the second night."
   }'
 ```
@@ -45,25 +45,38 @@ Every error on this API is a JSON object with a single `error` message.
 POST https://api.versa.org/flags
 ```
 
-Tell Versa what you were looking at and what is wrong with it. The record is resolved to the transaction it belongs to, and the flag is raised against that transaction.
+Name the transaction by one of the two ids you already hold for it and say what is wrong. These are the same two ids every [webhook](/webhooks) event carries: the Versa `transaction_id` returned when you posted the event, or the `merchant_transaction_id` you supplied with it.
 
 #### Request Parameters
 
-| Field   | Type     | Description                                                                                                                              |
-| ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `kind`  | `enum`   | What `id` identifies: `booking`, `card_transaction`, or `direct_transaction`.                                                            |
-| `id`    | `string` | The id of that record, as Versa reports it (for example the `direct_transaction_id` on a `receipt.retrieval.completed` webhook).         |
-| `notes` | `string` | What is wrong, in your words. Trimmed; between 1 and 255 characters.                                                                     |
+| Field              | Type     | Description                                                                                                             |
+| ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `identifier_key`   | `enum`   | Which id `identifier_value` is: `transaction_id` or `merchant_transaction_id`.                                          |
+| `identifier_value` | `string` | That id's value, for example `txn_555raszzb2esgvra33qn9kyw6t` or `my_booking_123456789`.                                |
+| `notes`            | `string` | What is wrong, in your words. Trimmed; between 1 and 255 characters.                                                    |
+
+#### Example Request: Flag by Versa `transaction_id`
+
+```bash
+curl -X POST https://api.versa.org/flags \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "identifier_key": "transaction_id",
+    "identifier_value": "txn_555raszzb2esgvra33qn9kyw6t",
+    "notes": "The receipt attached is for a different guest."
+  }'
+```
 
 #### Response
 
 `201 Created` with the flag in the same shape as a list item (below). Its `status` starts as `open`.
 
-| Status | Meaning                                                                                                   |
-| ------ | --------------------------------------------------------------------------------------------------------- |
-| `400`  | `notes` is empty or too long.                                                                             |
-| `404`  | The record does not exist, does not belong to your organization, or has been deleted.                     |
-| `409`  | The record is not linked to a transaction yet, or the transaction already has a flag awaiting resolution. |
+| Status | Meaning                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `400`  | `notes` is empty or too long, or `identifier_value` is blank.                                                                        |
+| `404`  | No transaction of your organization carries that id, or it has been deleted.                                                         |
+| `409`  | The transaction already has a flag awaiting resolution, or the id matches more than one transaction (a reused `merchant_transaction_id`). |
 
 A transaction carries one open flag at a time. Add to the open one through the portal rather than raising a second.
 
