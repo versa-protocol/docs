@@ -1,0 +1,158 @@
+---
+title: "Flags API"
+---
+
+# Flags API
+
+Sometimes a receipt Versa retrieved is not the one you expected: a folio that is missing a night, a receipt attached to the wrong booking, a total that does not match the charge. The Flags API lets you raise an issue flag against a transaction from your own systems, exactly as a user would with the "Flag Issue" button in the Versa portal, and read back the status of every flag your team has raised while Versa reviews and resolves it.
+
+The Flags API is served at `https://api.versa.org/flags` and uses the same client credentials as the [Events API](/events_api).
+
+## Quick Example: Flag a booking
+
+<CodeWrap title="cURL Example">
+```bash
+curl -X POST https://api.versa.org/flags \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "kind": "booking",
+    "id": "bkg_7f3a2c1e9b4d4e6f8a1b2c3d4e5f6a7b",
+    "notes": "The folio is missing the second night."
+  }'
+```
+</CodeWrap>
+
+Versa reviews the flag, corrects the document where it can, and records the outcome. You can read the outcome back at any time with `GET /flags`, or watch for it in the portal.
+
+## Authentication
+
+Every request carries your client credentials in an `Authorization` header using the Basic scheme, either as the raw pair or base64-encoded:
+
+```
+Authorization: Basic CLIENT_ID:CLIENT_SECRET
+```
+
+Any client credential of your organization works, whether it was created as a sender or a receiver, in test or production mode. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
+
+Every error on this API is a JSON object with a single `error` message.
+
+## API Reference
+
+### Raise a flag
+
+```
+POST https://api.versa.org/flags
+```
+
+Tell Versa what you were looking at and what is wrong with it. The record is resolved to the transaction it belongs to, and the flag is raised against that transaction.
+
+#### Request Parameters
+
+| Field   | Type     | Description                                                                                                                              |
+| ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `kind`  | `enum`   | What `id` identifies: `booking`, `card_transaction`, or `direct_transaction`.                                                            |
+| `id`    | `string` | The id of that record, as Versa reports it (for example the `direct_transaction_id` on a `receipt.retrieval.completed` webhook).         |
+| `notes` | `string` | What is wrong, in your words. Trimmed; between 1 and 255 characters.                                                                     |
+
+#### Response
+
+`201 Created` with the flag in the same shape as a list item (below). Its `status` starts as `open`.
+
+| Status | Meaning                                                                                                   |
+| ------ | --------------------------------------------------------------------------------------------------------- |
+| `400`  | `notes` is empty or too long.                                                                             |
+| `404`  | The record does not exist, does not belong to your organization, or has been deleted.                     |
+| `409`  | The record is not linked to a transaction yet, or the transaction already has a flag awaiting resolution. |
+
+A transaction carries one open flag at a time. Add to the open one through the portal rather than raising a second.
+
+### List flags
+
+```
+GET https://api.versa.org/flags
+```
+
+Your organization's flags, newest first. By default only active flags are returned: those still awaiting resolution.
+
+#### Query Parameters
+
+| Parameter                 | Type      | Description                                                                                                        |
+| ------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `active`                  | `boolean` | `true` (default) returns flags awaiting resolution; `false` returns every flag.                                     |
+| `status`                  | `enum`    | Exactly one status: `open`, `in_review`, `corrected`, `failed`, or `no_action`. Overrides `active`.                 |
+| `direct_transaction_id`   | `string`  | Only flags on the transaction with this Versa id.                                                                  |
+| `transaction_id`          | `string`  | Only flags on the transaction with this Versa network `transaction_id` (as returned when you posted the event).     |
+| `merchant_transaction_id` | `string`  | Only flags on the transaction you identified with this id when you posted the event.                               |
+| `limit`                   | `integer` | Page size, 1 to 100. Default 10.                                                                                   |
+| `page`                    | `integer` | Zero-based page index. Default 0.                                                                                  |
+
+#### Example Request: Flags on one of your bookings
+
+```bash
+curl 'https://api.versa.org/flags?merchant_transaction_id=my_booking_123456789&active=false' \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
+
+#### Response
+
+```json
+{
+  "items": [
+    {
+      "id": "flg_2b1c9d8e7f6a4b5c8d9e0f1a2b3c4d5e",
+      "status": "corrected",
+      "triage_state": "incomplete_document",
+      "resolution_state": "corrected",
+      "notes": "The folio is missing the second night.",
+      "resolution_notes": "Re-requested the folio from the property; the full stay is now attached.",
+      "raised_by_actor_type": "client",
+      "created": 1760371200,
+      "transaction": {
+        "direct_transaction_id": "dtx_9c8b7a6d5e4f4a3b2c1d0e9f8a7b6c5d",
+        "transaction_id": "txn_abc123def456",
+        "merchant_transaction_id": "my_booking_123456789",
+        "kind": "booking",
+        "merchant_name": "Courtland Grand Hotel",
+        "description": "COURTLAND GRAND HOTEL ATLANTA",
+        "amount": 39488,
+        "currency": "usd",
+        "booking_id": "bkg_7f3a2c1e9b4d4e6f8a1b2c3d4e5f6a7b",
+        "property_name": "Courtland Grand Hotel",
+        "travel_start_date": "2026-08-21",
+        "travel_end_date": "2026-08-23",
+        "guest_name": "Susan Doe"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 0,
+  "page_size": 10,
+  "total_pages": 1,
+  "has_more": false
+}
+```
+
+#### Flag fields
+
+| Field                  | Type              | Description                                                                                                   |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| `id`                   | `string`          | The flag's id.                                                                                                |
+| `status`               | `enum`            | Where the flag is in review: `open`, `in_review`, `corrected`, `failed`, or `no_action`. See below.            |
+| `triage_state`         | `enum`            | What review concluded: `pending`, `working_as_intended`, `incomplete_document`, or `incorrect_document`.      |
+| `resolution_state`     | `enum`            | How the flag was closed out: `pending`, `corrected`, `failed`, or `no_action`.                                 |
+| `notes`                | `string`          | What was reported.                                                                                            |
+| `resolution_notes`     | `nullable string` | Versa's account of what was done, once resolved.                                                              |
+| `raised_by_actor_type` | `enum`            | `client` for a flag raised through this API, `user` for one raised in the portal.                             |
+| `created`              | `integer`         | When the flag was raised, in Unix seconds.                                                                    |
+| `transaction`          | `object`          | The transaction the flag was raised against: its ids, what backs it (`kind`), the merchant, the amount in minor units with its ISO currency, and the booking's property, travel dates and guest where there is one. |
+
+#### Statuses
+
+| Status       | Meaning                                                                              |
+| ------------ | ------------------------------------------------------------------------------------ |
+| `open`       | Raised, not yet reviewed. Active.                                                    |
+| `in_review`  | Reviewed; Versa is working on a fix. Active.                                         |
+| `corrected`  | The problem was fixed.                                                               |
+| `failed`     | The problem could not be fixed; `resolution_notes` says why.                         |
+| `no_action`  | Review found the document and transaction as they should be; nothing to fix.         |
