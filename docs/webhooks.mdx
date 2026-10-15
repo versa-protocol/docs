@@ -124,16 +124,16 @@ The `receipt_retrieval.completed` event is sent each time a receipt is attached 
 
 #### Completed event fields
 
-| Field                 | Type            | Description                                                                                                                                                   |
-| --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `receipts`            | `array`         | Every receipt on the transaction, newest first, including the one that triggered this event. Each item is a file object (below).                              |
-| `receipts[].file_id`  | `string`        | The file's id. Use it with the [Files API](/files_api) to fetch a fresh URL or the extracted receipt data at any later time.                                  |
-| `receipts[].url`      | `string`        | A signed download URL, valid for 15 minutes from delivery. Retries carry freshly signed URLs.                                                                 |
-| `receipts[].size`     | `integer`       | File size in bytes.                                                                                                                                           |
-| `receipts[].filetype` | `string`        | The file's MIME type, for example `application/pdf`.                                                                                                          |
-| `receipts[].created`  | `integer`       | When the file was stored, in Unix seconds.                                                                                                                    |
-| `receipt_file_url`    | `string`        | The `url` of the receipt that triggered this event. Kept for integrations that predate `receipts`; new integrations should read `receipts`.                   |
-| `booking_disposition` | `nullable enum` | `completed`, `canceled` or `no_show`: what became of the booking as far as Versa knows when the receipt arrived. `null` when there is no booking to describe. |
+| Field                 | Type            | Description                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `receipts`            | `array`         | Every receipt on the transaction, newest first, including the one that triggered this event. Each item is a file object (below).                                                                                                                                                                                             |
+| `receipts[].file_id`  | `string`        | The file's id. Use it with the [Files API](/files_api) to fetch a fresh URL or the extracted receipt data at any later time. A receipt Versa collected from your corporate card provider is listed here only when it triggered the event; the Files API answers `404` for it, so save it from `url` while the link is valid. |
+| `receipts[].url`      | `string`        | A signed download URL, valid for 15 minutes from delivery. Retries carry freshly signed URLs.                                                                                                                                                                                                                                |
+| `receipts[].size`     | `integer`       | File size in bytes.                                                                                                                                                                                                                                                                                                          |
+| `receipts[].filetype` | `string`        | The file's MIME type, for example `application/pdf`.                                                                                                                                                                                                                                                                         |
+| `receipts[].created`  | `integer`       | When the file was stored, in Unix seconds.                                                                                                                                                                                                                                                                                   |
+| `receipt_file_url`    | `string`        | The `url` of the receipt that triggered this event. Kept for integrations that predate `receipts`; new integrations should read `receipts`.                                                                                                                                                                                  |
+| `booking_disposition` | `nullable enum` | `completed`, `canceled` or `no_show`: what became of the booking as far as Versa knows when the receipt arrived. `null` if Versa could not determine it; treat as unknown.                                                                                                                                                   |
 
 A transaction that receives a second receipt (a corrected folio, say) fires a second `receipt_retrieval.completed` whose `receipts` lists both.
 
@@ -166,7 +166,7 @@ The following are our currently supported receipt retrieval failure codes. This 
 | `property_could_not_find` | The property was unable to locate the booking.                                                               |
 | `property_refused`        | The property declined to provide the receipt.                                                                |
 | `skip_permanently`        | Versa stopped retrieval for this transaction; it was not worth pursuing (for example, a zero-amount charge). |
-| `third_party_billing`     | The stay was billed to a third party, so no receipt is owed to you.                                          |
+| `third_party_billing`     | The stay was billed to a third party.                                                                        |
 
 ## API Reference
 
