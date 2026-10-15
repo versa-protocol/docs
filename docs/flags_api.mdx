@@ -119,7 +119,7 @@ curl 'https://api.versa.org/flags?merchant_transaction_id=my_booking_123456789&a
       "resolution_state": "corrected",
       "notes": "The folio is missing the second night.",
       "resolution_notes": "Re-requested the folio from the property; the full stay is now attached.",
-      "raised_by_actor_type": "client",
+      "raised_by_actor_type": "org",
       "created": 1760371200,
       "transaction": {
         "direct_transaction_id": "dtx_9c8b7a6d5e4f4a3b2c1d0e9f8a7b6c5d",
@@ -156,7 +156,7 @@ curl 'https://api.versa.org/flags?merchant_transaction_id=my_booking_123456789&a
 | `resolution_state`     | `enum`            | How the flag was closed out: `pending`, `corrected`, `failed`, or `no_action`.                                 |
 | `notes`                | `string`          | What was reported.                                                                                            |
 | `resolution_notes`     | `nullable string` | Versa's account of what was done, once resolved.                                                              |
-| `raised_by_actor_type` | `enum`            | `client` for a flag raised through this API, `user` for one raised in the portal.                             |
+| `raised_by_actor_type` | `enum`            | `org` for a flag raised through this API (your organization, via its client credential), `user` for one raised in the portal. |
 | `created`              | `integer`         | When the flag was raised, in Unix seconds.                                                                    |
 | `transaction`          | `object`          | The transaction the flag was raised against: its ids, what backs it (`kind`), the merchant, the amount in minor units with its ISO currency, and the booking's property, travel dates and guest where there is one. |
 
