@@ -4,7 +4,7 @@ title: "Files API"
 
 # Files API
 
-Every receipt Versa attaches to one of your transactions is a file. The [`receipt_retrieval.completed` webhook](/webhooks) lists those files, each with a signed download URL that expires after 15 minutes. The Files API lets you come back to any of them later: fetch a fresh download URL for a file, or the receipt data Versa extracted from it, in the Versa receipt schema.
+Every receipt Versa attaches to one of your transactions is a file. The [`receipt_retrieval.completed` webhook](/webhooks) lists those files, each with a signed download URL that expires after 15 minutes. The Files API lets you come back to them later (except receipts collected from your corporate card provider): fetch a fresh download URL for a file, or the receipt data Versa extracted from it, in the Versa receipt schema.
 
 The Files API is served at `https://api.versa.org/files` and uses the same client credentials as the [Events API](/events_api) and the [Flags API](/flags_api).
 
@@ -27,7 +27,7 @@ Every request carries your client credentials in an `Authorization` header using
 Authorization: Basic CLIENT_ID:CLIENT_SECRET
 ```
 
-Any client credential of your organization, production or test, will be accepted; it reads the same files either way. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
+Any client credential of your organization, production or test, will be accepted; it reads the same files either way. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`; this applies to both routes of this API.
 
 Every error on this API is a JSON object with a single `error` message. A file that is not yours, or that does not exist, answers `404` with `{"error": "Not found"}`; the two cases are deliberately indistinguishable.
 
@@ -70,10 +70,10 @@ curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \
 | `filetype` | `string`  | The file's MIME type, for example `application/pdf`.           |
 | `created`  | `integer` | When the file was stored, in Unix seconds.                     |
 
-| Status | Meaning                                            |
-| ------ | -------------------------------------------------- |
-| `404`  | No file of your organization has that id.          |
-| `503`  | Versa could not reach file storage; retry shortly. |
+| Status | Meaning                                                                                                |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| `404`  | No file of your organization has that id, or the file was collected from your corporate card provider. |
+| `503`  | Versa could not read the file or reach file storage; retry shortly.                                    |
 
 ### Get a file's extracted data
 
@@ -111,18 +111,33 @@ curl 'https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs/extracted_data
       "subtotal": 34000,
       "paid": 39488,
       "invoice_number": "H2513284",
-      "invoiced_at": 1789776000,
-      "location": {
-        "name": "Courtland Grand Hotel"
-      }
+      "invoiced_at": 1789776000
     },
     "itemization": {
-      "lodging": { ... }
+      "lodging": {
+        "check_in": 1789776000,
+        "check_out": 1789948800,
+        "location": {
+          "name": "Courtland Grand Hotel"
+        },
+        "items": [
+          {
+            "description": "Room 1204",
+            "amount": 34000,
+            "quantity": 2,
+            "unit_cost": 17000,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
-    "payments": []
+    "payments": [],
+    "footer": {}
   }
 }
 ```
+
+The example is abridged: it shows one line item and leaves out the optional fields a receipt may carry.
 
 #### Response fields
 
@@ -133,10 +148,10 @@ curl 'https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs/extracted_data
 | `extraction_task_id` | `string`  | The id of the extraction job, for support requests.                                                                 |
 | `data`               | `object`  | The receipt, a Versa receipt object whose `schema_version` is the version you asked for. See the [schema](/schema). |
 
-| Status | Meaning                                                                                                                           |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| `400`  | `schema_version` is missing (`"schema_version is required"`) or not supported (`"Unsupported schema_version; supported: 2.3.0"`). |
-| `404`  | No file of your organization has that id, or Versa has not extracted data from it.                                                |
-| `503`  | Versa could not read the data; retry shortly.                                                                                     |
+| Status | Meaning                                                                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400`  | `schema_version` is missing (`"schema_version is required"`) or not supported (`"Unsupported schema_version; supported: 2.3.0"`).               |
+| `404`  | No file of your organization has that id, or the file was collected from your corporate card provider, or Versa has not extracted data from it. |
+| `503`  | Versa could not read the data; retry shortly.                                                                                                   |
 
 The extracted data is Versa's reading of the document and may be incomplete for an unusual layout. The file itself remains the record; the [Flags API](/flags_api) is the way to tell Versa a receipt is wrong.
