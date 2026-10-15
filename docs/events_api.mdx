@@ -16,7 +16,7 @@ Custodial clients may post [events](/events) directly to Versa; Versa evaluates 
 
 <CodeWrap title="cURL Example">
 ```bash
-curl -X POST https://custodial.versa.org/events \
+curl -X POST https://api.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -73,18 +73,18 @@ This event tells Versa to retrieve the full folio from the Courtland Grand Hotel
 
 Events are managed via API using your custodial client credentials.
 
-The Events API is also served at `https://api.versa.org/events`, the same hostname as the [Flags API](/flags_api), so one base URL and one credential cover both. The examples below use the original `custodial.versa.org` address, which continues to work.
+The Events API is also served at `https://custodial.versa.org/events`. This root URL will continue to operate for the forseeable future.
 
 ### Create an event
 
 ```
-POST https://custodial.versa.org/events
+POST https://api.versa.org/events
 ```
 
 Provide as much data as possible — the more complete the booking, the better Versa can match and retrieve the receipt.
 
 ```bash
-curl -X POST https://custodial.versa.org/events \
+curl -X POST https://api.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -112,7 +112,7 @@ If your organization has no active billing contract, `POST /events` returns `402
 ### Update a transaction
 
 ```
-POST https://custodial.versa.org/events
+POST https://api.versa.org/events
 ```
 
 You can update a transaction while it is still in an active lifecycle state. Events are considered immutable; so you update the booking by posting a new event associated with the Versa `transaction_id` or by the original `merchant_transaction_id` from your system.
@@ -120,7 +120,7 @@ You can update a transaction while it is still in an active lifecycle state. Eve
 #### Example Request: Update a booking
 
 ```bash
-curl -X POST https://custodial.versa.org/events \
+curl -X POST https://api.versa.org/events \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -142,7 +142,7 @@ curl -X POST https://custodial.versa.org/events \
 ### Cancel a transaction
 
 ```
-DELETE https://custodial.versa.org/transactions/{transaction_id}
+DELETE https://api.versa.org/transactions/{transaction_id}
 ```
 
 You can cancel a transaction while it is still in an active lifecycle state. This may prevent a charge for receipt retrieval. Identify the event by its `transaction_id` or by the `merchant_transaction_id` you provided at creation.
@@ -150,13 +150,13 @@ You can cancel a transaction while it is still in an active lifecycle state. Thi
 #### Example Request: Cancel a transaction by `transaction_id`
 
 ```bash
-curl -X DELETE https://custodial.versa.org/transactions/txn_abc123def456 \
+curl -X DELETE https://api.versa.org/transactions/txn_abc123def456 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
 
 #### Example Request: Cancel a transaction by `merchant_transaction_id`
 
 ```bash
-curl -X DELETE https://custodial.versa.org/transactions?merchant_transaction_id=my_booking_123456789 \
+curl -X DELETE https://api.versa.org/transactions?merchant_transaction_id=my_booking_123456789 \
   -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
 ```
