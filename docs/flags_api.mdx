@@ -4,7 +4,7 @@ title: "Flags API"
 
 # Flags API
 
-Sometimes a receipt Versa retrieved is not the one you expected: a folio that is missing a night, a receipt attached to the wrong booking, a total that does not match the charge. The Flags API lets you raise an issue flag against a transaction from your own systems, exactly as a user would with the "Flag Issue" button in the Versa portal, and read back the status of every flag your team has raised while Versa reviews and resolves it.
+If a receipt Versa retrieved is not the one you expected, the Flags API lets you raise an issue flag against a transaction from your own systems, exactly as a user would with the "Flag Issue" button in the Versa Direct application, and read back the status of every flag your team has raised while Versa reviews and resolves it.
 
 The Flags API is served at `https://api.versa.org/flags` and uses the same client credentials as the [Events API](/events_api).
 
@@ -18,7 +18,7 @@ curl -X POST https://api.versa.org/flags \
   -d '{
     "identifier_key": "merchant_transaction_id",
     "identifier_value": "my_booking_123456789",
-    "notes": "The folio is missing the second night."
+    "notes": "The folio is for the wrong dates."
   }'
 ```
 </CodeWrap>
@@ -33,7 +33,7 @@ Every request carries your client credentials in an `Authorization` header using
 Authorization: Basic CLIENT_ID:CLIENT_SECRET
 ```
 
-Any client credential of your organization works, whether it was created as a sender or a receiver, in test or production mode. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
+Any production client credential of your organization will be accepted. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
 
 Every error on this API is a JSON object with a single `error` message.
 
