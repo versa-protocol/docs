@@ -77,7 +77,7 @@ and then posts a separate webhook event to your remote endpoint, in the followin
 ## Receipt Retrieval Events
 
 Senders who use the [Receipt Retrieval API](/receipt_retrieval_api) can subscribe to receipt retrieval events to track the progress of each attempted retrieval.
-Every event in this family carries the `card_transaction_id` and `retrieval_id` associated with the original request.
+Every event in this family carries the Versa `transaction_id` returned when you posted the event and the `merchant_transaction_id` you supplied with it — the same two ids the [Flags API](/flags_api) accepts.
 
 The `receipt_retrieval.scheduled` and `receipt_retrieval.initiated` events share the following shape:
 
@@ -95,28 +95,53 @@ The `receipt_retrieval.scheduled` and `receipt_retrieval.initiated` events share
 }
 ```
 
-The `receipt_retrieval.completed` event additionally includes a URL to the retrieved file:
+The `receipt_retrieval.completed` event is sent each time a receipt is attached to the transaction. It carries every receipt you can see on the transaction, a signed URL for each, and what became of the booking:
 
 ```json
 {
   "event": "receipt_retrieval.completed",
   "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
-  "event_at": 1739315358,
+  "event_at": 1789776000,
   "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
-  "delivery_at": 1739315358,
+  "delivery_at": 1789776000,
   "data": {
     "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
     "merchant_transaction_id": "your_booking_id",
-    "receipt_file_url": "https://storage.googleapis.com/..."
+    "receipt_file_url": "https://storage.googleapis.com/...",
+    "receipts": [
+      {
+        "file_id": "file_01kxb5d7qve00a78ns2gqj6xqs",
+        "url": "https://storage.googleapis.com/...",
+        "size": 55555,
+        "filetype": "application/pdf",
+        "created": 1789776000
+      }
+    ],
+    "booking_disposition": "completed"
   }
 }
 ```
+
+#### Completed event fields
+
+| Field                 | Type            | Description                                                                                                                                                   |
+| --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `receipts`            | `array`         | Every receipt on the transaction, newest first, including the one that triggered this event. Each item is a file object (below).                              |
+| `receipts[].file_id`  | `string`        | The file's id. Use it with the [Files API](/files_api) to fetch a fresh URL or the extracted receipt data at any later time.                                  |
+| `receipts[].url`      | `string`        | A signed download URL, valid for 15 minutes from delivery. Retries carry freshly signed URLs.                                                                 |
+| `receipts[].size`     | `integer`       | File size in bytes.                                                                                                                                           |
+| `receipts[].filetype` | `string`        | The file's MIME type, for example `application/pdf`.                                                                                                          |
+| `receipts[].created`  | `integer`       | When the file was stored, in Unix seconds.                                                                                                                    |
+| `receipt_file_url`    | `string`        | The `url` of the receipt that triggered this event. Kept for integrations that predate `receipts`; new integrations should read `receipts`.                   |
+| `booking_disposition` | `nullable enum` | `completed`, `canceled` or `no_show`: what became of the booking as far as Versa knows when the receipt arrived. `null` when there is no booking to describe. |
+
+A transaction that receives a second receipt (a corrected folio, say) fires a second `receipt_retrieval.completed` whose `receipts` lists both.
 
 And `receipt_retrieval.failed` includes a `failure_code`.
 
 ```json
 {
-  "event": "receipt_retrieval.completed",
+  "event": "receipt_retrieval.failed",
   "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
   "event_at": 1739315358,
   "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
@@ -133,13 +158,15 @@ And `receipt_retrieval.failed` includes a `failure_code`.
 
 The following are our currently supported receipt retrieval failure codes. This list may be updated or expanded; it is not guaranteed to be exhaustive.
 
-| Code                      | Description                                                                  |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| `booking_canceled`        | The reservation was canceled prior to checkin.                               |
-| `no_response`             | The property did not respond to retrieval attempts.                          |
-| `no_show`                 | The customer did not show up for the booking                                 |
-| `property_could_not_find` | The property was unable to locate the booking.                               |
-| `property_refused`        | The property declined to provide the receipt.                                |
+| Code                      | Description                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `booking_canceled`        | The reservation was canceled prior to check-in.                                                              |
+| `no_response`             | The property did not respond to retrieval attempts.                                                          |
+| `no_show`                 | The customer did not show up for the booking.                                                                |
+| `property_could_not_find` | The property was unable to locate the booking.                                                               |
+| `property_refused`        | The property declined to provide the receipt.                                                                |
+| `skip_permanently`        | Versa stopped retrieval for this transaction; it was not worth pursuing (for example, a zero-amount charge). |
+| `third_party_billing`     | The stay was billed to a third party, so no receipt is owed to you.                                          |
 
 ## API Reference
 
