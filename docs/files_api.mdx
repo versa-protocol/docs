@@ -11,10 +11,8 @@ The Files API is served at `https://api.versa.org/files` and uses the same clien
 ## Quick Example: Fetch a fresh download URL
 
 <CodeWrap title="cURL Example">
-```bash
-curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \
-  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
-```
+  ```bash curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \ -H
+  'Authorization: Basic CLIENT_ID:CLIENT_SECRET' ```
 </CodeWrap>
 
 The `file_id` is the one a `receipt_retrieval.completed` event carried in `receipts[]`. Download the file from the returned `url` within 15 minutes, or ask again.
@@ -27,7 +25,7 @@ Every request carries your client credentials in an `Authorization` header using
 Authorization: Basic CLIENT_ID:CLIENT_SECRET
 ```
 
-Any client credential of your organization, production or test, will be accepted; it reads the same files either way. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`; this applies to both routes of this API.
+Use a **production** client credential of your organization. A test credential is refused on both routes with `403` and the body `{"error": "Test credentials are not accepted on the Files API"}`. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`; this applies to both routes of this API.
 
 Every error on this API is a JSON object with a single `error` message. A file that is not yours, or that does not exist, answers `404` with `{"error": "Not found"}`; the two cases are deliberately indistinguishable.
 
@@ -72,6 +70,7 @@ curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \
 
 | Status | Meaning                                                                                                |
 | ------ | ------------------------------------------------------------------------------------------------------ |
+| `403`  | The credential is a test credential; use a production one.                                             |
 | `404`  | No file of your organization has that id, or the file was collected from your corporate card provider. |
 | `503`  | Versa could not read the file or reach file storage; retry shortly.                                    |
 
@@ -151,6 +150,7 @@ The example is abridged: it shows one line item and leaves out the optional fiel
 | Status | Meaning                                                                                                                                         |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `400`  | `schema_version` is missing (`"schema_version is required"`) or not supported (`"Unsupported schema_version; supported: 2.3.0"`).               |
+| `403`  | The credential is a test credential; use a production one.                                                                                      |
 | `404`  | No file of your organization has that id, or the file was collected from your corporate card provider, or Versa has not extracted data from it. |
 | `503`  | Versa could not read the data; retry shortly.                                                                                                   |
 
