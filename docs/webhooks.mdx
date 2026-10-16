@@ -137,7 +137,7 @@ The `receipt_retrieval.completed` event is sent each time a receipt is attached 
 
 A transaction that receives a second receipt (a corrected folio, say) fires a second `receipt_retrieval.completed` whose `receipts` lists both.
 
-And `receipt_retrieval.failed` includes a `failure_code`.
+And `receipt_retrieval.failed` includes a `failure_code`. A `property_refused` failure may also carry a `contact_email`; see [Property refusals](#property-refusals).
 
 ```json
 {
@@ -164,9 +164,35 @@ The following are our currently supported receipt retrieval failure codes. This 
 | `no_response`             | The property did not respond to retrieval attempts.                                                          |
 | `no_show`                 | The customer did not show up for the booking.                                                                |
 | `property_could_not_find` | The property was unable to locate the booking.                                                               |
-| `property_refused`        | The property declined to provide the receipt.                                                                |
+| `property_refused`        | The property declined to provide the receipt. See [Property refusals](#property-refusals).                   |
 | `skip_permanently`        | Versa stopped retrieval for this transaction; it was not worth pursuing (for example, a zero-amount charge). |
 | `third_party_billing`     | The stay was billed to a third party.                                                                        |
+
+### Property refusals
+
+In cases when a property refuses, we may include a contact email for the property if they asked to be contacted. The `contact_email` is not guaranteed, but may be included if, for example, the property refuses due to a missing credit card authorization.
+
+```json
+{
+  "event": "receipt_retrieval.failed",
+  "event_id": "evt_6abf1062dc2f4844a81b645b9a5dbf41",
+  "event_at": 1739315358,
+  "delivery_id": "whd_809aba728d6940de8e294af8b3ad272c",
+  "delivery_at": 1739315358,
+  "data": {
+    "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
+    "merchant_transaction_id": "your_booking_id",
+    "failure_code": "property_refused",
+    "contact_email": "reservations@example.com"
+  }
+}
+```
+
+#### Property refusal fields
+
+| Field           | Type              | Description                                                                                                                                                                                       |
+| --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contact_email` | `nullable string` | The property's contact email address. Present only when `failure_code` is `property_refused`, and `null` when Versa has no address to share. Treat a missing or `null` value as no contact email. |
 
 ## API Reference
 
