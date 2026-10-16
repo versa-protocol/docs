@@ -11,8 +11,12 @@ The Files API is served at `https://api.versa.org/files` and uses the same clien
 ## Quick Example: Fetch a fresh download URL
 
 <CodeWrap title="cURL Example">
-  ```bash curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \ -H
-  'Authorization: Basic CLIENT_ID:CLIENT_SECRET' ```
+
+```bash
+curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
+
 </CodeWrap>
 
 The `file_id` is the one a `receipt_retrieval.completed` event carried in `receipts[]`. Download the file from the returned `url` within 15 minutes, or ask again.
