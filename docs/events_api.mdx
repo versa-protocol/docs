@@ -97,13 +97,13 @@ curl -X POST https://api.versa.org/events \
 
 #### Request Parameters
 
-| Field                     | Type              | Description                                                                                                                                       |
-| ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data`                    | `object`          | Event data. Must validate against the Versa schema, e.g. [Booking Schema](/booking)].                                                             |
-| `event_type`              | `nullable enum`   | One of 'receipt', 'invoice', 'booking', or 'itinerary'.                                                                                           |
-| `handles`                 | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`. |
-| `transaction_id`          | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later.                               |
-| `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID). Use this to update or cancel later.                                     |
+| Field                     | Type              | Description                                                                                                                                                                                                                                       |
+| ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`                    | `object`          | Event data. Must validate against the Versa schema, e.g. [Booking Schema](/booking)].                                                                                                                                                             |
+| `event_type`              | `nullable enum`   | One of 'receipt', 'invoice', 'booking', or 'itinerary'.                                                                                                                                                                                           |
+| `handles`                 | `nullable object` | A set of key-value pairs that Versa can use to match the event to registered receivers. For example, `customer_email` or `customer_email_domain`.                                                                                                 |
+| `transaction_id`          | `nullable string` | The parent identifier of a previous event, if updating an existing arrangement. Use this to update or cancel later.                                                                                                                               |
+| `merchant_transaction_id` | `nullable string` | A stable identifier for the object in your system (e.g. your booking ID), unique within your organization. Posting another event with the same value updates that transaction rather than creating a new one. Use this to update or cancel later. |
 
 #### Errors
 
@@ -116,6 +116,8 @@ POST https://api.versa.org/events
 ```
 
 You can update a transaction while it is still in an active lifecycle state. Events are considered immutable; so you update the booking by posting a new event associated with the Versa `transaction_id` or by the original `merchant_transaction_id` from your system.
+
+A `merchant_transaction_id` names exactly one transaction in your organization. Once a transaction carries it, every later event that carries it is applied to that transaction, so do not reuse your own ids across different bookings.
 
 #### Example Request: Update a booking
 
