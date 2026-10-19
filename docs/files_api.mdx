@@ -57,20 +57,20 @@ curl https://api.versa.org/files/file_01kxb5d7qve00a78ns2gqj6xqs \
   "file_id": "file_01kxb5d7qve00a78ns2gqj6xqs",
   "url": "https://storage.googleapis.com/...",
   "size": 55555,
-  "filetype": "application/pdf",
+  "content_type": "application/pdf",
   "created": 1789776000
 }
 ```
 
 #### File fields
 
-| Field      | Type      | Description                                                    |
-| ---------- | --------- | -------------------------------------------------------------- |
-| `file_id`  | `string`  | The file's id.                                                 |
-| `url`      | `string`  | A signed download URL, valid for 15 minutes from the response. |
-| `size`     | `integer` | File size in bytes.                                            |
-| `filetype` | `string`  | The file's MIME type, for example `application/pdf`.           |
-| `created`  | `integer` | When the file was stored, in Unix seconds.                     |
+| Field          | Type      | Description                                                    |
+| -------------- | --------- | -------------------------------------------------------------- |
+| `file_id`      | `string`  | The file's id.                                                 |
+| `url`          | `string`  | A signed download URL, valid for 15 minutes from the response. |
+| `size`         | `integer` | File size in bytes.                                            |
+| `content_type` | `string`  | The file's MIME type, for example `application/pdf`.           |
+| `created`      | `integer` | When the file was stored, in Unix seconds.                     |
 
 | Status | Meaning                                                                                                |
 | ------ | ------------------------------------------------------------------------------------------------------ |
