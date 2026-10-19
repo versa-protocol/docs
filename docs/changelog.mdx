@@ -4,6 +4,10 @@ title: "Changelog"
 
 # Changelog
 
+## 2026-10-19 - Events API Update
+
+- `merchant_transaction_id` is now unique within an organization. Posting an event with a `merchant_transaction_id` already in use updates that transaction instead of creating a second one, so the id always names a single transaction on the [Events API](/events_api), the [Flags API](/flags_api) and in [webhooks](/webhooks)
+
 ## 2026-04-20 - Schema Version 2.3.0
 
 - Added nullable `trip` object (`id`, `name`, `description`) to the `header`, for grouping related transactions under a broader trip

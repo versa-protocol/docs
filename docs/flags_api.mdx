@@ -70,11 +70,11 @@ curl -X POST https://api.versa.org/flags \
 
 `201 Created` with the flag in the same shape as a list item (below). Its `status` starts as `open`.
 
-| Status | Meaning                                                                                                                                   |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `400`  | `notes` is empty or too long; neither or both of `transaction_id` and `merchant_transaction_id` were sent; or the one sent is blank.      |
-| `404`  | No transaction of your organization carries that id, or it has been deleted.                                                              |
-| `409`  | The transaction already has a flag awaiting resolution, or the id matches more than one transaction (a reused `merchant_transaction_id`). |
+| Status | Meaning                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `400`  | `notes` is empty or too long; neither or both of `transaction_id` and `merchant_transaction_id` were sent; or the one sent is blank. |
+| `404`  | No transaction of your organization carries that id, or it has been deleted.                                                         |
+| `409`  | The transaction already has a flag awaiting resolution.                                                                              |
 
 A transaction carries one open flag at a time. Add to the open one through the portal rather than raising a second.
 
