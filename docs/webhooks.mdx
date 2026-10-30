@@ -137,6 +137,8 @@ The `receipt_retrieval.completed` event is sent each time a receipt is attached 
 
 A transaction that receives a second receipt (a corrected folio, say) fires a second `receipt_retrieval.completed` whose `receipts` lists both.
 
+To read the same facts on demand, look the transaction up with the [Transactions API](/transactions_api).
+
 And `receipt_retrieval.failed` includes a `failure_code`.
 
 ```json

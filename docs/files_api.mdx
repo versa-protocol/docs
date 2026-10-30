@@ -6,7 +6,7 @@ title: "Files API"
 
 Every receipt Versa attaches to one of your transactions is a file. The [`receipt_retrieval.completed` webhook](/webhooks) lists those files, each with a signed download URL that expires after 15 minutes. The Files API lets you come back to them later (except receipts collected from your corporate card provider): fetch a fresh download URL for a file, or the receipt data Versa extracted from it, in the Versa receipt schema.
 
-The Files API is served at `https://api.versa.org/files` and uses the same client credentials as the [Events API](/events_api) and the [Flags API](/flags_api).
+The Files API is served at `https://api.versa.org/files` and uses the same client credentials as the [Events API](/events_api) and the [Flags API](/flags_api). To list every receipt on a transaction, use the [Transactions API](/transactions_api).
 
 ## Quick Example: Fetch a fresh download URL
 

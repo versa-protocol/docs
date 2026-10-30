@@ -1,0 +1,122 @@
+---
+title: "Transactions API"
+---
+
+# Transactions API
+
+Look up one of your transactions to see where Versa is with its receipt: the receipt-retrieval state, what became of the booking, and every receipt Versa has collected for it. It answers the same question as the [`receipt_retrieval.completed` webhook](/webhooks), on demand: use it to reconcile a missed delivery, or to check on a transaction before its receipt has arrived.
+
+The Transactions API is served at `https://api.versa.org/transactions` and uses the same client credentials as the [Events API](/events_api), the [Flags API](/flags_api) and the [Files API](/files_api).
+
+## Quick Example: Look up a transaction by your own id
+
+<CodeWrap title="cURL Example">
+
+```bash
+curl 'https://api.versa.org/transactions?merchant_transaction_id=your_booking_id' \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
+
+</CodeWrap>
+
+## Authentication
+
+Every request carries your client credentials in an `Authorization` header using the Basic scheme, either as the raw pair or base64-encoded:
+
+```
+Authorization: Basic CLIENT_ID:CLIENT_SECRET
+```
+
+Use a **production** client credential of your organization: the response carries download URLs for your receipts. A test credential is refused with `403` and the body `{"error": "Test credentials are not accepted on the Transactions API"}`. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`.
+
+Every error on this API is a JSON object with a single `error` message. A transaction that is not yours, or that does not exist, answers `404` with `{"error": "Not found"}`; the two cases are deliberately indistinguishable.
+
+## API Reference
+
+### Get a transaction
+
+```
+GET https://api.versa.org/transactions?transaction_id={transaction_id}
+GET https://api.versa.org/transactions?merchant_transaction_id={merchant_transaction_id}
+```
+
+Returns the transaction the id names, with its receipts. Name it by exactly one of the two ids the webhooks carry.
+
+#### Query Parameters
+
+| Parameter                 | Type     | Description                                                                                             |
+| ------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `transaction_id`          | `string` | The Versa network id returned when the transaction's event was posted to the [Events API](/events_api). |
+| `merchant_transaction_id` | `string` | Your own id for the transaction, as you supplied it.                                                    |
+
+Provide exactly one of the two.
+
+#### Example Request
+
+```bash
+curl 'https://api.versa.org/transactions?transaction_id=txn_555raszzb2esgvra33qn9kyw6t' \
+  -H 'Authorization: Basic CLIENT_ID:CLIENT_SECRET'
+```
+
+#### Response
+
+```json
+{
+  "id": "dtx_01kxb4yq3ce00a78ns2gqj6xqs",
+  "transaction_id": "txn_555raszzb2esgvra33qn9kyw6t",
+  "merchant_transaction_id": "your_booking_id",
+  "created": 1789516800,
+  "receipt_retrieval_state": "completed",
+  "booking_disposition": "completed",
+  "receipts": [
+    {
+      "file_id": "file_01kxb5d7qve00a78ns2gqj6xqs",
+      "url": "https://storage.googleapis.com/...",
+      "size": 55555,
+      "content_type": "application/pdf",
+      "created": 1789776000
+    }
+  ]
+}
+```
+
+#### Response fields
+
+| Field                     | Type              | Description                                                                                                                                                                                       |
+| ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                      | `string`          | Versa's id for the transaction. If Versa has combined two records of the same purchase (a booking and its card charge, say), this is the id of the combined transaction.                          |
+| `transaction_id`          | `nullable string` | The Versa network id, when the transaction came from an event you posted.                                                                                                                         |
+| `merchant_transaction_id` | `nullable string` | Your own id for the transaction, when you supplied one.                                                                                                                                           |
+| `created`                 | `integer`         | When Versa created the transaction, in Unix seconds.                                                                                                                                              |
+| `receipt_retrieval_state` | `enum`            | Where Versa is with the receipt, as of this response. See [Receipt retrieval states](#receipt-retrieval-states).                                                                                  |
+| `booking_disposition`     | `nullable enum`   | `completed`, `canceled` or `no_show`: what became of the booking as far as Versa knows now. `null` when the transaction has no booking, or Versa could not determine it; treat `null` as unknown. |
+| `receipts`                | `array`           | Every receipt on the transaction, newest first, in the same shape as `receipts[]` on the [`receipt_retrieval.completed` webhook](/webhooks). Empty until a receipt arrives.                       |
+| `receipts[].file_id`      | `string`          | The file's id. Use it with the [Files API](/files_api) to fetch a fresh URL or the extracted receipt data.                                                                                        |
+| `receipts[].url`          | `string`          | A signed download URL, valid for 15 minutes from the response.                                                                                                                                    |
+| `receipts[].size`         | `integer`         | File size in bytes.                                                                                                                                                                               |
+| `receipts[].content_type` | `string`          | The file's MIME type, for example `application/pdf`.                                                                                                                                              |
+| `receipts[].created`      | `integer`         | When the file was stored, in Unix seconds.                                                                                                                                                        |
+
+Receipts Versa collected from your corporate card provider are not listed here, as on the Files API.
+
+#### Receipt retrieval states
+
+| State                   | Meaning                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `scheduled`             | Not due yet: the stay has not ended, or the card charge has not settled.                                        |
+| `pending_merchant_eval` | Versa is identifying the merchant and how to reach it.                                                          |
+| `pending_network`       | The merchant delivers receipts over the Versa network; Versa is waiting for it there.                           |
+| `pending_response`      | Versa has asked the merchant for the receipt and is waiting for a reply.                                        |
+| `inbox`                 | Versa is working on the receipt: a reply from the merchant to act on, or a next request to make.                |
+| `completed`             | Versa has a receipt for the transaction. Final.                                                                 |
+| `failed`                | Versa stopped trying to retrieve the receipt. Final; the `receipt_retrieval.failed` webhook carried the reason. |
+
+The state is computed when you ask, so it can move between the non-final states from one request to the next.
+
+| Status | Meaning                                                                                                                                                           |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400`  | Neither or both ids were given (`"Provide exactly one of transaction_id or merchant_transaction_id"`), or the one given is blank (`"<field> must not be blank"`). |
+| `403`  | The credential is a test credential; use a production one.                                                                                                        |
+| `404`  | No transaction of your organization has that id.                                                                                                                  |
+| `409`  | The id names more than one transaction (`"This identifier matches more than one transaction"`); look it up by the other id.                                       |
+| `503`  | Versa could not read the transaction or reach file storage; retry shortly.                                                                                        |
