@@ -4,7 +4,9 @@ title: "Transactions API"
 
 # Transactions API
 
-Look up one of your transactions to see where Versa is with its receipt: the receipt-retrieval state, what became of the booking, and every receipt Versa has collected for it. It answers the same question as the [`receipt_retrieval.completed` webhook](/webhooks), on demand: use it to reconcile a missed delivery, or to check on a transaction before its receipt has arrived.
+Versa events are grouped under 'transactions', which represent the full lifecycle for a purchase, from the initial booking to the collection of relevant receipts.
+
+Look up one of your transactions to review its receipt-retrieval state, the booking disposition (if relevant), and every receipt Versa has collected for it. It answers the same question as the [`receipt_retrieval.completed` webhook](/webhooks), on demand: use it to reconcile a missed delivery, or to check on a transaction before its receipt has arrived.
 
 The Transactions API is served at `https://api.versa.org/transactions` and uses the same client credentials as the [Events API](/events_api), the [Flags API](/flags_api) and the [Files API](/files_api).
 
