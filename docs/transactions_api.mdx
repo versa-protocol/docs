@@ -27,9 +27,44 @@ Every request carries your client credentials in an `Authorization` header using
 Authorization: Basic CLIENT_ID:CLIENT_SECRET
 ```
 
-Use a **production** client credential of your organization: the response carries download URLs for your receipts. A test credential is refused with `403` and the body `{"error": "Test credentials are not accepted on the Transactions API"}`. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`.
+Use a **production** client credential of your organization to reach your transactions: the response carries download URLs for your receipts. A test credential never reads them: it gets a fixed example response instead (see [Testing with a test credential](#testing-with-a-test-credential)). A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`. If Versa cannot complete the credential check, the request answers `503` with the body `{"error": "Credential check unavailable"}`.
 
 Every error on this API is a JSON object with a single `error` message. A transaction that is not yours, or that does not exist, answers `404` with `{"error": "Not found"}`; the two cases are deliberately indistinguishable.
+
+## Testing with a test credential
+
+With a test credential, the API answers from a fixed example transaction instead of your organization's transactions, so you can build against the real response shape before you hold a production credential. Nothing of yours is read.
+
+| Query                                                       | Answer                                  |
+| ----------------------------------------------------------- | --------------------------------------- |
+| `?transaction_id=good_transaction_id`                       | `200` with the example transaction      |
+| `?merchant_transaction_id=good_external_identifier`         | `200` with the same example transaction |
+| `?transaction_id=missing_transaction_id`                    | `404` with `{"error": "Not found"}`     |
+| `?merchant_transaction_id=unrecognized_external_identifier` | `404` with `{"error": "Not found"}`     |
+
+Each example id works only under its own parameter (`?merchant_transaction_id=good_transaction_id` is a `404`), and any other id, including one of your real ones, answers `404`. The `400` checks on the query still apply first, as in production. The example is a completed hotel stay:
+
+```json
+{
+  "id": "dtx_55555555555555555555555555",
+  "transaction_id": "good_transaction_id",
+  "merchant_transaction_id": "good_external_identifier",
+  "created": 1789776000,
+  "receipt_retrieval_state": "completed",
+  "booking_disposition": "completed",
+  "receipts": [
+    {
+      "file_id": "good_file_id",
+      "url": "https://cdn.versa.org/examples/tdg.pdf",
+      "size": 55555,
+      "content_type": "application/pdf",
+      "created": 1789776000
+    }
+  ]
+}
+```
+
+Its receipt's URL is public and does not expire, and its `file_id` works on the [Files API](/files_api#testing-with-a-test-credential) with the same test credential.
 
 ## API Reference
 
@@ -116,7 +151,6 @@ The state is computed when you ask, so it can move between the non-final states 
 | Status | Meaning                                                                                                                                                           |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `400`  | Neither or both ids were given (`"Provide exactly one of transaction_id or merchant_transaction_id"`), or the one given is blank (`"<field> must not be blank"`). |
-| `403`  | The credential is a test credential; use a production one.                                                                                                        |
 | `404`  | No transaction of your organization has that id.                                                                                                                  |
 | `409`  | The id names more than one transaction (`"This identifier matches more than one transaction"`); look it up by the other id.                                       |
 | `503`  | Versa could not read the transaction or reach file storage; retry shortly.                                                                                        |

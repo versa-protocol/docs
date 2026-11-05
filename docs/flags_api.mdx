@@ -32,9 +32,16 @@ Every request carries your client credentials in an `Authorization` header using
 Authorization: Basic CLIENT_ID:CLIENT_SECRET
 ```
 
-Any production client credential of your organization will be accepted. A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
+Use a **production** client credential of your organization to raise and read your flags. A test credential never reads or writes them: it works against a fixed example instead (see [Testing with a test credential](#testing-with-a-test-credential)). A missing or incorrect credential answers `401` with the body `{"error": "Invalid client credentials"}`.
 
 Every error on this API is a JSON object with a single `error` message.
+
+## Testing with a test credential
+
+With a test credential, both routes work against one fixed example transaction instead of your organization's data, so you can build against the real response shapes before you hold a production credential. Nothing is read from or saved to your account.
+
+- **`POST /flags`** naming the example transaction, by `"transaction_id": "good_transaction_id"` or `"merchant_transaction_id": "good_external_identifier"`, answers `201` with an `open` example flag carrying your trimmed `notes` and the current time as `created`. Nothing is saved, so repeating it succeeds again (the one-open-flag `409` is never returned). Any other id, including the documented misses `missing_transaction_id` and `unrecognized_external_identifier` and your real ids, answers `404` with `{"error": "Transaction not found"}`. Each example id works only under its own field. The `400` checks on the body still apply first.
+- **`GET /flags`** always holds exactly one flag: an `open` flag (id `flag_55555555555555555555555555`) on the example transaction (`direct_transaction_id` `dtx_55555555555555555555555555`, `transaction_id` `good_transaction_id`, `merchant_transaction_id` `good_external_identifier`). The query parameters filter and page it as they would your real flags: `status=corrected`, or a `transaction_id` that is not `good_transaction_id`, returns an empty page.
 
 ## API Reference
 
